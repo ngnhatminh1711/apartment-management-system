@@ -23,4 +23,5 @@ public class Role {
 
     @Column(name = "description", length = 200)
     private String description;
+
 }
