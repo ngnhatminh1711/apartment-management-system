@@ -26,30 +26,31 @@ notifications (user_id, reference)
 
 ## 📋 Danh sách 16 bảng
 
-| # | Tên bảng | Mô tả | Module chính |
-|---|---|---|---|
-| 1 | `users` | Tất cả người dùng hệ thống | Auth |
-| 2 | `roles` | Phân loại quyền hệ thống | Auth |
-| 3 | `user_roles` | Gán role cho user | Auth |
-| 4 | `buildings` | Thông tin tòa nhà | Admin |
-| 5 | `apartments` | Căn hộ trong tòa nhà | Admin / BQL |
-| 6 | `apartment_residents` | Lịch sử cư trú (ai ở căn hộ nào, từ khi nào) | BQL |
-| 7 | `fee_configs` | Cấu hình bảng giá phí (điện, nước, dịch vụ…) | Admin |
-| 8 | `bills` | Hóa đơn hàng tháng của từng căn hộ | BQL |
-| 9 | `bill_items` | Chi tiết từng dòng trong hóa đơn | BQL |
-| 10 | `payments` | Lịch sử giao dịch thanh toán | Cư dân |
-| 11 | `vehicles` | Đăng ký xe của cư dân | Cư dân |
-| 12 | `service_types` | Danh mục dịch vụ tiện ích (gym, hồ bơi…) | Admin |
-| 13 | `service_registrations` | Cư dân đăng ký dịch vụ | Cư dân |
-| 14 | `service_requests` | Yêu cầu sửa chữa / phản ánh / khiếu nại | Cư dân / BQL |
-| 15 | `announcements` | Thông báo từ BQL/Admin gửi đến cư dân | BQL / Admin |
-| 16 | `notifications` | Thông báo cá nhân cho từng user (bill, request update…) | Hệ thống |
+| #   | Tên bảng                | Mô tả                                                   | Module chính |
+| --- | ----------------------- | ------------------------------------------------------- | ------------ |
+| 1   | `users`                 | Tất cả người dùng hệ thống                              | Auth         |
+| 2   | `roles`                 | Phân loại quyền hệ thống                                | Auth         |
+| 3   | `user_roles`            | Gán role cho user                                       | Auth         |
+| 4   | `buildings`             | Thông tin tòa nhà                                       | Admin        |
+| 5   | `apartments`            | Căn hộ trong tòa nhà                                    | Admin / BQL  |
+| 6   | `apartment_residents`   | Lịch sử cư trú (ai ở căn hộ nào, từ khi nào)            | BQL          |
+| 7   | `fee_configs`           | Cấu hình bảng giá phí (điện, nước, dịch vụ…)            | Admin        |
+| 8   | `bills`                 | Hóa đơn hàng tháng của từng căn hộ                      | BQL          |
+| 9   | `bill_items`            | Chi tiết từng dòng trong hóa đơn                        | BQL          |
+| 10  | `payments`              | Lịch sử giao dịch thanh toán                            | Cư dân       |
+| 11  | `vehicles`              | Đăng ký xe của cư dân                                   | Cư dân       |
+| 12  | `service_types`         | Danh mục dịch vụ tiện ích (gym, hồ bơi…)                | Admin        |
+| 13  | `service_registrations` | Cư dân đăng ký dịch vụ                                  | Cư dân       |
+| 14  | `service_requests`      | Yêu cầu sửa chữa / phản ánh / khiếu nại                 | Cư dân / BQL |
+| 15  | `announcements`         | Thông báo từ BQL/Admin gửi đến cư dân                   | BQL / Admin  |
+| 16  | `notifications`         | Thông báo cá nhân cho từng user (bill, request update…) | Hệ thống     |
 
 ---
 
 ## 🔐 Nhóm 1: Authentication & Authorization
 
 ### 1. `users`
+
 > Lưu tất cả người dùng: Admin, Manager (BQL), Resident (Cư dân). Dùng chung 1 bảng, phân biệt qua `user_roles`.
 
 ```sql
@@ -68,18 +69,19 @@ CREATE TABLE users (
 );
 ```
 
-| Cột | Kiểu | Mô tả |
-|---|---|---|
-| `id` | BIGSERIAL | PK tự tăng |
-| `email` | VARCHAR UNIQUE | Dùng để đăng nhập |
-| `phone` | VARCHAR UNIQUE | SĐT (nullable, dùng thay email) |
-| `password_hash` | VARCHAR | BCrypt hash |
-| `id_card` | VARCHAR UNIQUE | CMND/CCCD để xác minh cư dân |
-| `is_active` | BOOLEAN | Soft disable tài khoản |
+| Cột             | Kiểu           | Mô tả                           |
+| --------------- | -------------- | ------------------------------- |
+| `id`            | BIGSERIAL      | PK tự tăng                      |
+| `email`         | VARCHAR UNIQUE | Dùng để đăng nhập               |
+| `phone`         | VARCHAR UNIQUE | SĐT (nullable, dùng thay email) |
+| `password_hash` | VARCHAR        | BCrypt hash                     |
+| `id_card`       | VARCHAR UNIQUE | CMND/CCCD để xác minh cư dân    |
+| `is_active`     | BOOLEAN        | Soft disable tài khoản          |
 
 ---
 
 ### 2. `roles`
+
 > Cố định 3 roles: `ROLE_ADMIN`, `ROLE_MANAGER`, `ROLE_RESIDENT`.
 
 ```sql
@@ -98,6 +100,7 @@ INSERT INTO roles (name, description) VALUES
 ---
 
 ### 3. `user_roles`
+
 > Junction table: 1 user có thể có nhiều role (ví dụ: Admin kiêm Manager).
 
 ```sql
@@ -113,6 +116,7 @@ CREATE TABLE user_roles (
 ## 🏢 Nhóm 2: Tòa nhà & Căn hộ
 
 ### 4. `buildings`
+
 > Một hệ thống có thể quản lý nhiều tòa nhà. Admin quản lý, có thể chỉ định Manager cho từng tòa.
 
 ```sql
@@ -133,6 +137,7 @@ CREATE TABLE buildings (
 ---
 
 ### 5. `apartments`
+
 > Căn hộ thuộc một tòa nhà. Trạng thái giúp BQL biết căn hộ nào đang trống.
 
 ```sql
@@ -157,6 +162,7 @@ CREATE TABLE apartments (
 ---
 
 ### 6. `apartment_residents`
+
 > **Bảng quan trọng:** Lưu lịch sử ai sống ở căn hộ nào và trong khoảng thời gian nào. Giúp truy vết kể cả sau khi cư dân chuyển đi.
 
 ```sql
@@ -180,6 +186,7 @@ CREATE TABLE apartment_residents (
 ## 💰 Nhóm 3: Phí & Hóa đơn
 
 ### 7. `fee_configs`
+
 > Admin cấu hình bảng giá theo từng tòa nhà và từng loại phí. Lưu lịch sử thay đổi giá theo thời gian (effective_from / effective_to).
 
 ```sql
@@ -204,6 +211,7 @@ CREATE TABLE fee_configs (
 ---
 
 ### 8. `bills`
+
 > Hóa đơn tổng hợp cho 1 căn hộ trong 1 tháng. BQL tạo, cư dân thanh toán.
 
 ```sql
@@ -227,6 +235,7 @@ CREATE TABLE bills (
 ---
 
 ### 9. `bill_items`
+
 > Chi tiết từng dòng trong hóa đơn (tiền điện bao nhiêu, nước bao nhiêu, phí quản lý bao nhiêu…).
 
 ```sql
@@ -248,6 +257,7 @@ CREATE TABLE bill_items (
 ---
 
 ### 10. `payments`
+
 > Mỗi lần cư dân thanh toán (có thể thanh toán nhiều lần nếu trả một phần).
 
 ```sql
@@ -272,6 +282,7 @@ CREATE TABLE payments (
 ## 🚗 Nhóm 4: Xe cộ & Dịch vụ
 
 ### 11. `vehicles`
+
 > Cư dân đăng ký xe để lấy thẻ xe/vé tháng. BQL duyệt trước khi cấp.
 
 ```sql
@@ -298,6 +309,7 @@ CREATE TABLE vehicles (
 ---
 
 ### 12. `service_types`
+
 > Admin định nghĩa danh mục dịch vụ tiện ích: Gym, Hồ bơi, Sân tennis, Internet cáp quang…
 
 ```sql
@@ -315,6 +327,7 @@ CREATE TABLE service_types (
 ---
 
 ### 13. `service_registrations`
+
 > Cư dân đăng ký sử dụng dịch vụ tiện ích.
 
 ```sql
@@ -338,6 +351,7 @@ CREATE TABLE service_registrations (
 ## 🔧 Nhóm 5: Yêu cầu & Phản ánh
 
 ### 14. `service_requests`
+
 > Cư dân gửi yêu cầu sửa chữa, phản ánh, hoặc khiếu nại. BQL tiếp nhận và xử lý, theo dõi trạng thái.
 
 ```sql
@@ -369,6 +383,7 @@ CREATE TABLE service_requests (
 ## 🔔 Nhóm 6: Thông báo
 
 ### 15. `announcements`
+
 > BQL/Admin gửi thông báo chung đến cư dân (toàn bộ, hoặc theo tòa nhà).
 
 ```sql
@@ -393,6 +408,7 @@ CREATE TABLE announcements (
 ---
 
 ### 16. `notifications`
+
 > Thông báo cá nhân đến từng user: hóa đơn mới, trạng thái yêu cầu thay đổi, duyệt xe...
 
 ```sql
@@ -413,6 +429,7 @@ CREATE TABLE notifications (
 ```
 
 > 💡 **Lý do tách `announcements` và `notifications`:**
+>
 > - `announcements`: Broadcast (1 bản ghi → nhiều người nhận), BQL chủ động gửi.
 > - `notifications`: Unicast (1 bản ghi = 1 người nhận), hệ thống tự sinh khi có sự kiện (hóa đơn mới, yêu cầu được xử lý…).
 
@@ -494,16 +511,16 @@ CREATE INDEX idx_fee_configs_building_active ON fee_configs(building_id) WHERE e
 
 ## 📊 Số lượng bảng theo nhóm
 
-| Nhóm | Số bảng | Bảng |
-|---|---|---|
-| Auth & Authorization | 3 | `users`, `roles`, `user_roles` |
-| Tòa nhà & Căn hộ | 3 | `buildings`, `apartments`, `apartment_residents` |
-| Phí & Hóa đơn | 3 | `fee_configs`, `bills`, `bill_items` |
-| Thanh toán | 1 | `payments` |
-| Xe cộ & Dịch vụ | 3 | `vehicles`, `service_types`, `service_registrations` |
-| Yêu cầu & Phản ánh | 1 | `service_requests` |
-| Thông báo | 2 | `announcements`, `notifications` |
-| **Tổng** | **16** | |
+| Nhóm                 | Số bảng | Bảng                                                 |
+| -------------------- | ------- | ---------------------------------------------------- |
+| Auth & Authorization | 3       | `users`, `roles`, `user_roles`                       |
+| Tòa nhà & Căn hộ     | 3       | `buildings`, `apartments`, `apartment_residents`     |
+| Phí & Hóa đơn        | 3       | `fee_configs`, `bills`, `bill_items`                 |
+| Thanh toán           | 1       | `payments`                                           |
+| Xe cộ & Dịch vụ      | 3       | `vehicles`, `service_types`, `service_registrations` |
+| Yêu cầu & Phản ánh   | 1       | `service_requests`                                   |
+| Thông báo            | 2       | `announcements`, `notifications`                     |
+| **Tổng**             | **16**  |                                                      |
 
 ---
 
@@ -511,42 +528,27 @@ CREATE INDEX idx_fee_configs_building_active ON fee_configs(building_id) WHERE e
 
 ### Tại sao 16 bảng thay vì 8–10?
 
-| Bảng thêm | Lý do |
-|---|---|
-| `user_roles` | Tách ra để 1 user có thể có nhiều role (Admin kiêm Manager) |
-| `apartment_residents` | Lưu lịch sử cư trú (nhiều người/căn hộ theo thời gian), không chỉ `apartment_id` trong `users` |
-| `bill_items` | 1 hóa đơn = nhiều dòng phí khác nhau. Nếu gộp vào `bills` sẽ vi phạm 1NF |
-| `fee_configs` | Giá thay đổi theo thời gian, cần snapshot. Không hardcode vào code |
-| `service_types` | Admin cần thêm/bớt dịch vụ động, không hardcode enum |
-| `announcements` vs `notifications` | Broadcast vs unicast – thiết kế khác nhau hoàn toàn |
+| Bảng thêm                          | Lý do                                                                                          |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `user_roles`                       | Tách ra để 1 user có thể có nhiều role (Admin kiêm Manager)                                    |
+| `apartment_residents`              | Lưu lịch sử cư trú (nhiều người/căn hộ theo thời gian), không chỉ `apartment_id` trong `users` |
+| `bill_items`                       | 1 hóa đơn = nhiều dòng phí khác nhau. Nếu gộp vào `bills` sẽ vi phạm 1NF                       |
+| `fee_configs`                      | Giá thay đổi theo thời gian, cần snapshot. Không hardcode vào code                             |
+| `service_types`                    | Admin cần thêm/bớt dịch vụ động, không hardcode enum                                           |
+| `announcements` vs `notifications` | Broadcast vs unicast – thiết kế khác nhau hoàn toàn                                            |
 
 ### Soft delete
+
 Không xóa thật dữ liệu nhạy cảm. Dùng:
+
 - `is_active = FALSE` cho `users`, `buildings`, `service_types`
 - `move_out_date` cho `apartment_residents`
 - `status = 'CANCELLED'` cho `bills`, `payments`, `service_registrations`
 
 ### Snapshot giá trong `bill_items`
+
 Cột `unit_price` trong `bill_items` lưu giá **tại thời điểm lập hóa đơn**, không tham chiếu lại `fee_configs`. Điều này đảm bảo hóa đơn cũ không thay đổi khi Admin cập nhật bảng giá mới.
 
 ### `attachment_urls TEXT[]`
+
 Dùng PostgreSQL Array type để lưu danh sách URL ảnh. Đơn giản hơn tạo thêm bảng `attachments` cho scope của project này.
-
----
-
-## 🌱 Data seeding mẫu (để demo)
-
-```sql
--- 1 tòa nhà, 10 căn hộ, 8 cư dân, 3 hóa đơn có trạng thái khác nhau
-INSERT INTO buildings (name, address, num_floors, num_apartments)
-VALUES ('Chung cư Sunrise Tower', '123 Nguyễn Huệ, Q.1, TP.HCM', 20, 200);
-
-INSERT INTO fee_configs (building_id, fee_type, unit_price, unit, effective_from)
-VALUES
-    (1, 'ELECTRICITY',       3500,    'kWh',     '2025-01-01'),
-    (1, 'WATER',             15000,   'm3',      '2025-01-01'),
-    (1, 'MANAGEMENT',        500000,  'tháng',   '2025-01-01'),
-    (1, 'PARKING_MOTORBIKE', 150000,  'xe/tháng','2025-01-01'),
-    (1, 'PARKING_CAR',       600000,  'xe/tháng','2025-01-01'),
-    (1, 'GARBAGE',           50000,   'tháng',   '2025-01-01');
-```
