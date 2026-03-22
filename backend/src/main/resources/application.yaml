@@ -22,3 +22,6 @@ jwt:
   secret: 51CKGfW8L3Gsk7USAqpiQWlWOe33XDjzYfJrCHACb8N
   access-token-expiration: 86400000
   refresh-token-expiration: 604800000
+
+cors:
+  allowed-origins: http://localhost:3000,http://localhost:5173
