@@ -1,5 +1,8 @@
 package com.apartmentmanagement.exception;
 
+import lombok.Getter;
+
+@Getter
 public class AppException extends RuntimeException {
 
     private final ErrorCode errorCode;
