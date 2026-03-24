@@ -3,6 +3,7 @@ package com.apartmentmanagement.dto.response;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import com.apartmentmanagement.entity.ApartmentResident;
 import com.apartmentmanagement.entity.Notification;
@@ -15,7 +16,7 @@ import lombok.*;
 @Setter
 @Builder
 
-public class ResidentResponse {
+public class ResidentResponse  {
 
     private Long id;
     private String fullName;
@@ -25,8 +26,9 @@ public class ResidentResponse {
     private String avatarUrl;
     private List<String> roles;
     private ApartmentResponse currentApartment;
-   private Integer unreadNotificationCount;
+    private Integer unreadNotificationCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
 }
+
