@@ -12,7 +12,7 @@ import com.apartmentmanagement.dto.request.auth.ChangePasswordRequest;
 import com.apartmentmanagement.dto.request.auth.LoginRequest;
 import com.apartmentmanagement.dto.request.auth.RefreshTokenRequest;
 import com.apartmentmanagement.dto.response.ApiResponse;
-import com.apartmentmanagement.dto.response.AuthResponse;
+import com.apartmentmanagement.dto.response.auth.AuthResponse;
 import com.apartmentmanagement.security.SecurityUtils;
 import com.apartmentmanagement.service.AuthService;
 

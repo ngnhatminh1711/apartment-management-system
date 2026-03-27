@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.apartmentmanagement.dto.request.auth.ChangePasswordRequest;
 import com.apartmentmanagement.dto.request.auth.LoginRequest;
 import com.apartmentmanagement.dto.request.auth.RefreshTokenRequest;
-import com.apartmentmanagement.dto.response.AuthResponse;
+import com.apartmentmanagement.dto.response.auth.AuthResponse;
 import com.apartmentmanagement.entity.User;
 import com.apartmentmanagement.exception.AppException;
 import com.apartmentmanagement.exception.ErrorCode;

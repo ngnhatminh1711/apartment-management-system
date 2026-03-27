@@ -89,6 +89,14 @@ public class User {
     @Builder.Default
     private List<Notification> notifications = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<ServiceRegistration> serviceRegistrations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<ServiceRequest> serviceRequests = new ArrayList<>();
+
     // --Audit--
 
     @CreatedDate
