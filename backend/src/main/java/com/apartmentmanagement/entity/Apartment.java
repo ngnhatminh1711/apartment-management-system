@@ -70,7 +70,7 @@ public class Apartment {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     @Builder.Default
-    private ApartmentStatus status = ApartmentStatus.AVAILBLE;
+    private ApartmentStatus status = ApartmentStatus.AVAILABLE;
 
     @Column(columnDefinition = "TEXT")
     private String notes;
