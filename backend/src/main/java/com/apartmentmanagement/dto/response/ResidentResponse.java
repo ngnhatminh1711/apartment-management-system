@@ -2,13 +2,8 @@ package com.apartmentmanagement.dto.response;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
-import com.apartmentmanagement.entity.ApartmentResident;
-import com.apartmentmanagement.entity.Notification;
-import com.apartmentmanagement.entity.Role;
-import com.apartmentmanagement.entity.Vehicle;
 
 import lombok.*;
 
@@ -24,11 +19,11 @@ public class ResidentResponse  {
     private String idCard;
     private LocalDate dateOfBirth;
     private String avatarUrl;
-    private List<String> roles;
+    private Set<String> roles;
     private ApartmentResponse currentApartment;
     private Integer unreadNotificationCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    
+    private LocalDate moveInDate;
 }
 

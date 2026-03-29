@@ -1,6 +1,9 @@
 package com.apartmentmanagement.dto.response;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+
 
 import lombok.*;
 
@@ -14,4 +17,10 @@ public class ApartmentResponse {
     private String buildingName;
     private Boolean isPrimary;
     private LocalDate moveInDate;
+    private BigDecimal areaM2;
+    private Integer numBedrooms;
+    private Integer numBathrooms;
+    private String direction;
+    private BuildingRespone buildingRespone;
+    private List<HouseMembersResponse> householdMembers;
 }

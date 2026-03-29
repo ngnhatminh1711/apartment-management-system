@@ -9,5 +9,5 @@ import com.apartmentmanagement.entity.Notification;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Integer>{
-    int countNotificationByUserIdIsReadFalse(Long userId);
+    int countByUser_IdAndIsReadFalse(Long userId);
 }

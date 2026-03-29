@@ -60,6 +60,7 @@ public enum ErrorCode {
     LICENSE_PLATE_EXISTED(HttpStatus.CONFLICT, "Biển số xe đã được đăng ký"),
     VEHICLE_NOT_PENDING(HttpStatus.CONFLICT, "Phương tiện không ở trạng thái chờ phê duyệt"),
     VEHICLE_NOT_ACTIVE(HttpStatus.CONFLICT, "Phương tiện hiện không hoạt động"),
+    VEHICLE_NOT_YOURS(HttpStatus.FORBIDDEN, "Phương tiện không phải của bạn"),
 
     // --Service Request--
     SERVICE_TYPE_NOT_FOUND(HttpStatus.NOT_FOUND, "Không tìm thấy loại dịch vụ"),
