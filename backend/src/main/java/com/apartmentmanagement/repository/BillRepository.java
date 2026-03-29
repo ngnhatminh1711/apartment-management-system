@@ -13,7 +13,6 @@ import com.apartmentmanagement.enums.BillSummaryProjection;
 @Repository
 public interface BillRepository extends JpaRepository<Bill, Long> {
 
-    /** Tổng dư nợ */
     @Query("""
             SELECT COALESCE(SUM(b.totalAmount - b.paidAmount), 0)
             FROM Bill b
@@ -30,7 +29,6 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
             """)
     long countPendingByApartment(@Param("apartmentId") Long apartmentId);
 
-    /** Summary stats cho căn hộ */
     @Query("""
             SELECT
               COUNT(b) AS totalBills,
@@ -45,7 +43,6 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
             """)
     BillSummaryProjection findBillSummaryByApartment(@Param("apartmentId") Long apartmentId);
 
-    /** Summary stats cho tòa nhà */
     @Query("""
             SELECT
               COUNT(b),

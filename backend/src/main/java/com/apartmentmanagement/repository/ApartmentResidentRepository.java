@@ -16,6 +16,13 @@ import com.apartmentmanagement.entity.ApartmentResident;
 public interface ApartmentResidentRepository extends JpaRepository<ApartmentResident, Long> {
 
     @Query("""
+            SELECT COUNT(DISTINCT ar.user.id) FROM ApartmentResident ar
+            WHERE ar.apartment.building.id = :buildingId
+            AND ar.moveOutDate IS NULL
+            """)
+    long countActiveResidentsByBuilding(@Param("buildingId") Long buildingId);
+
+    @Query("""
             SELECT ar FROM ApartmentResident ar
             JOIN FETCH ar.user
             WHERE ar.apartment.id = :apartmentId
@@ -44,7 +51,6 @@ public interface ApartmentResidentRepository extends JpaRepository<ApartmentResi
             @Param("searchPattern") String searchPatternm,
             Pageable pageable);
 
-    /** Lấy cư dân theo userId trong toà nhà */
     @Query("""
             SELECT ar FROM ApartmentResident ar
             JOIN FETCH ar.user u
