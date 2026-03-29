@@ -13,7 +13,7 @@ import com.apartmentmanagement.entity.Vehicle;
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
     List<Vehicle> findByUser_Id(Long userId);
     
-    boolean existByLicensePlate(String licensePlate);
+    boolean existsByLicensePlate(String licensePlate);
 
     Optional<Vehicle> findById(Long id);
 }

@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.catalina.connector.Response;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,10 +18,8 @@ import com.apartmentmanagement.dto.response.ResidentResponse;
 import com.apartmentmanagement.dto.response.ServiceRegistrationResponse;
 import com.apartmentmanagement.dto.response.ServiceTypeResponse;
 import com.apartmentmanagement.dto.response.VehicleResponse;
-import com.apartmentmanagement.entity.Apartment;
 import com.apartmentmanagement.entity.ApartmentResident;
 import com.apartmentmanagement.entity.Building;
-import com.apartmentmanagement.entity.Notification;
 import com.apartmentmanagement.entity.ServiceRegistration;
 import com.apartmentmanagement.entity.ServiceType;
 import com.apartmentmanagement.entity.User;
@@ -173,7 +170,7 @@ public class ResidentService {
             =apartmentResidentRepository.findByUser_Id(userId)
             .orElseThrow(()->new AppException(ErrorCode.NO_ACTIVE_APARTMENT));
 
-        if(vehicleRepository.existByLicensePlate(request.getLicensePlate()))
+        if(vehicleRepository.existsByLicensePlate(request.getLicensePlate()))
             throw new AppException(ErrorCode.LICENSE_PLATE_EXISTED);
 
         Vehicle vehicle=Vehicle.builder()
@@ -245,14 +242,13 @@ public class ResidentService {
         
         return dataList;
     }
-
+    @Transactional(readOnly = true)
     public List<ServiceRegistrationResponse> getServiceRegistration(String status,Long userId){
         List<ServiceRegistration> serviceReg;
         if(status!=null)
             serviceReg=serviceRegistrationRepository.findByUser_IdAndStatus(userId,status);
         else
             serviceReg=serviceRegistrationRepository.findByUser_Id(userId);
-
 
         return serviceReg.stream().map(p ->{
             ServiceType serviceType=ServiceType.builder()
@@ -271,6 +267,7 @@ public class ResidentService {
                     .build();}
         ).collect(Collectors.toList());
     }
+
 
 
 }

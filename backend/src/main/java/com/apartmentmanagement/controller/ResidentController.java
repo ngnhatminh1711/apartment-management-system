@@ -9,6 +9,7 @@ import com.apartmentmanagement.dto.response.ApartmentResponse;
 import com.apartmentmanagement.dto.response.ApiResponse;
 import com.apartmentmanagement.dto.response.AuthResponse;
 import com.apartmentmanagement.dto.response.ResidentResponse;
+import com.apartmentmanagement.dto.response.ServiceRegistrationResponse;
 import com.apartmentmanagement.dto.response.ServiceTypeResponse;
 import com.apartmentmanagement.dto.response.VehicleResponse;
 import com.apartmentmanagement.security.SecurityUtils;
@@ -90,6 +91,13 @@ public class ResidentController {
     public ResponseEntity<ApiResponse<List<ServiceTypeResponse>>> getServirceTypes() {
         Long userId=SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(ApiResponse.success(residentService.getServiceTypes(userId)));
+    }
+    
+    @GetMapping("/service-registrations")
+    public ResponseEntity<ApiResponse<List<ServiceRegistrationResponse>>> getMyServices(@RequestParam(required = false) String status) {
+        Long userId =SecurityUtils.getCurrentUserId();
+
+        return ResponseEntity.ok(ApiResponse.success(residentService.getServiceRegistration(status, userId)));
     }
     
 }
