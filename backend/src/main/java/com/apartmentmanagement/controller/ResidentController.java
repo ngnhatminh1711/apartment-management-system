@@ -7,7 +7,7 @@ import com.apartmentmanagement.dto.request.UpdateInfoRequest;
 import com.apartmentmanagement.dto.request.auth.ChangePasswordRequest;
 import com.apartmentmanagement.dto.response.ApartmentResponse;
 import com.apartmentmanagement.dto.response.ApiResponse;
-import com.apartmentmanagement.dto.response.AuthResponse;
+
 import com.apartmentmanagement.dto.response.ResidentResponse;
 import com.apartmentmanagement.dto.response.ServiceRegistrationResponse;
 import com.apartmentmanagement.dto.response.ServiceTypeResponse;

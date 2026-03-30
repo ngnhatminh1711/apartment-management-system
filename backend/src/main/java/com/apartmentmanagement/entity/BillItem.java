@@ -6,6 +6,7 @@ import com.apartmentmanagement.enums.FeeType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -33,7 +34,7 @@ public class BillItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "fee_type", nullable = false, length = 30)
     private FeeType feeType;
 

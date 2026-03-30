@@ -40,9 +40,12 @@ public class SecurityConfig {
                 // Phân quyền endpoint
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/actuator/health").permitAll()
-
+                        .requestMatchers(
+                                "/api/v1/auth/**",
+                                "/actuator/health",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**")
+                        .permitAll()
                         // --Admin only--
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
 

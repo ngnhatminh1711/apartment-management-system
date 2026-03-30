@@ -1,4 +1,4 @@
-package com.apartmentmanagement.dto.response;
+package com.apartmentmanagement.dto.response.auth;
 
 import java.util.Set;
 

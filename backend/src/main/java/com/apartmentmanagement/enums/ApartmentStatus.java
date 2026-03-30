@@ -1,7 +1,7 @@
 package com.apartmentmanagement.enums;
 
 public enum ApartmentStatus {
-    AVAILBLE,
+    AVAILABLE,
     OCCUPIED,
     MAINTENANCE,
     RESERVED
