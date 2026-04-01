@@ -34,7 +34,7 @@ public class AdminBuildingController {
     /** GET /api/v1/admin/buildings */
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<BuildingResponse>>> getAll(
-            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "") String search,
             @RequestParam(required = false) Boolean isActive,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,

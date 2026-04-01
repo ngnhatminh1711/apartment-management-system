@@ -58,7 +58,7 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     @Builder.Default
-    private PaymentStatus paymentStatus = PaymentStatus.PENDING;
+    private PaymentStatus status = PaymentStatus.PENDING;
 
     @Column(name = "payment_note", columnDefinition = "TEXT")
     private String paymentNote;

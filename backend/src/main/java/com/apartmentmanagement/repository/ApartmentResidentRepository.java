@@ -16,6 +16,15 @@ import com.apartmentmanagement.entity.ApartmentResident;
 public interface ApartmentResidentRepository extends JpaRepository<ApartmentResident, Long> {
 
     @Query("""
+        SELECT ar FROM ApartmentResident ar
+        JOIN FETCH ar.user u
+        WHERE ar.apartment.id = :apartmentId
+        AND ar.moveOutDate IS NULL
+        AND ar.isPrimary = true
+        """)
+    Optional<ApartmentResident> findPrimaryResident(@Param("apartmentId") Long apartmentId);
+
+    @Query("""
             SELECT COUNT(DISTINCT ar.user.id) FROM ApartmentResident ar
             WHERE ar.apartment.building.id = :buildingId
             AND ar.moveOutDate IS NULL
