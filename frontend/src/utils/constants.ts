@@ -156,7 +156,7 @@ export const ADMIN_NAV = [
     { label: "Dashboard", path: "/admin", icon: "dashboard" },
     { label: "Tòa nhà", path: "/admin/buildings", icon: "domain" },
     { label: "Căn hộ", path: "/admin/apartments", icon: "apartment" },
-    { label: "Người dùng", path: "/admin/users", icon: "group" },
+    { label: "Người dùng", path: "/admin/users", icon: "groups" },
     { label: "Cấu hình phí", path: "/admin/fee-configs", icon: "payments" },
     { label: "Dịch vụ", path: "/admin/service-types", icon: "room_service" },
     { label: "Báo cáo", path: "/admin/reports/revenue", icon: "bar_chart" },
@@ -165,12 +165,12 @@ export const ADMIN_NAV = [
 export const MANAGER_NAV = [
     { label: "Dashboard", path: "/manager", icon: "dashboard" },
     { label: "Căn hộ", path: "/manager/apartments", icon: "domain" },
-    { label: "Cư dân", path: "/manager/residents", icon: "group" },
-    { label: "Hóa đơn", path: "/manager/bills", icon: "🧾" },
-    { label: "Yêu cầu", path: "/manager/service-requests", icon: "🔧" },
-    { label: "Đăng ký xe", path: "/manager/vehicles", icon: "🚗" },
-    { label: "Dịch vụ", path: "/manager/service-registrations", icon: "🛎️" },
-    { label: "Thông báo", path: "/manager/announcements", icon: "📢" },
+    { label: "Cư dân", path: "/manager/residents", icon: "groups" },
+    { label: "Hóa đơn", path: "/manager/bills", icon: "receipt_long" },
+    { label: "Yêu cầu", path: "/manager/service-requests", icon: "assignment" },
+    { label: "Đăng ký xe", path: "/manager/vehicles", icon: "directions_car" },
+    { label: "Dịch vụ", path: "/manager/service-registrations", icon: "app_registration" },
+    { label: "Thông báo", path: "/manager/announcements", icon: "campaign" },
 ];
 
 export const RESIDENT_NAV = [

@@ -18,6 +18,8 @@ import { BuildingListPage } from "../pages/admin/buildings/BuildingListPage";
 
 // Manager pages
 import { ManagerDashboardPage } from "../pages/manager/DashboardPage";
+import { ApartmentListPage as ManagerApartmentList } from "../pages/manager/apartments/ApartmentListPage";
+import { ResidentListPage } from "../pages/manager/residents/ResidentListPage";
 
 // Resident pages
 import { ResidentDashboardPage } from "../pages/resident/DashboardPage";
@@ -60,7 +62,11 @@ const router = createBrowserRouter([
                 </RoleRoute>
             </PrivateRoute>
         ),
-        children: [{ index: true, element: <ManagerDashboardPage /> }],
+        children: [
+            { index: true, element: <ManagerDashboardPage /> },
+            { path: "apartments", element: <ManagerApartmentList /> },
+            { path: "residents", element: <ResidentListPage /> },
+        ],
     },
 
     // ── Resident ─────────────────────────────────────────────────────────────
