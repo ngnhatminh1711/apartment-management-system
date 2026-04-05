@@ -12,8 +12,11 @@ import com.apartmentmanagement.dto.response.ResidentResponse;
 import com.apartmentmanagement.dto.response.ServiceRegistrationResponse;
 import com.apartmentmanagement.dto.response.ServiceTypeResponse;
 import com.apartmentmanagement.dto.response.VehicleResponse;
+import com.apartmentmanagement.dto.response.NotificationsPageResponse;
+import com.apartmentmanagement.dto.response.NotificationItemResponse;
 import com.apartmentmanagement.security.SecurityUtils;
 import com.apartmentmanagement.service.ResidentService;
+import com.apartmentmanagement.dto.request.ServiceRegistrationRequest;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -81,9 +85,9 @@ public class ResidentController {
     
     @DeleteMapping("/vehicles/{id}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> deleteVehicle(@PathVariable Long vehicleId) {
+    public ResponseEntity<ApiResponse<Void>> deleteVehicle(@PathVariable Long id) {
         Long userId=SecurityUtils.getCurrentUserId();
-        residentService.deleteVehicle(vehicleId,userId);
+        residentService.deleteVehicle(id,userId);
         return ResponseEntity.ok(ApiResponse.success("Huỷ đăng ký phương tiện đang chờ duyệt",null));
     }
      
@@ -98,6 +102,40 @@ public class ResidentController {
         Long userId =SecurityUtils.getCurrentUserId();
 
         return ResponseEntity.ok(ApiResponse.success(residentService.getServiceRegistration(status, userId)));
+    }
+    
+    @PostMapping("/service-registrations")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<Void>> createServiceRegistration(@Valid @RequestBody ServiceRegistrationRequest request) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        residentService.createServiceRegistration(userId, request);
+        return ResponseEntity.ok(ApiResponse.success("Đăng ký dịch vụ thành công", null));
+    }
+
+    @DeleteMapping("/service-registrations/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<Void>> deleteService(@PathVariable Long id){
+        Long userId =SecurityUtils.getCurrentUserId();
+        residentService.deleteSeServiceRegistration(userId, id);
+        return ResponseEntity.ok(ApiResponse.success("Huỷ đăng ký dịch vụ thành công", null));
+    }
+    
+    @GetMapping("/notifications")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<NotificationsPageResponse>> getNotifications(
+            @RequestParam(required = false) Boolean isRead,
+            @RequestParam(required = false) String type,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        return ResponseEntity.ok(ApiResponse.success(residentService.getNotifications(userId, isRead, type, page, size)));
+    }
+    
+    @PatchMapping("/notifications/{id}/read")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<NotificationItemResponse>> markNotificationRead(@PathVariable Long id) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        return ResponseEntity.ok(ApiResponse.success(residentService.markNotificationAsRead(userId, id)));
     }
     
 }

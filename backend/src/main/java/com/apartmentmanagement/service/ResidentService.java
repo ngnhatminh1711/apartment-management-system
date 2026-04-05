@@ -4,12 +4,20 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
+import com.apartmentmanagement.dto.response.NotificationItemResponse;
+import com.apartmentmanagement.dto.response.NotificationsPageResponse;
 
+import org.springframework.boot.security.oauth2.client.autoconfigure.OAuth2ClientProperties.Registration;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.apartmentmanagement.dto.request.CreateVehicleRequest;
+import com.apartmentmanagement.dto.request.ServiceRegistrationRequest;
 import com.apartmentmanagement.dto.request.UpdateInfoRequest;
 import com.apartmentmanagement.dto.response.ApartmentResponse;
 import com.apartmentmanagement.dto.response.BuildingRespone;
@@ -22,8 +30,11 @@ import com.apartmentmanagement.entity.ApartmentResident;
 import com.apartmentmanagement.entity.Building;
 import com.apartmentmanagement.entity.ServiceRegistration;
 import com.apartmentmanagement.entity.ServiceType;
+import com.apartmentmanagement.entity.Notification;
 import com.apartmentmanagement.entity.User;
 import com.apartmentmanagement.entity.Vehicle;
+import com.apartmentmanagement.enums.NotificationType;
+import com.apartmentmanagement.enums.RegistrationStatus;
 import com.apartmentmanagement.enums.VehicleStatus;
 import com.apartmentmanagement.enums.VehicleType;
 import com.apartmentmanagement.exception.AppException;
@@ -160,7 +171,7 @@ public class ResidentService {
                         .build()
                 ).collect(java.util.stream.Collectors.toList());
     }
-
+    
     @Transactional
     public void createVehicle(Long userId,CreateVehicleRequest request){
         User user=userRepository.findById(userId)
@@ -268,6 +279,119 @@ public class ResidentService {
         ).collect(Collectors.toList());
     }
 
+    @Transactional
+    public void createServiceRegistration(Long userId, ServiceRegistrationRequest request) {
+        User user= userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        ApartmentResident apartmentResident= apartmentResidentRepository.findByUser_Id(userId)
+            .orElseThrow(() -> new AppException(ErrorCode.APARTMENT_NOT_FOUND));
+        ServiceType serviceType=serviceTypeRepository.findById(request.getServiceTypeId())
+            .orElseThrow(() -> new AppException(ErrorCode.SERVICE_TYPE_NOT_FOUND));
+        if (!serviceType.getIsActive())
+            throw new AppException(ErrorCode.SERVICE_TYPE_INACTIVE);
+        List<ServiceRegistration> serviceRegistrations= serviceRegistrationRepository.findByUser_Id(userId);
+        //Nếu đã có đăng ký 
+        boolean serviceStatus=false;
+        for(var p: serviceRegistrations){
+            if((p.getServiceType().equals(serviceType)) &&
+             (p.getStatus().equals("ACTIVE")||p.getStatus().equals("PENDING")))
+                serviceStatus=true;
+                    break;
+        }
+        if(serviceStatus)
+            throw new AppException(ErrorCode.SERVICE_ALREADY_REGISTERED);
 
+        ServiceRegistration serviceReg= ServiceRegistration.builder()
+                .user(user)
+                .apartment(apartmentResident.getApartment())
+                .serviceType(serviceType)
+                .registeredAt(LocalDateTime.now())
+                .notes(request.getNotes())
+                .build();
+        serviceRegistrationRepository.save(serviceReg);
+        Notification notification;
+        if(apartmentResident.getApartment().getBuilding().getManager()!=null){
+            notification=Notification.builder()
+                .title("Đăng ký dịch vụ mới")
+                .content("Cư dân "+user.getFullName()+" Căn hộ " + apartmentResident.getApartment().getApartmentNumber()
+                 + " đăng ký dịch vụ " + serviceType.getName())
+                .type(NotificationType.ANNOUNCEMENT)
+                .user(apartmentResident.getApartment().getBuilding().getManager())
+                .referenceType("service_registrations")
+                .referenceId(serviceReg.getId())
+                .createdAt(LocalDateTime.now())
+                .build();
+            notificationRepository.save(notification);
+        }
+        
+    }
+    @Transactional
+    public void deleteSeServiceRegistration(Long userId,Long id){
+        ServiceRegistration serviceReg =serviceRegistrationRepository.findByIdAndUser_Id(id, userId)
+            .orElseThrow(()-> new AppException(ErrorCode.REGISTRATION_NOT_FOUND));
+        if (!serviceReg.getStatus().equals(RegistrationStatus.ACTIVE)) 
+            throw new AppException(ErrorCode.REGISTRATION_NOT_ACTIVE);
+        serviceReg.setStatus(RegistrationStatus.CANCELLED);
+        Notification notification;
+        if(serviceReg.getApartment().getBuilding().getManager()!=null){
+            notification=Notification.builder()
+                .title("Yêu cầu hủy dịch vụ ")
+                .content("Cư dân  " +serviceReg.getUser().getFullName()
+                +" Căn hộ " + serviceReg.getApartment().getApartmentNumber()
+                 + " hủy dịch vụ " + serviceReg.getServiceType().getName())
+                .type(NotificationType.ANNOUNCEMENT)
+                .user(serviceReg.getApartment().getBuilding().getManager())
+                .referenceType("service_registrations")
+                .referenceId(serviceReg.getId())
+                .createdAt(LocalDateTime.now())
+                .build();
+            notificationRepository.save(notification);
+        }
+    }
+    @Transactional(readOnly = true)
+    public NotificationsPageResponse getNotifications(Long userId,boolean isRead ,String type,int page,int size ){ 
+        NotificationType notificationType;
+        try {
+            notificationType= NotificationType.valueOf(type.toUpperCase());
+        } catch (Exception e) {
+            throw new AppException(ErrorCode.VALIDATION_ERROR);
+        }
+        Pageable pageable = PageRequest.of(page,size,Sort.by("created_at").descending());
+        Page<Notification> pageNotifications=notificationRepository.findByUserIdAndFilters(userId,isRead,notificationType,pageable);
+        long unreadCount=notificationRepository.countByUser_IdAndIsReadFalse(userId);
+        List<NotificationItemResponse> content=pageNotifications.getContent().stream()
+                .map(p -> NotificationItemResponse.builder()
+                    .id(p.getId())
+                    .title(p.getTitle())
+                    .content(p.getContent())
+                    .type(p.getType().name())
+                    .referenceType(p.getReferenceType())
+                    .referenceId(p.getReferenceId())
+                    .isRead(p.getIsRead())
+                    .createdAt(p.getCreatedAt())
+                    .build()
+                ).toList();
+        
+        return NotificationsPageResponse.builder()
+                .unreadCount(unreadCount)
+                .content(content)
+                .totalElements(pageNotifications.getTotalElements())
+                .totalPages(pageNotifications.getTotalPages())
+                .build();
+    }
+
+    @Transactional
+    public NotificationItemResponse markNotificationAsRead(Long userId, Long notificationId) {
+        Notification notification = notificationRepository.findByIdAndUser_Id(notificationId, userId)
+                .orElseThrow(() -> new AppException(ErrorCode.ACCESS_DENIED));
+        notification.markAsRead();
+        notificationRepository.save(notification);
+        return NotificationItemResponse.builder()
+                .id(notification.getId())
+                .isRead(notification.getIsRead())
+                .readAt(notification.getReadAt())
+                .createdAt(notification.getCreatedAt())
+                .build();
+    }
+    
 
 }
