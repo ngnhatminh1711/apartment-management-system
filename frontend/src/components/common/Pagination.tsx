@@ -2,6 +2,7 @@ interface Props {
     currentPage: number;
     totalPages: number;
     totalElements: number;
+    name: string;
     pageSize: number;
     onPageChange: (page: number) => void;
 }
@@ -10,6 +11,7 @@ export function Pagination({
     currentPage,
     totalPages,
     totalElements,
+    name,
     pageSize,
     onPageChange,
 }: Props) {
@@ -25,7 +27,7 @@ export function Pagination({
                 <strong>
                     {start}–{end}
                 </strong>{" "}
-                / {totalElements} mục
+                / {totalElements} {name}
             </p>
             <div className="flex gap-1">
                 <button

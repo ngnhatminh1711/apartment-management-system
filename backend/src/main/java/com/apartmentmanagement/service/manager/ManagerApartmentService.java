@@ -10,9 +10,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apartmentmanagement.dto.request.manager.AssignResidentRequest;
+import com.apartmentmanagement.dto.request.manager.MoveOutRequest;
 import com.apartmentmanagement.dto.response.PageResponse;
+import com.apartmentmanagement.dto.response.manager.AssignResidentResponse;
 import com.apartmentmanagement.dto.response.manager.ManagerApartmentDetailResponse;
 import com.apartmentmanagement.dto.response.manager.ManagerApartmentResponse;
+import com.apartmentmanagement.dto.response.manager.MoveOutResponse;
 import com.apartmentmanagement.dto.response.manager.ResidentDetailResponse;
 import com.apartmentmanagement.dto.response.manager.ResidentResponse;
 import com.apartmentmanagement.entity.Apartment;
@@ -22,6 +26,7 @@ import com.apartmentmanagement.enums.ApartmentStatus;
 import com.apartmentmanagement.enums.BillSummaryProjection;
 import com.apartmentmanagement.enums.RegistrationStatus;
 import com.apartmentmanagement.enums.RequestStatus;
+import com.apartmentmanagement.enums.RoleName;
 import com.apartmentmanagement.enums.VehicleStatus;
 import com.apartmentmanagement.exception.AppException;
 import com.apartmentmanagement.exception.ErrorCode;
@@ -29,7 +34,10 @@ import com.apartmentmanagement.repository.ApartmentRepository;
 import com.apartmentmanagement.repository.ApartmentResidentRepository;
 import com.apartmentmanagement.repository.BillRepository;
 import com.apartmentmanagement.repository.ServiceRequestRepository;
+import com.apartmentmanagement.repository.UserRepository;
 import com.apartmentmanagement.repository.VehicleRepository;
+import com.apartmentmanagement.security.SecurityUtils;
+import com.apartmentmanagement.service.NotificationService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -40,9 +48,11 @@ public class ManagerApartmentService {
     private final ManagerBuildingHelper buildingHelper;
     private final ApartmentRepository apartmentRepo;
     private final ApartmentResidentRepository residentRepo;
+    private final UserRepository userRepo;
     private final VehicleRepository vehicleRepo;
     private final BillRepository billRepo;
     private final ServiceRequestRepository requestRepo;
+    private final NotificationService notificationService;
 
     // --LIST APARTMENTS--
     @Transactional(readOnly = true)
@@ -55,10 +65,8 @@ public class ManagerApartmentService {
                 ? Sort.Direction.ASC
                 : Sort.Direction.DESC;
 
-        String searchPattern = handleSearch(search);
-
         var pageData = apartmentRepo.findByManagerBuilding(
-                buildingId, status, floor, searchPattern,
+                buildingId, status, floor, search,
                 PageRequest.of(page, size, Sort.by(dir, parts[0])));
 
         return PageResponse.of(pageData, apt -> {
@@ -83,6 +91,7 @@ public class ManagerApartmentService {
                     .areaM2(apt.getAreaM2())
                     .numBedrooms(apt.getNumBedrooms())
                     .numBathrooms(apt.getNumBathrooms())
+                    .direction(apt.getDirection())
                     .status(apt.getStatus())
                     .currentResidents(resRefs)
                     .pendingBillCount((int) pending)
@@ -165,6 +174,123 @@ public class ManagerApartmentService {
                 .build();
     }
 
+    @Transactional
+    public AssignResidentResponse assignResident(Long aptId, AssignResidentRequest req) {
+        Long buildingId = buildingHelper.getMyBuildingId();
+
+        Apartment apt = apartmentRepo.findByIdAndBuilding(aptId, buildingId)
+                .orElseThrow(() -> new AppException(ErrorCode.APARTMENT_NOT_FOUND));
+
+        // Căn hộ không được là MAINTENANCE hoặc RESERVED
+        if (apt.getStatus() == ApartmentStatus.MAINTENANCE
+                || apt.getStatus() == ApartmentStatus.RESERVED) {
+            throw new AppException(ErrorCode.APARTMENT_NOT_AVAILABLE);
+        }
+
+        User resident = userRepo.findById(req.getUserId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        // Phải có ROLE_RESIDENT
+        boolean isResident = resident.getRoles().stream()
+                .anyMatch(r -> r.getName() == RoleName.ROLE_RESIDENT);
+        if (!isResident) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        // Không được đang ở căn hộ khác
+        if (residentRepo.existsActiveByUserId(req.getUserId())) {
+            throw new AppException(ErrorCode.USER_ALREADY_HAS_APARTMENT);
+        }
+
+        // Nếu isPrimary = true → reset isPrimary của tất cả cư dân đang ở
+        if (Boolean.TRUE.equals(req.getIsPrimary())) {
+            residentRepo.findCurrentResidents(aptId)
+                    .forEach(ar -> {
+                        ar.setIsPrimary(false);
+                        residentRepo.save(ar);
+                    });
+        }
+
+        ApartmentResident record = ApartmentResident.builder()
+                .apartment(apt)
+                .user(resident)
+                .isPrimary(req.getIsPrimary())
+                .moveInDate(req.getMoveInDate())
+                .notes(req.getNotes())
+                .createdBy(SecurityUtils.getCurrentUser())
+                .build();
+
+        residentRepo.save(record);
+
+        // Nếu căn hộ đang AVAILABLE → chuyển OCCUPIED
+        if (apt.getStatus() == ApartmentStatus.AVAILABLE) {
+            apt.setStatus(ApartmentStatus.OCCUPIED);
+            apartmentRepo.save(apt);
+        }
+
+        // Gửi thông báo cho cư dân
+        notificationService.createNotification(
+                resident,
+                "Bạn đã được gán vào căn hộ " + apt.getApartmentNumber(),
+                "Chào mừng bạn đến " + apt.getBuilding().getName() + " – căn hộ " + apt.getApartmentNumber(),
+                com.apartmentmanagement.enums.NotificationType.SYSTEM,
+                "apartments", apt.getId());
+
+        return AssignResidentResponse.builder()
+                .id(record.getId())
+                .apartmentId(apt.getId())
+                .apartmentNumber(apt.getApartmentNumber())
+                .userId(resident.getId())
+                .fullName(resident.getFullName())
+                .isPrimary(req.getIsPrimary())
+                .moveInDate(req.getMoveInDate().toString())
+                .build();
+    }
+
+    @Transactional
+    public MoveOutResponse moveOut(Long aptId, Long residentId, MoveOutRequest req) {
+        Long buildingId = buildingHelper.getMyBuildingId();
+
+        Apartment apt = apartmentRepo.findByIdAndBuilding(aptId, buildingId)
+                .orElseThrow(() -> new AppException(ErrorCode.APARTMENT_NOT_FOUND));
+
+        ApartmentResident record = residentRepo.findActiveByApartmentAndUser(aptId, residentId)
+                .orElseThrow(() -> new AppException(ErrorCode.RESIDENT_NOT_IN_APARTMENT));
+
+        // moveOutDate không được trước moveInDate
+        if (req.getMoveOutDate().isBefore(record.getMoveInDate())) {
+            throw new AppException(ErrorCode.MOVE_OUT_DATE_BEFORE_MOVE_IN);
+        }
+
+        // Kiểm tra còn hóa đơn chưa thanh toán
+        long unpaid = billRepo.countPendingByApartment(aptId);
+        if (unpaid > 0) {
+            throw new AppException(ErrorCode.HAS_UNPAID_BILLS);
+        }
+
+        record.setMoveOutDate(req.getMoveOutDate());
+        if (req.getNotes() != null)
+            record.setNotes(req.getNotes());
+        residentRepo.save(record);
+
+        // Vô hiệu hóa xe ACTIVE của cư dân này trong căn hộ
+        vehicleRepo.deactivateByUserAndApartment(residentId, aptId);
+
+        // Nếu không còn ai ở → AVAILABLE
+        List<ApartmentResident> remaining = residentRepo.findCurrentResidents(aptId);
+        if (remaining.isEmpty()) {
+            apt.setStatus(ApartmentStatus.AVAILABLE);
+            apartmentRepo.save(apt);
+        }
+
+        return MoveOutResponse.builder()
+                .residentId(residentId)
+                .fullName(record.getUser().getFullName())
+                .moveOutDate(req.getMoveOutDate().toString())
+                .apartmentStatus(apt.getStatus())
+                .build();
+    }
+
     // --LIST RESIDENTS--
     @Transactional(readOnly = true)
     public PageResponse<ResidentResponse> getResidents(Long apartmentId, Integer floor, String search, int page,
@@ -176,10 +302,8 @@ public class ManagerApartmentService {
                 ? Sort.Direction.ASC
                 : Sort.Direction.DESC;
 
-        String searchPattern = handleSearch(search);
-
         var pageData = residentRepo.findActiveResidentsByBuilding(
-                buildingId, apartmentId, floor, searchPattern,
+                buildingId, apartmentId, floor, search,
                 PageRequest.of(page, size, Sort.by(dir, parts[0])));
 
         return PageResponse.of(pageData, ar -> {
@@ -290,13 +414,5 @@ public class ManagerApartmentService {
                         .build())
                 .recentRequests(requestRefs)
                 .build();
-    }
-
-    private String handleSearch(String keyword) {
-        String searchPattern = null;
-        if (keyword != null && !keyword.isBlank()) {
-            searchPattern = "%" + keyword.trim().toLowerCase() + "%";
-        }
-        return searchPattern;
     }
 }
