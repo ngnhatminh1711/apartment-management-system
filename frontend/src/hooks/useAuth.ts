@@ -1,2 +1,1 @@
-export default function useAuth() {
-}
+export { useAuth } from "../context/AuthContext";

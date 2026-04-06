@@ -1,5 +1,6 @@
 package com.apartmentmanagement.repository;
 
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.apartmentmanagement.entity.Notification;
 import com.apartmentmanagement.enums.NotificationType;
+
 
 
 

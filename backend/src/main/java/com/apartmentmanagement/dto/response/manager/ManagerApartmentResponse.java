@@ -25,6 +25,7 @@ public class ManagerApartmentResponse {
     private BigDecimal areaM2;
     private Integer numBedrooms;
     private Integer numBathrooms;
+    private String direction;
     private ApartmentStatus status;
     private List<ResidentRef> currentResidents;
     private Integer pendingBillCount;

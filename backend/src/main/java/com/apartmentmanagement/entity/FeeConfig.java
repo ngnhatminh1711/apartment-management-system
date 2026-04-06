@@ -63,7 +63,7 @@ public class FeeConfig {
      * NOT NULL = đã bị thay thế bởi config mới.
      */
     @Column(name = "effective_to")
-    private String effectiveTo;
+    private LocalDate effectiveTo;
 
     @Column(length = 200)
     private String description;

@@ -59,13 +59,13 @@ public interface ApartmentRepository extends JpaRepository<Apartment, Long> {
             WHERE b.id = :buildingId
             AND (:status IS NULL OR a.status = :status)
             AND (:floor IS NULL OR a.floor = :floor)
-            AND (:searchPattern IS NULL OR LOWER(a.apartmentNumber) LIKE :searchPattern)
+            AND (:search IS NULL OR LOWER(a.apartmentNumber) LIKE LOWER(CONCAT('%',:search,'%')))
             """)
     Page<Apartment> findByManagerBuilding(
             @Param("buildingId") Long buildingId,
             @Param("status") ApartmentStatus status,
             @Param("floor") Integer floor,
-            @Param("searchPattern") String searchPattern,
+            @Param("search") String search,
             Pageable pageable);
 
     @Query("SELECT a FROM Apartment a JOIN FETCH a.building WHERE a.id = :id AND a.building.id = :buildingId")

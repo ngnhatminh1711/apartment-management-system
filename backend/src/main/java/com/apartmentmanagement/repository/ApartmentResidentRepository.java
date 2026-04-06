@@ -30,6 +30,22 @@ public interface ApartmentResidentRepository extends JpaRepository<ApartmentResi
 
 
     @Query("""
+            SELECT ar FROM ApartmentResident ar
+            JOIN FETCH ar.user u
+            WHERE ar.apartment.id = :apartmentId
+            AND ar.moveOutDate IS NULL
+            AND ar.isPrimary = true
+            """)
+    Optional<ApartmentResident> findPrimaryResident(@Param("apartmentId") Long apartmentId);
+
+    @Query("""
+            SELECT COUNT (ar) > 0 FROM ApartmentResident ar
+            WHERE ar.user.id = :userId
+            AND ar.moveOutDate IS NULL
+            """)
+    boolean existsActiveByUserId(@Param("userId") Long userId);
+
+    @Query("""
             SELECT COUNT(DISTINCT ar.user.id) FROM ApartmentResident ar
             WHERE ar.apartment.building.id = :buildingId
             AND ar.moveOutDate IS NULL
@@ -44,25 +60,37 @@ public interface ApartmentResidentRepository extends JpaRepository<ApartmentResi
             """)
     List<ApartmentResident> findCurrentResidents(@Param("apartmentId") Long apartmentId);
 
+    /** Tìm record cư trú theo apartmentId + userId + đang ở (move_out IS NULL) */
     @Query("""
-                    SELECT ar FROM ApartmentResident ar
-                    JOIN FETCH ar.user u
-                    JOIN FETCH ar.apartment a
-                    JOIN a.building b
-                    WHERE b.id = :buildingId
-                    AND ar.moveOutDate IS NULL
-                    AND (:apartmentId IS NULL OR a.id = :apartmentId)
-                    AND (:floor IS NULL OR a.floor = :floor)
-                    AND (:searchPattern IS NULL OR LOWER(u.fullName) LIKE :searchPattern OR
-                                                    LOWER(u.email) LIKE :searchPattern OR
-                                                    u.phone LIKE :searchPattern OR
-                                                    u.idCard LIKE :searchPattern)
+            SELECT ar FROM ApartmentResident ar
+            WHERE ar.apartment.id = :apartmentId
+            AND ar.user.id = :userId
+            AND ar.moveOutDate IS NULL
+            """)
+    Optional<ApartmentResident> findActiveByApartmentAndUser(
+            @Param("apartmentId") Long apartmentId,
+            @Param("userId") Long userId);
+
+    @Query("""
+            SELECT ar FROM ApartmentResident ar
+            JOIN FETCH ar.user u
+            JOIN FETCH ar.apartment a
+            JOIN a.building b
+            WHERE b.id = :buildingId
+            AND ar.moveOutDate IS NULL
+            AND (:apartmentId IS NULL OR a.id = :apartmentId)
+            AND (:floor IS NULL OR a.floor = :floor)
+            AND (:search IS NULL OR
+                 LOWER(u.fullName) LIKE LOWER(CONCAT('%',:search,'%')) OR
+                 LOWER(u.email)    LIKE LOWER(CONCAT('%',:search,'%')) OR
+                 u.phone           LIKE CONCAT('%',:search,'%')        OR
+                 u.idCard          LIKE CONCAT('%',:search,'%'))
             """)
     Page<ApartmentResident> findActiveResidentsByBuilding(
             @Param("buildingId") Long buildingId,
             @Param("apartmentId") Long apartmentId,
             @Param("floor") Integer floor,
-            @Param("searchPattern") String searchPatternm,
+            @Param("search") String search,
             Pageable pageable);
 
     @Query("""

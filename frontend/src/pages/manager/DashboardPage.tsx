@@ -1,5 +1,3 @@
-export default function DashboardPage() {
-  return (
-    <div>DashboardPage</div>
-  )
+export function ManagerDashboardPage() {
+    return <div>DashboardPage</div>;
 }
