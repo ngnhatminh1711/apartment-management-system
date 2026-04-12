@@ -1,4 +1,4 @@
-package com.apartmentmanagement.dto.response;
+package com.apartmentmanagement.dto.response.resident;
 
 import java.math.BigDecimal;
 

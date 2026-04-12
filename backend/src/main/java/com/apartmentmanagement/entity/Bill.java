@@ -123,4 +123,7 @@ public class Bill {
         .map(BillItem::getAmount)
         .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+    public boolean isOverdue() {
+        return this.status != BillStatus.PAID && this.dueDate.isBefore(LocalDate.now());
+    }
 }

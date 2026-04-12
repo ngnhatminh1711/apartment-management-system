@@ -1,4 +1,4 @@
-package com.apartmentmanagement.dto.response;
+package com.apartmentmanagement.dto.response.resident;
 
 import java.util.List;
 import lombok.Builder;
@@ -11,7 +11,5 @@ import lombok.Setter;
 
 public class NotificationsPageResponse {
     private Long unreadCount;
-    private List<NotificationItemResponse> content;
-    private long totalElements;
-    private int totalPages;
+    private String message;
 }

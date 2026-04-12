@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 
+import com.apartmentmanagement.dto.response.resident.BillPageResponse.Summary;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,8 +21,9 @@ public class PageResponse<T> {
     private List<T> content;
     private long totalElements;
     private int totalPages;
-    private int currentPage;
-
+    private int currentPage; 
+    private long unreadCount; // Dùng cho notification
+    private Summary summary; // Dùng cho bill
     public static <E, T> PageResponse<T> of(Page<E> page, Function<E, T> mapper) {
         return PageResponse.<T>builder()
                 .content(page.getContent().stream().map(mapper).collect(Collectors.toList()))

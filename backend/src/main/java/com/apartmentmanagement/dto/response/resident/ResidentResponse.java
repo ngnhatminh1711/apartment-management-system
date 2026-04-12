@@ -1,9 +1,8 @@
-package com.apartmentmanagement.dto.response;
+package com.apartmentmanagement.dto.response.resident;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
-
 
 import lombok.*;
 

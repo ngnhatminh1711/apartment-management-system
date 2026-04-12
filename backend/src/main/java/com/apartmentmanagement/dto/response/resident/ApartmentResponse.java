@@ -1,9 +1,8 @@
-package com.apartmentmanagement.dto.response;
+package com.apartmentmanagement.dto.response.resident;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-
 
 import lombok.*;
 

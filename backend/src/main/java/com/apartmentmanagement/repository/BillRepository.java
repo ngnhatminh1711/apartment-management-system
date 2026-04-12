@@ -2,6 +2,8 @@ package com.apartmentmanagement.repository;
 
 import java.math.BigDecimal;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -57,4 +59,33 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
             AND b.status != 'CANCELLED'
             """)
     Object[] findBillSummaryByBuilding(@Param("buildingId") Long buildingId);
+
+
+    @Query("""
+                SELECT b FROM Bill b
+                WHERE b.apartment.id = :apartmentId
+                AND (:status IS NULL OR b.status = :status)
+                AND (:year IS NULL OR YEAR(b.billingMonth) = :year)
+                    """)
+    Page<Bill> findByApartmentId(@Param("apartmentId") Long apartmentId,
+        @Param("status") String status,
+        @Param("year") Integer year,
+        Pageable pageable);
+
+
+        @Query("""
+            SELECT COALESCE(SUM(b.totalAmount - b.paidAmount), 0) 
+            FROM Bill b
+            WHERE b.apartment.id = :apartmentId
+            AND b.status not In ('PAID','CANCELLED')
+            """)
+        BigDecimal sumTotalOutstanding(@Param("apartmentId") Long apartmentId);
+        
+        @Query("""
+            SELECT COUNT(b) 
+            FROM Bill b
+            WHERE b.apartment.id = :apartmentId
+            AND b.status = 'OVERDUE'
+            """)
+        Long countOverdueBills(@Param("apartmentId") Long apartmentId);
 }

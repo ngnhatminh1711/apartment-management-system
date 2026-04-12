@@ -1,5 +1,10 @@
 package com.apartmentmanagement.repository;
 
+import java.util.Optional;
+
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,4 +23,14 @@ public interface ServiceRequestRepository extends JpaRepository<ServiceRequest, 
             AND sr.status = :status
             """)
     long countByBuildingAndStatus(@Param("buildingId") Long buildingId, @Param("status") RequestStatus status);
+
+    @Query("""
+            SELECT sr FROM ServiceRequest sr
+            WHERE sr.apartment.id = :apartmentId
+            AND (:status IS NULL OR sr.status = :status)
+            AND (:requestType IS NULL OR sr.RequestType = :requestType)
+            """)
+    Page<ServiceRequest> findByApartmentIdAndFilters(@Param("apartmentId") Long apartmentId, @Param("status") String status, @Param("requestType") String requestType, Pageable pageable);
+
+    Optional<ServiceRequest> findById(@Param("id") Long serviceRequestId);
 }

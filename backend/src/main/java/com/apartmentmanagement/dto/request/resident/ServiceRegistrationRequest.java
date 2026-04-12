@@ -1,4 +1,4 @@
-package com.apartmentmanagement.dto.request;
+package com.apartmentmanagement.dto.request.resident;
 
 import lombok.Data;
 
