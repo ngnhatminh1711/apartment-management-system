@@ -18,4 +18,16 @@ public interface ServiceRequestRepository extends JpaRepository<ServiceRequest, 
             AND sr.status = :status
             """)
     long countByBuildingAndStatus(@Param("buildingId") Long buildingId, @Param("status") RequestStatus status);
+
+    /** Đếm yêu cầu được giải quyết trong tuần này */
+    @Query("""
+            SELECT COUNT(sr) FROM ServiceRequest sr
+            JOIN sr.apartment a
+            WHERE a.building.id = :buildingId
+            AND sr.status = 'RESOLVED'
+            AND sr.resolvedAt >= :weekStart
+            """)
+    long countResolvedThisWeek(
+            @Param("buildingId") Long buildingId,
+            @Param("weekStart") java.time.LocalDateTime weekStart);
 }
