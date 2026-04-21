@@ -15,6 +15,29 @@ import com.apartmentmanagement.enums.BillSummaryProjection;
 @Repository
 public interface BillRepository extends JpaRepository<Bill, Long> {
 
+    /** Tổng tiền đã lập hóa đơn trong tháng */
+    @Query("""
+            SELECT COALESCE(SUM(b.totalAmount), 0)
+            FROM Bill b
+            WHERE b.apartment.building.id = :buildingId
+            AND YEAR(b.billingMonth) = :year AND MONTH(b.billingMonth) = :month
+            AND b.status != 'CANCELLED'
+            """)
+    BigDecimal sumBilledByBuildingAndMonth(
+            @Param("buildingId") Long buildingId,
+            @Param("year") int year, @Param("month") int month);
+
+    /** Tổng tiền đã thu trong tháng */
+    @Query("""
+            SELECT COALESCE(SUM(b.paidAmount), 0)
+            FROM Bill b
+            WHERE b.apartment.building.id = :buildingId
+            AND YEAR(b.billingMonth) = :year AND MONTH(b.billingMonth) = :month
+            """)
+    BigDecimal sumCollectedByBuildingAndMonth(
+            @Param("buildingId") Long buildingId,
+            @Param("year") int year, @Param("month") int month);
+
     @Query("""
             SELECT COALESCE(SUM(b.totalAmount - b.paidAmount), 0)
             FROM Bill b

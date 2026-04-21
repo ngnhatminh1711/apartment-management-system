@@ -24,6 +24,7 @@ public interface ServiceRequestRepository extends JpaRepository<ServiceRequest, 
             """)
     long countByBuildingAndStatus(@Param("buildingId") Long buildingId, @Param("status") RequestStatus status);
 
+
     @Query("""
             SELECT sr FROM ServiceRequest sr
             WHERE sr.apartment.id = :apartmentId
@@ -33,4 +34,17 @@ public interface ServiceRequestRepository extends JpaRepository<ServiceRequest, 
     Page<ServiceRequest> findByApartmentIdAndFilters(@Param("apartmentId") Long apartmentId, @Param("status") String status, @Param("requestType") String requestType, Pageable pageable);
 
     Optional<ServiceRequest> findById(@Param("id") Long serviceRequestId);
+
+    /** Đếm yêu cầu được giải quyết trong tuần này */
+    @Query("""
+            SELECT COUNT(sr) FROM ServiceRequest sr
+            JOIN sr.apartment a
+            WHERE a.building.id = :buildingId
+            AND sr.status = 'RESOLVED'
+            AND sr.resolvedAt >= :weekStart
+            """)
+    long countResolvedThisWeek(
+            @Param("buildingId") Long buildingId,
+            @Param("weekStart") java.time.LocalDateTime weekStart);
+
 }
