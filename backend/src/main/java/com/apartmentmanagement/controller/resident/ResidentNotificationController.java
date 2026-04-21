@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.apartmentmanagement.dto.response.ApiResponse;
 import com.apartmentmanagement.dto.response.PageResponse;
+import com.apartmentmanagement.dto.response.resident.AnnouncementResponse;
 import com.apartmentmanagement.dto.response.resident.NotificationItemResponse;
 import com.apartmentmanagement.dto.response.resident.NotificationsPageResponse;
 import com.apartmentmanagement.security.SecurityUtils;
@@ -27,7 +28,7 @@ public class ResidentNotificationController {
     // -- Notification 4 --
     @GetMapping("/notifications")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<PageResponse>> getNotifications(
+    public ResponseEntity<ApiResponse<PageResponse<NotificationItemResponse>>> getNotifications(
             @RequestParam(required = false) Boolean isRead,
             @RequestParam(required = false) String type,
             @RequestParam(defaultValue = "0") int page,
@@ -51,7 +52,7 @@ public class ResidentNotificationController {
 
     @GetMapping("/announcements")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<PageResponse>> getAnnouncements(
+    public ResponseEntity<ApiResponse<PageResponse<AnnouncementResponse>>> getAnnouncements(
             @RequestParam(required = false) String priority,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {

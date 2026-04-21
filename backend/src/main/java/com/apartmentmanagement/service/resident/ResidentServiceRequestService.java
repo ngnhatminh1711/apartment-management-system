@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apartmentmanagement.dto.request.resident.CreateServiceRequest;
 import com.apartmentmanagement.dto.request.resident.ServiceRequestRating;
 import com.apartmentmanagement.dto.response.PageResponse;
 import com.apartmentmanagement.entity.ApartmentResident;
@@ -70,11 +71,23 @@ public class ResidentServiceRequestService {
         if (!serviceRequest.getApartment().getId().equals(apartmentResident.getApartment().getId())) {
             throw new AppException(ErrorCode.SERVICE_REQUEST_NOT_YOURS);
         }
-        return serviceRequest;
+
+        return ServiceRequest.builder()
+                .id(serviceRequest.getId())
+                .RequestType(serviceRequest.getRequestType())
+                .title(serviceRequest.getTitle())
+                .description(serviceRequest.getDescription())
+                .attachmentUrls(serviceRequest.getAttachmentUrls())
+                .priority(serviceRequest.getPriority())
+                .status(serviceRequest.getStatus())
+                .rating(serviceRequest.getRating())
+                .createdAt(serviceRequest.getCreatedAt())
+                .resolvedAt(serviceRequest.getResolvedAt())
+                .build();
     }
 
     @Transactional
-    public ServiceRequest createServiceRequest(Long userId, ServiceRequest serviceRequest) {
+    public void createServiceRequest(Long userId, CreateServiceRequest serviceRequest) {
         ApartmentResident apartmentResident = apartmentResidentRepository.findByUser_Id(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.NO_ACTIVE_APARTMENT));
         ServiceRequest newRequest = ServiceRequest.builder()
@@ -84,6 +97,7 @@ public class ResidentServiceRequestService {
                         .description(serviceRequest.getDescription())
                         .attachmentUrls(serviceRequest.getAttachmentUrls())
                         .priority(serviceRequest.getPriority())
+                        .user(apartmentResident.getUser())
                         //status đã được tao sẵn mặc định trong entity là PENDING 
                         .build();
         serviceRequestRepository.save(newRequest);
@@ -98,7 +112,6 @@ public class ResidentServiceRequestService {
                 .createdAt(LocalDateTime.now())
                 .build();
         notificationRepository.save(notification);
-        return newRequest;
     }
     @Transactional
     public void rateServiceRequest(Long userId, Long requestId, ServiceRequestRating serviceRequestRating) {
@@ -112,7 +125,7 @@ public class ResidentServiceRequestService {
         if (serviceRequestRating.getRating() < 1 || serviceRequestRating.getRating() > 5) {
             throw new AppException(ErrorCode.VALIDATION_ERROR);
         }
-        if (!serviceRequest.getStatus().equals("RESOLVED")) {
+        if (!serviceRequest.getStatus().name().equals("RESOLVED")) {
             throw new AppException(ErrorCode.SERVICE_REQUEST_NOT_RESOLVED);
         }
         if (serviceRequest.getRating() != null) {

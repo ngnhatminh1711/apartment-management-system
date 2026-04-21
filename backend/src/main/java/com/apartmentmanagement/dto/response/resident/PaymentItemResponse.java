@@ -3,7 +3,7 @@ package com.apartmentmanagement.dto.response.resident;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.apartmentmanagement.enums.PaymentStatus;
+
 
 import lombok.Builder;
 import lombok.Data;

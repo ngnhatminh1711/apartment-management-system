@@ -1,7 +1,7 @@
 package com.apartmentmanagement.dto.response.resident;
 
 import java.math.BigDecimal;
-import java.util.List;
+
 
 import lombok.Builder;
 import lombok.Data;

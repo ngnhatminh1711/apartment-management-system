@@ -3,7 +3,6 @@ package com.apartmentmanagement.dto.response.resident;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.apartmentmanagement.enums.AnnouncementPriority;
 
 import lombok.Builder;
 import lombok.Data;

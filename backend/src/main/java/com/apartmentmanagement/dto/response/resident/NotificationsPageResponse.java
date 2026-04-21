@@ -1,6 +1,6 @@
 package com.apartmentmanagement.dto.response.resident;
 
-import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,9 +1,8 @@
 package com.apartmentmanagement.service.resident;
 
 
+import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.apartmentmanagement.dto.response.PageResponse;
 import com.apartmentmanagement.dto.response.resident.BillItemResponse;
 import com.apartmentmanagement.dto.response.resident.BillPageResponse;
+import com.apartmentmanagement.dto.response.resident.FeeItemResponse;
+import com.apartmentmanagement.dto.response.resident.PaymentItemResponse;
 import com.apartmentmanagement.entity.ApartmentResident;
 import com.apartmentmanagement.entity.Bill;
 import com.apartmentmanagement.enums.BillStatus;
@@ -23,7 +24,9 @@ import com.apartmentmanagement.exception.ErrorCode;
 import com.apartmentmanagement.repository.ApartmentResidentRepository;
 import com.apartmentmanagement.repository.BillRepository;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+
 
 @RequiredArgsConstructor
 @Service
@@ -33,7 +36,7 @@ public class ResidentBillService {
      // -- Bill Info 2-- 
 
     @Transactional(readOnly = true)
-    public PageResponse<BillItemResponse> getMyBills(Long userId, String status,int year, int page, int size){ 
+    public PageResponse<BillItemResponse> getMyBills(Long userId, String status,Integer year, Integer page, Integer size){ 
         
         ApartmentResident apartmentResident=apartmentResidentRepository.findByUser_Id(userId)
                 .orElseThrow(()->new AppException(ErrorCode.NO_ACTIVE_APARTMENT));
@@ -45,14 +48,14 @@ public class ResidentBillService {
                 throw new AppException(ErrorCode.VALIDATION_ERROR);
             }
         Pageable pageable=PageRequest.of(page, size, Sort.by("dueDate").descending());
-        Page<Bill> billPage=billRepository.findByApartmentId(apartmentResident.getApartment().getId(), billStatus.name(), year, pageable);
+        Page<Bill> billPage=billRepository.findByApartmentId(apartmentResident.getApartment().getId(), billStatus == null ? null : billStatus.name(), year , pageable);
         PageResponse<BillItemResponse> pageResponse=PageResponse.of(billPage, b -> BillItemResponse.builder()
                 .id(b.getId())
                 .billingMonth(YearMonth.from(b.getBillingMonth()).toString())
                 .totalAmount(b.getTotalAmount())
                 .paidAmount(b.getPaidAmount())
                 .status(b.getStatus().name())
-                .remainingAmount(b.getRemainingAmount())
+                .remainingAmount(b.getRemainingAmount())    
                 .dueDate(b.getDueDate())
                 .isOverdue(b.isOverdue())
                 .build()
@@ -72,6 +75,21 @@ public class ResidentBillService {
             .orElseThrow(()->new AppException(ErrorCode.BILL_NOT_FOUND));
         if(!bill.getApartment().getId().equals(apartmentResident.getApartment().getId()))
             throw new AppException(ErrorCode.BILL_NOT_YOURS);
+        List<FeeItemResponse> feeItems=bill.getItems().stream().map(i -> FeeItemResponse.builder()
+            .feeType(i.getFeeType())
+            .description(i.getDescription())
+            .readingStart(i.getReadingStart())
+            .readingEnd(i.getReadingEnd())
+            .quantity(i.getQuantity())
+            .unitPrice(i.getUnitPrice())
+            .amount(i.getAmount())
+            .build()).toList();
+        List<PaymentItemResponse> paymentItems=bill.getPayments().stream().map(p -> PaymentItemResponse.builder()
+            .amount(p.getAmount())
+            .paymentMethod(p.getPaymentMethod().name())
+            .status(p.getStatus().name())
+            .paidAt(p.getPaidAt())
+            .build()).toList();
         return BillItemResponse.builder()
             .id(bill.getId())
             .billingMonth(YearMonth.from(bill.getBillingMonth()).toString())
@@ -80,8 +98,8 @@ public class ResidentBillService {
             .remainingAmount(bill.getRemainingAmount())
             .status(bill.getStatus().name())
             .dueDate(bill.getDueDate())
-            .items(bill.getItems())
-            .payments(bill.getPayments())
+            .items(feeItems)
+            .payments(paymentItems)
             .build();
     }
 

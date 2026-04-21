@@ -2,7 +2,6 @@ package com.apartmentmanagement.dto.response.resident;
 
 import java.math.BigDecimal;
 
-import com.apartmentmanagement.entity.ServiceRegistration;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -18,5 +17,5 @@ public class ServiceTypeResponse {
     private BigDecimal monthlyFee;
     private String iconUrl;
     private Boolean isRegistered;
-    private ServiceRegistration myRegistration;
+    private ServiceRegistrationResponse myRegistration;
 }

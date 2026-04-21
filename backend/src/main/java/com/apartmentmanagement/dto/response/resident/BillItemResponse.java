@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.apartmentmanagement.entity.BillItem;
-import com.apartmentmanagement.entity.Payment;
 
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +19,6 @@ public class BillItemResponse {
     private String status;
     private LocalDate dueDate;
     private Boolean isOverdue;
-    private List<BillItem> items;
-    private List<Payment> payments;
+    private List<FeeItemResponse> items;
+    private List<PaymentItemResponse> payments;
 }

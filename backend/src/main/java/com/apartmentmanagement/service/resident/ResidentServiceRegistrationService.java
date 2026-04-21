@@ -52,10 +52,10 @@ public class ResidentServiceRegistrationService {
         List<ServiceTypeResponse> dataList=serviceTypes.stream().map(s->{
             //Lấy đơn đăng ký của service đó ra nếu ko có thì trả ra null
             ServiceRegistration serviceRegistration=mapServiceType.get(s.getId());
-            ServiceRegistration myReg=null;
+            ServiceRegistrationResponse myReg=null;
             //nếu tồn tại thì có myReg ko thì là null
             if (serviceRegistration!=null) {
-                 myReg=ServiceRegistration.builder()
+                 myReg=ServiceRegistrationResponse.builder()
                     .id(serviceRegistration.getId())
                     .status(serviceRegistration.getStatus())
                     .startDate(serviceRegistration.getStartDate())
@@ -116,9 +116,10 @@ public class ResidentServiceRegistrationService {
         boolean serviceStatus=false;
         for(var p: serviceRegistrations){
             if((p.getServiceType().equals(serviceType)) &&
-             (p.getStatus().equals("ACTIVE")||p.getStatus().equals("PENDING")))
+             (p.getStatus().name().equals("ACTIVE")||p.getStatus().name().equals("PENDING"))){
                 serviceStatus=true;
-                    break;
+                break;
+             }
         }
         if(serviceStatus)
             throw new AppException(ErrorCode.SERVICE_ALREADY_REGISTERED);

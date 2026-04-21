@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class ServiceRequest {
+public class CreateServiceRequest {
     private RequestType  requestType;
     @NotBlank(message = "Tiêu đề không được bỏ trống")
     @Size(max=200,message = "Tiêu đề tối đa 200 ký tự")
@@ -22,3 +22,4 @@ public class ServiceRequest {
     @Size(max=5,message = "tối đa 5 ảnh")
     private List<String> attachmentUrls;
 }
+

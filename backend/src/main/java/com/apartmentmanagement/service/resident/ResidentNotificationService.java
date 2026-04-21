@@ -37,14 +37,14 @@ public class ResidentNotificationService {
 
 
     @Transactional(readOnly = true)
-    public PageResponse<NotificationItemResponse> getNotifications(Long userId,boolean isRead ,String type,int page,int size ){ 
+    public PageResponse<NotificationItemResponse> getNotifications(Long userId,Boolean isRead ,String type,int page,int size ){ 
         NotificationType notificationType;
         try {
-            notificationType= NotificationType.valueOf(type.toUpperCase());
+            notificationType=type!=null? NotificationType.valueOf(type.toUpperCase()): null;
         } catch (Exception e) {
             throw new AppException(ErrorCode.VALIDATION_ERROR);
         }
-        Pageable pageable = PageRequest.of(page,size,Sort.by("created_at").descending());
+        Pageable pageable = PageRequest.of(page,size,Sort.by("createdAt").descending());
         Page<Notification> pageNotifications=notificationRepository.findByUserIdAndFilters(userId,isRead,notificationType,pageable);
         long unreadCount=notificationRepository.countByUser_IdAndIsReadFalse(userId);
         
@@ -106,7 +106,7 @@ public class ResidentNotificationService {
         } catch (Exception e) {
             throw new AppException(ErrorCode.VALIDATION_ERROR);
         }
-        Pageable pageable = PageRequest.of(page,size,Sort.by("published_at").descending());
+        Pageable pageable = PageRequest.of(page,size,Sort.by("publishedAt").descending());
         Page<Announcement> pageAnnoucements=announcementRepository.findByUserSenderIdAndPriority(userSender.getId(),priorityType,pageable);
         
         PageResponse<AnnouncementResponse> pageResponse=PageResponse.of(pageAnnoucements, p -> AnnouncementResponse.builder()

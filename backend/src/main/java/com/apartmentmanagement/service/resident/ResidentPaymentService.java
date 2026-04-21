@@ -21,7 +21,7 @@ import com.apartmentmanagement.exception.ErrorCode;
 import com.apartmentmanagement.repository.ApartmentResidentRepository;
 import com.apartmentmanagement.repository.BillRepository;
 import com.apartmentmanagement.repository.PaymentRepository;
-import com.apartmentmanagement.repository.UserRepository;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -69,7 +69,7 @@ public class ResidentPaymentService {
                 .id(p.getId())
                 .amount(p.getAmount())
                 .paymentMethod(p.getPaymentMethod().name())
-                .transactionRef(p.getTransactionRef())
+                .transactionRef(p.getTransactionRef() != null ? p.getTransactionRef().toString() : "")
                 .status(p.getStatus().name())
                 .paidAt(p.getPaidAt())
                 .bill(BillItemResponse.builder()

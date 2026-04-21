@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.apartmentmanagement.dto.request.resident.CreateServiceRequest;
 import com.apartmentmanagement.dto.request.resident.ServiceRequestRating;
 import com.apartmentmanagement.dto.response.ApiResponse;
 import com.apartmentmanagement.dto.response.PageResponse;
@@ -45,10 +46,10 @@ public class ResidentServiceRequestController {
     }
     @PostMapping("/service-requests")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<ServiceRequest>> createServiceRequest(@Valid @RequestBody ServiceRequest request) {
+    public ResponseEntity<ApiResponse<Void>> createServiceRequest(@Valid @RequestBody CreateServiceRequest request) {
         Long userId = SecurityUtils.getCurrentUserId();
-        ServiceRequest createdRequest = residentServiceRequestService.createServiceRequest(userId, request);
-        return ResponseEntity.status(201).body(ApiResponse.success("Tạo yêu cầu dịch vụ thành công", createdRequest));
+        residentServiceRequestService.createServiceRequest(userId, request);
+        return ResponseEntity.status(201).body(ApiResponse.success("Tạo yêu cầu dịch vụ thành công", null));
     }
 
     @PatchMapping("/service-requests/{id}/rate")
