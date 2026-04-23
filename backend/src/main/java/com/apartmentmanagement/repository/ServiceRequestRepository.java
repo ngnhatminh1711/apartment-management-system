@@ -29,7 +29,7 @@ public interface ServiceRequestRepository extends JpaRepository<ServiceRequest, 
             SELECT sr FROM ServiceRequest sr
             WHERE sr.apartment.id = :apartmentId
             AND (:status IS NULL OR sr.status = :status)
-            AND (:requestType IS NULL OR sr.RequestType = :requestType)
+            AND (:requestType IS NULL OR sr.requestType = :requestType)
             """)
     Page<ServiceRequest> findByApartmentIdAndFilters(@Param("apartmentId") Long apartmentId, @Param("status") String status, @Param("requestType") String requestType, Pageable pageable);
 

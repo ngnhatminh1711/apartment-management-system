@@ -48,10 +48,11 @@ public class ResidentServiceRequestService {
         PageResponse<ServiceRequest> pageResponse = PageResponse.of(serviceRequestPage,
             (p) -> ServiceRequest.builder()
                 .id(p.getId())
-                .RequestType(p.getRequestType())
+                .requestType(p.getRequestType())
                 .title(p.getTitle())
                 .priority(p.getPriority())
                 .status(p.getStatus())
+                .description(p.getDescription())
                 .resolvedAt(p.getResolvedAt())
                 .rating(p.getRating())
                 .createdAt(p.getCreatedAt())
@@ -74,7 +75,7 @@ public class ResidentServiceRequestService {
 
         return ServiceRequest.builder()
                 .id(serviceRequest.getId())
-                .RequestType(serviceRequest.getRequestType())
+                .requestType(serviceRequest.getRequestType())
                 .title(serviceRequest.getTitle())
                 .description(serviceRequest.getDescription())
                 .attachmentUrls(serviceRequest.getAttachmentUrls())
@@ -92,7 +93,7 @@ public class ResidentServiceRequestService {
                 .orElseThrow(() -> new AppException(ErrorCode.NO_ACTIVE_APARTMENT));
         ServiceRequest newRequest = ServiceRequest.builder()
                         .apartment(apartmentResident.getApartment())
-                        .RequestType(serviceRequest.getRequestType())
+                        .requestType(serviceRequest.getRequestType())
                         .title(serviceRequest.getTitle())
                         .description(serviceRequest.getDescription())
                         .attachmentUrls(serviceRequest.getAttachmentUrls())

@@ -47,7 +47,7 @@ public class ServiceRequest {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "request_type", nullable = false, length = 30)
-    private RequestType RequestType;
+    private RequestType requestType;
 
     @Column(nullable = false, length = 200)
     private String title;
