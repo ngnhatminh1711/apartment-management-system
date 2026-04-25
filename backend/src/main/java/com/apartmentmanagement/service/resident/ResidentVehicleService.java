@@ -1,5 +1,6 @@
 package com.apartmentmanagement.service.resident;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -100,6 +101,7 @@ public class ResidentVehicleService {
         if(vehicle.getStatus()!=VehicleStatus.ACTIVE)
             throw new AppException(ErrorCode.VEHICLE_NOT_ACTIVE);
         vehicle.setStatus(VehicleStatus.INACTIVE);
+        vehicle.setExpiredAt(LocalDate.now());
         vehicleRepository.save(vehicle);
     }
     

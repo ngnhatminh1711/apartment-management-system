@@ -12,7 +12,7 @@ export const notificationService = {
       ApiResponse<PageResponse<Notification>>
     >(BASE, { params });
 
-    return res.data.data; // PageResponse
+    return res.data.data;
   },
 
   markAsRead: async (id: number) => {
@@ -22,10 +22,10 @@ export const notificationService = {
   markAllAsRead: async () => {
     await axiosInstance.patch(`${BASE}/read-all`);
   },
-  getAnnouncement: async () => {
-    const res = await axiosInstance.get<ApiResponse<Announcement>>(
-      `resident/announcements`,
-    );
+  getAnnouncements: async (params?: PageParams) => {
+    const res = await axiosInstance.get<
+      ApiResponse<PageResponse<Announcement>>
+    >(`resident/announcements`, { params });
     return res.data.data;
   },
 };

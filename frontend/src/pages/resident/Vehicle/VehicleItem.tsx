@@ -1,0 +1,102 @@
+import React from "react";
+import type { Vehicle } from "../../../types/vehicle";
+
+type Props = {
+  data: Vehicle;
+  onDelete: (id: number) => void;
+};
+const statusMap = {
+  ACTIVE: "bg-green-100 text-green-600",
+  PENDING_APPROVAL: "bg-amber-100 text-amber-600",
+  INACTIVE: "bg-gray-100 text-gray-500",
+  REJECTED: "bg-red-100 text-red-600",
+};
+
+const labelMap = {
+  ACTIVE: "Đang hoạt động",
+  PENDING_APPROVAL: "Chờ duyệt",
+  INACTIVE: "Đã huỷ",
+  REJECTED: "Từ chối",
+};
+const vehicleIconMap = {
+  MOTORBIKE: "motorcycle",
+  CAR: "directions_car",
+  BICYCLE: "pedal_bike",
+  TRUCK: "local_shipping",
+};
+
+const VehicleItem = ({ data, onDelete }: Props) => {
+  return (
+    <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+      <td className="px-8 py-5">
+        <span className="font-mono font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded border border-slate-200 dark:border-slate-700">
+          {data.licensePlate}
+        </span>
+      </td>
+      <td className="px-6 py-5">
+        <div className="flex items-center gap-2 text-on-surface">
+          <span
+            className="material-symbols-outlined text-lg"
+            data-icon={vehicleIconMap[data.vehicleType]}
+          >
+            {vehicleIconMap[data.vehicleType]}
+          </span>
+        </div>
+      </td>
+      <td className="px-6 py-5 text-sm text-slate-700 dark:text-slate-300">
+        {data.brand} {data.model}
+      </td>
+      <td className="px-6 py-5 text-sm text-slate-700 dark:text-slate-300">
+        {data.color}
+      </td>
+      <td className="px-6 py-5 text-sm text-slate-600 dark:text-slate-400">
+        {data?.registeredAt
+          ? new Date(data.registeredAt).toLocaleDateString()
+          : "__"}
+      </td>
+      <td className="px-6 py-5 text-sm text-slate-600 dark:text-slate-400">
+        {data?.approvedAt
+          ? new Date(data.approvedAt).toLocaleDateString()
+          : "__"}
+      </td>
+      <td className="px-6 py-5 text-sm text-slate-600 dark:text-slate-400">
+        {data.expiredAt ? new Date(data.expiredAt).toLocaleDateString() : "__"}
+      </td>
+
+      <td>
+        <span
+          className={`px-2 py-1 text-xs font-medium rounded-full ${
+            statusMap[data.status]
+          }`}
+        >
+          {labelMap[data.status]}
+        </span>
+      </td>
+
+      <td className="px-8 py-5 text-right">
+        {data.status !== "ACTIVE" ? (
+          <button className="text-slate-400 cursor-not-allowed px-3 py-1.5 text-xs font-bold inline-flex items-center gap-1">
+            <span className="material-symbols-outlined text-sm">
+              visibility
+            </span>
+            Không thể hủy
+          </button>
+        ) : (
+          <button
+            className="text-red-700 text-error hover:bg-error/10 px-3 py-1.5 rounded-lg text-xs font-bold transition-all inline-flex items-center gap-1"
+            onClick={() => {
+              if (confirm("Bạn có chắc muốn hủy đăng ký xe này?")) {
+                onDelete(data.id);
+              }
+            }}
+          >
+            <span className="material-symbols-outlined text-sm">cancel</span>
+            Hủy đăng ký
+          </button>
+        )}
+      </td>
+    </tr>
+  );
+};
+
+export default VehicleItem;

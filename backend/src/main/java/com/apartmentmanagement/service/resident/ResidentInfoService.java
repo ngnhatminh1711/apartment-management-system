@@ -55,6 +55,7 @@ public class ResidentInfoService {
                 .id(user.getId())
                 .fullName(user.getFullName())
                 .email(user.getEmail())
+                .phone(user.getPhone())
                 .idCard(user.getIdCard())
                 .dateOfBirth(user.getDateOfBirth())
                 .avatarUrl(user.getAvatarUrl())
@@ -115,7 +116,7 @@ public class ResidentInfoService {
                 .isPrimary(m.getIsPrimary())
                 .moveInDate(m.getMoveInDate())
                 .build()
-            ).collect(java.util.stream.Collectors.toList());
+            ).toList();
 
         ApartmentResponse apartmentResponse= ApartmentResponse.builder()
                             .id(apartmentResident.getId())
@@ -125,7 +126,7 @@ public class ResidentInfoService {
                             .numBedrooms(apartmentResident.getApartment().getNumBedrooms())
                             .numBathrooms(apartmentResident.getApartment().getNumBathrooms())
                             .direction(apartmentResident.getApartment().getDirection())
-                            .buildingRespone(buildingRespone)
+                            .building(buildingRespone)
                             .householdMembers(houseMembersResponses)
                             .moveInDate(apartmentResident.getMoveInDate())
                             .build();

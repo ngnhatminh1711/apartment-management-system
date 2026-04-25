@@ -76,6 +76,7 @@ public class ResidentPaymentService {
                     .id(p.getBill().getId())
                     .billingMonth(YearMonth.from(p.getBill().getBillingMonth()).toString())
                     .totalAmount(p.getBill().getTotalAmount())
+                    .apartmentNumber(apartmentResident.getApartment().getApartmentNumber())
                     .build())
                 .build()
         );

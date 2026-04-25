@@ -17,6 +17,7 @@ public class BillItemResponse {
     private BigDecimal paidAmount;
     private BigDecimal remainingAmount;
     private String status;
+    private String apartmentNumber;
     private LocalDate dueDate;
     private Boolean isOverdue;
     private List<FeeItemResponse> items;

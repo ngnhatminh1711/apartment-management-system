@@ -9,6 +9,8 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ApartmentResponse {
     private Long id;
     private String apartmentNumber;
@@ -20,6 +22,6 @@ public class ApartmentResponse {
     private Integer numBedrooms;
     private Integer numBathrooms;
     private String direction;
-    private BuildingRespone buildingRespone;
+    private BuildingRespone building;
     private List<HouseMembersResponse> householdMembers;
 }

@@ -15,6 +15,7 @@ public class ResidentResponse  {
     private Long id;
     private String fullName;
     private String email;
+    private String phone;
     private String idCard;
     private LocalDate dateOfBirth;
     private String avatarUrl;

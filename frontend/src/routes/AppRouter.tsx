@@ -27,7 +27,15 @@ import { ResidentListPage } from "../pages/manager/residents/ResidentListPage";
 
 // Resident pages
 import { ResidentDashboardPage } from "../pages/resident/DashboardPage";
-import NotificationContainer from "../pages/resident/Notification/NotificationContainer";
+import NotificationPage from "../pages/resident/Notification/NotificationPage";
+import VehiclePage from "../pages/resident/Vehicle/VehiclePage";
+import ServiceRegistrationPage from "../pages/resident/ServiceRegistration/ServiceRegistrationPage";
+import ServiceRequestPage from "../pages/resident/ServiceRequest/ServiceRequestPage";
+import ServiceRequestDetail from "../pages/resident/ServiceRequest/ServiceRequestDetail";
+import BillPage from "../pages/resident/Bill/BillPage";
+import BillDetail from "../pages/resident/Bill/BillDetail";
+import PaymentPage from "../pages/resident/Payment/PaymentPage";
+import Payment from "../pages/resident/Payment/Payment";
 
 const router = createBrowserRouter([
   // ── Public ──────────────────────────────────────────────────────────────
@@ -86,7 +94,15 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <ResidentDashboardPage /> },
-      { path: "notifications", element: <NotificationContainer /> },
+      { path: "bills", element: <BillPage /> },
+      { path: "bills/:id", element: <BillDetail /> },
+      { path: "bills/:id/payment", element: <Payment /> },
+      { path: "payments", element: <PaymentPage /> },
+      { path: "notifications", element: <NotificationPage /> },
+      { path: "vehicles", element: <VehiclePage /> },
+      { path: "service-registrations", element: <ServiceRegistrationPage /> },
+      { path: "service-requests", element: <ServiceRequestPage /> },
+      { path: "service-requests/:id", element: <ServiceRequestDetail /> },
     ],
   },
 

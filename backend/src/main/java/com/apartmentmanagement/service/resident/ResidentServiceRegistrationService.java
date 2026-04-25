@@ -1,5 +1,6 @@
 package com.apartmentmanagement.service.resident;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,11 @@ public class ResidentServiceRegistrationService {
         //Map ServiceType mà có đăng ký thì có ServiceRegistration
         Map<Integer,ServiceRegistration> mapServiceType=registrations.stream()
             .collect(Collectors.toMap(r->r.getServiceType().getId(),
-                r->r
+                r->r,
+                (existing, replacement) -> 
+                existing.getCreatedAt().isAfter(replacement.getCreatedAt())
+                    ? existing
+                    : replacement
             ));
         List<ServiceTypeResponse> dataList=serviceTypes.stream().map(s->{
             //Lấy đơn đăng ký của service đó ra nếu ko có thì trả ra null
@@ -80,7 +85,7 @@ public class ResidentServiceRegistrationService {
     public List<ServiceRegistrationResponse> getServiceRegistration(String status,Long userId){
         List<ServiceRegistration> serviceReg;
         if(status!=null)
-            serviceReg=serviceRegistrationRepository.findByUser_IdAndStatus(userId,status);
+            serviceReg=serviceRegistrationRepository.findByUser_IdAndStatus(userId, RegistrationStatus.valueOf(status));
         else
             serviceReg=serviceRegistrationRepository.findByUser_Id(userId);
 
@@ -156,6 +161,7 @@ public class ResidentServiceRegistrationService {
         if (!serviceReg.getStatus().equals(RegistrationStatus.ACTIVE)) 
             throw new AppException(ErrorCode.REGISTRATION_NOT_ACTIVE);
         serviceReg.setStatus(RegistrationStatus.CANCELLED);
+        serviceReg.setEndDate(LocalDate.now());
         Notification notification;
         if(serviceReg.getApartment().getBuilding().getManager()!=null){
             notification=Notification.builder()

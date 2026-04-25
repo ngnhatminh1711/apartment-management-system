@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
-import type { Notification } from "../../../types/notification";
+import type { Announcement, Notification } from "../../../types/notification";
 import NotificationList from "./NotificationList";
 import { Pagination } from "../../../components/common/Pagination";
 import { usePagination } from "../../../hooks/usePagination";
 import { notificationService } from "../../../services/resident/notificationService";
 import { useToast } from "../../../hooks/useToast";
+import AnnouncementList from "./AnnouncementList";
+import { ToastContainer } from "../../../components/common/ToastContainer";
 
-const NotificationContainer = () => {
+const NotificationPage = () => {
   const [data, setData] = useState<Notification[]>([]);
+  const [dataAnnouncement, setDataAnnouncement] = useState<Announcement[]>([]);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -23,10 +26,16 @@ const NotificationContainer = () => {
         page: pag.page,
         size: pag.size,
       });
+      const resA = await notificationService.getAnnouncements({
+        page: pag.page,
+        size: pag.size,
+      });
+      setDataAnnouncement(resA.content);
 
       setData(res.content);
       setTotal(res.totalElements);
       setTotalPages(res.totalPages);
+      toast.success("Tải thông báo thành công!");
     } catch (err) {
       toast.error("Không thể tải thông báo");
     } finally {
@@ -59,15 +68,17 @@ const NotificationContainer = () => {
             Cập nhật tin tức và hóa đơn mới nhất từ tòa nhà của bạn.
           </p>
         </div>
-        <button
-          className="flex items-center gap-2 px-5 py-2.5 bg-white border border-outline text-primary text-[13px] font-semibold rounded-lg hover:bg-primary-container transition-all active:scale-95"
-          onClick={handleAllRead}
-        >
-          <span className="material-symbols-outlined text-[18px]">
-            done_all
-          </span>
-          Đánh dấu tất cả đã đọc
-        </button>
+        {activeTab == "PERSONAL" && (
+          <button
+            className="flex items-center gap-2 px-5 py-2.5 bg-white border border-outline text-primary text-[13px] font-semibold rounded-lg hover:bg-primary-container transition-all active:scale-95"
+            onClick={handleAllRead}
+          >
+            <span className="material-symbols-outlined text-[18px]">
+              done_all
+            </span>
+            Đánh dấu tất cả đã đọc
+          </button>
+        )}
       </div>
       {/* <!-- Notification Layout --> */}
       <div className="grid grid-cols-1 gap-6">
@@ -90,8 +101,10 @@ const NotificationContainer = () => {
         <div className="space-y-4">
           {loading ? (
             <div className="text-center text-gray-400">Loading...</div>
-          ) : (
+          ) : activeTab === "PERSONAL" ? (
             <NotificationList data={data} onItemClick={handleItemClick} />
+          ) : (
+            <AnnouncementList data={dataAnnouncement} />
           )}
         </div>
         {/* <!-- Pagination --> */}
@@ -101,10 +114,12 @@ const NotificationContainer = () => {
           totalElements={total}
           pageSize={pag.size}
           onPageChange={pag.setPage}
+          name={""}
         />
+        <ToastContainer toasts={toast.toasts} dismiss={toast.dismiss} />
       </div>
     </>
   );
 };
 
-export default NotificationContainer;
+export default NotificationPage;
