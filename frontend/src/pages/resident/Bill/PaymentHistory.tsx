@@ -1,5 +1,5 @@
 import type { PaymentRef } from "../../../types/bill";
-import PaymentItem from "./PaymentItem";
+import PaymentItem from "./PaymentItemBill";
 type Props = {
   payments: PaymentRef[];
 };
