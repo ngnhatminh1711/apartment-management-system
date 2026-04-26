@@ -6,7 +6,7 @@ import { usePagination } from "../../../hooks/usePagination";
 import { useToast } from "../../../hooks/useToast";
 import PaymentService from "../../../services/resident/PaymentService";
 import type { Payment } from "../../../types/payment";
-import PaymentItem from "./PaymentItem";
+import PaymentItem from "../../../components/resident/PaymentItem";
 
 const PaymentPage = () => {
   const [payments, setPayments] = useState<Payment[]>([]);

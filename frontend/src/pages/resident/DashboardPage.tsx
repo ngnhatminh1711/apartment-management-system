@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import ApartmentInfo from "./Profile/ApartmentInfo";
-import BuildingInfo from "./Profile/BuildingInfo";
-import PersonalCard from "./Profile/PersonalCard";
-import ResidentSectionList from "./Profile/ResidentSectionList";
+import ApartmentInfo from "../../components/resident/ApartmentInfo";
+import BuildingInfo from "../../components/resident/BuildingInfo";
+import PersonalCard from "../../components/resident/PersonalCard";
+import ResidentSectionList from "../../components/resident/ResidentSectionList";
 import type { ApartmentBuilding, Profile } from "../../types/apartment";
 import ProfileService from "../../services/resident/ProfileService";
 import { useToast } from "../../hooks/useToast";
 import { ToastContainer } from "../../components/common/ToastContainer";
-import UpdateInfo from "./Profile/UpdateInfo";
-import ChangePassword from "./Profile/ChangePassword";
+import UpdateInfo from "../../components/resident/UpdateInfo";
+import ChangePassword from "../../components/resident/ChangePassword";
 import { authService } from "../../services/authService";
 import type {
   ChangePasswordRequest,

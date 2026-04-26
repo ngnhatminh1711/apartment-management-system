@@ -21,5 +21,5 @@ public class BillItemResponse {
     private LocalDate dueDate;
     private Boolean isOverdue;
     private List<FeeItemResponse> items;
-    private List<PaymentItemResponse> payments;
+    private List<PaymentItemResponse> myPayments;
 }

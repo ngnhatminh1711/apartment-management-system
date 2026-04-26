@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import type { VehicleRegisterRequest } from "../../../types/vehicle";
+import { useState } from "react";
+import type { VehicleRegisterRequest } from "../../types/vehicle";
 type Props = {
   open: boolean;
   onClose: () => void;
@@ -13,6 +13,10 @@ function CreateVehicle({ open, onClose, onSubmit }: Props) {
     model: "",
     color: "",
   });
+
+  if (!open) {
+    return null;
+  }
   function handleSubmit() {
     onSubmit(form);
 
@@ -27,7 +31,7 @@ function CreateVehicle({ open, onClose, onSubmit }: Props) {
   }
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white w-full max-w-[560px] rounded-xl shadow-2xl overflow-hidden border border-outline">
+      <div className="bg-white w-full rounded-xl shadow-2xl overflow-hidden border border-outline max-w-140">
         <div className="px-8 py-6 border-b border-outline flex justify-between items-center">
           <h2 className="text-lg font-bold">Đăng ký phương tiện mới</h2>
 

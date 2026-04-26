@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import VehicleList from "./VehicleList";
+import VehicleList from "../../../components/resident/VehicleList";
 import type { Vehicle, VehicleRegisterRequest } from "../../../types/vehicle";
-import CreateVehicle from "./CreateVehicle";
+import CreateVehicle from "../../../components/resident/CreateVehicle";
 import { vehicleService } from "../../../services/resident/vehicleService";
 import { useToast } from "../../../hooks/useToast";
 import { ToastContainer } from "../../../components/common/ToastContainer";

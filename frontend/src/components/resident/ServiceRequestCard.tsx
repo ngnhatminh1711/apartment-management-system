@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
-import type { ServiceRequest } from "../../../types/serviceRequest";
+import type { ServiceRequest } from "../../types/serviceRequest";
 import {
   REQUEST_STATUS_COLORS,
   REQUEST_STATUS_LABELS,
   REQUEST_TYPE_LABELS,
   REQUEST_PRIORITY_LABELS,
   REQUEST_PRIORITY_COLORS,
-} from "../../../utils/constants";
+} from "../../utils/constants";
+import { formatDate } from "../../utils/formatters";
 
 type Props = {
   data: ServiceRequest;
@@ -17,14 +18,14 @@ const ServiceRequestCard = ({ data }: Props) => {
     <div className="bg-white p-6 rounded-xl shadow-sm border border-outline hover:shadow-md transition-shadow group flex flex-col h-full">
       <div className="flex justify-between items-start mb-4">
         <span
-          className={`px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase ${REQUEST_PRIORITY_COLORS[data.priority]}`}
+          className={`px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase ${data ? REQUEST_PRIORITY_COLORS[data.priority] : "bg-gray-100 text-gray-600"}`}
         >
-          {REQUEST_PRIORITY_LABELS[data.priority]}
+          {data ? REQUEST_PRIORITY_LABELS[data.priority] : "—"}
         </span>
         <span
-          className={`px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase ${REQUEST_STATUS_COLORS[data.status]}`}
+          className={`px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase ${data ? REQUEST_STATUS_COLORS[data.status] : "bg-gray-100 text-gray-600"}`}
         >
-          {REQUEST_STATUS_LABELS[data.status]}
+          {data ? REQUEST_STATUS_LABELS[data.status] : "—"}
         </span>
       </div>
       <h3 className="text-lg font-bold text-slate-900 mb-2 leading-tight group-hover:text-primary transition-colors">
@@ -34,16 +35,16 @@ const ServiceRequestCard = ({ data }: Props) => {
       <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-[11px] text-slate-400 italic ">
-            {REQUEST_TYPE_LABELS[data.requestType]}
+            {data ? REQUEST_TYPE_LABELS[data.requestType] : "—"}
           </span>
         </div>
 
         <span className="text-[11px] text-slate-400 italic">
-          Ngày tạo: {new Date(data?.createdAt).toLocaleDateString()}
+          Ngày tạo: {formatDate(data?.createdAt)}
         </span>
         {data?.resolvedAt && (
           <span className="text-[11px] text-slate-400 italic">
-            Ngày xử lý: {new Date(data?.resolvedAt).toLocaleDateString()}
+            Ngày xử lý: {formatDate(data?.resolvedAt)}
           </span>
         )}
         <Link

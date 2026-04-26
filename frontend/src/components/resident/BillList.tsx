@@ -1,4 +1,4 @@
-import type { Bill } from "../../../types/bill";
+import type { Bill } from "../../types/bill";
 import BillCard from "./BillCard";
 
 type Props = {

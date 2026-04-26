@@ -7,7 +7,6 @@ export interface ApiResponse<T> {
 }
 
 export interface PageResponse<T> {
-  summary: {};
   content: T[];
   totalElements: number;
   totalPages: number;

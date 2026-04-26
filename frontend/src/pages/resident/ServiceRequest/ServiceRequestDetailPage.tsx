@@ -5,13 +5,15 @@ import { serviceRequestService } from "../../../services/resident/ServiceRequest
 import type { ServiceRequest } from "../../../types/serviceRequest";
 import { useToast } from "../../../hooks/useToast";
 import {
+  REQUEST_PRIORITY_LABELS,
   REQUEST_STATUS_LABELS,
   REQUEST_TYPE_LABELS,
-  REQUEST_PRIORITY_LABELS,
   REQUEST_STATUS_COLORS,
   REQUEST_PRIORITY_COLORS,
 } from "../../../utils/constants";
-const ServiceRequestDetail = () => {
+import { formatDate } from "../../../utils/formatters";
+
+const ServiceRequestDetailPage = () => {
   const navigate = useNavigate();
   const [data, setData] = useState<ServiceRequest>();
   const { id } = useParams();
@@ -23,11 +25,7 @@ const ServiceRequestDetail = () => {
 
   const handleSubmitRating = async () => {
     try {
-      const res = await serviceRequestService.rating(
-        Number(id),
-        rating,
-        comment,
-      );
+      await serviceRequestService.rating(Number(id), rating, comment);
       toast.success("Gửi đánh giá thành công!");
       setIsRated(true);
     } catch (error) {
@@ -74,25 +72,28 @@ const ServiceRequestDetail = () => {
 
               <div className="flex gap-3 mt-4">
                 <span
-                  className={`px-3 py-1 rounded-full text-xs ${REQUEST_STATUS_COLORS[data?.status]}`}
+                  className={`px-3 py-1 rounded-full text-xs ${data ? REQUEST_STATUS_COLORS[data.status] : "bg-gray-100 text-gray-600"}`}
                 >
-                  {REQUEST_STATUS_LABELS[data.status]}
+                  {data?.status ? REQUEST_STATUS_LABELS[data.status] : "—"}
                 </span>
                 <span
-                  className={`px-3 py-1 rounded-full text-xs ${REQUEST_PRIORITY_COLORS[data?.priority]}`}
+                  className={`px-3 py-1 rounded-full text-xs ${data ? REQUEST_PRIORITY_COLORS[data.priority] : "bg-gray-100 text-gray-600"}`}
                 >
-                  {REQUEST_PRIORITY_LABELS[data.priority]}
+                  {data?.priority
+                    ? REQUEST_PRIORITY_LABELS[data.priority]
+                    : "—"}
+                </span>
+                <span className="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-xs">
+                  {data?.requestType
+                    ? REQUEST_TYPE_LABELS[data.requestType]
+                    : "—"}
                 </span>
               </div>
             </div>
 
             <div className="text-right text-sm">
               <p>Mã yêu cầu: {data?.id}</p>
-              <p>
-                {data?.createdAt
-                  ? new Date(data.createdAt).toLocaleDateString()
-                  : "—"}
-              </p>
+              <p>{formatDate(data?.createdAt)}</p>
             </div>
           </div>
 
@@ -121,16 +122,10 @@ const ServiceRequestDetail = () => {
                       "Đã xử lý nhưng không có ghi chú nào được cung cấp."}
                   </p>
                   <p className="text-sm text-slate-600 mb-4">
-                    Ngày tiếp nhận:{" "}
-                    {data?.assignedAt
-                      ? new Date(data.assignedAt).toLocaleDateString()
-                      : "—"}
+                    Ngày tiếp nhận: {formatDate(data?.assignedAt)}
                   </p>
                   <p className="text-sm text-slate-600 mb-4">
-                    Ngày xử lý:{" "}
-                    {data?.resolvedAt
-                      ? new Date(data.resolvedAt).toLocaleDateString()
-                      : "—"}
+                    Ngày xử lý: {formatDate(data?.resolvedAt)}
                   </p>
                   <p className="text-sm text-slate-600 mb-4">
                     Người xử lý: {data?.assignedTo?.fullName}
@@ -209,4 +204,4 @@ const ServiceRequestDetail = () => {
   );
 };
 
-export default ServiceRequestDetail;
+export default ServiceRequestDetailPage;

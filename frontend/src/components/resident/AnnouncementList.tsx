@@ -1,4 +1,4 @@
-import type { Announcement } from "../../../types/notification";
+import type { Announcement } from "../../types/notification";
 import AnnouncementItem from "./AnnouncementItem";
 
 type Props = {

@@ -1,13 +1,14 @@
-import type { PaymentRef } from "../../../types/bill";
+import type { PaymentRef } from "../../types/bill";
+import { formatCurrency, formatDate } from "../../utils/formatters";
 type Props = {
   payment: PaymentRef;
 };
-const PaymentItem = ({ payment }: Props) => {
+const PaymentItemBill = ({ payment }: Props) => {
   return (
     <div className="p-4 hover:bg-slate-50 transition-colors">
       <div className="flex justify-between items-start mb-1">
         <p className="text-sm font-bold text-slate-900">
-          {payment.amount.toLocaleString("vi-VN")}đ
+          {formatCurrency(payment.amount)}
         </p>
 
         <span className="px-2 py-0.5 text-[10px] font-bold rounded uppercase bg-green-50 text-green-600">
@@ -23,14 +24,10 @@ const PaymentItem = ({ payment }: Props) => {
           {payment.paymentMethod}
         </span>
 
-        <span>
-          {payment.paidAt
-            ? new Date(payment.paidAt).toLocaleDateString("vi-VN")
-            : "-"}
-        </span>
+        <span>{formatDate(payment.paidAt)}</span>
       </div>
     </div>
   );
 };
 
-export default PaymentItem;
+export default PaymentItemBill;

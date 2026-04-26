@@ -1,4 +1,4 @@
-import type { NotificationType } from "./common";
+import type { AnnouncementPriority, NotificationType } from "./common";
 
 export interface Notification {
   id: number;
@@ -16,7 +16,7 @@ export interface Announcement {
   id: number;
   title: string;
   content: string;
-  priority: string;
+  priority: AnnouncementPriority | null;
   senderName: string;
   buildingId?: number;
   attachmentUrls: string[];
@@ -30,7 +30,7 @@ export interface Announcement {
 export interface AnnouncementCreateRequest {
   title: string;
   content: string;
-  priority: string;
+  priority: AnnouncementPriority;
   attachmentUrls?: string[];
   expiresAt?: string;
 }

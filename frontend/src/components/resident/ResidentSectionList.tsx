@@ -1,5 +1,5 @@
-import ResidentItem from "../../../components/resident/ResidentItem";
-import type { ApartmentBuilding } from "../../../types/apartment";
+import ResidentItem from "./ResidentItem";
+import type { ApartmentBuilding } from "../../types/apartment";
 
 type Props = {
   data: ApartmentBuilding;

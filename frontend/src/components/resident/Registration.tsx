@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import type {
   ServiceRegistrationCreateRequest,
   ServiceType,
-} from "../../../types/serviceRegistration";
-import { is } from "date-fns/locale";
+} from "../../types/serviceRegistration";
+import { formatCurrency, formatDate } from "../../utils/formatters";
 
 type Props = {
   data: ServiceType;
@@ -57,10 +57,7 @@ const Registration = ({ data, onclose, createService }: Props) => {
                   payments
                 </span>
                 <span className="text-primary font-bold text-[16px]">
-                  {data?.monthlyFee?.toLocaleString("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  })}
+                  {formatCurrency(data?.monthlyFee ?? 0)}
                 </span>
                 <span className="text-slate-500 text-xs">/ mỗi tháng</span>
               </div>
@@ -101,11 +98,11 @@ const Registration = ({ data, onclose, createService }: Props) => {
                 </p>
                 <p>
                   <span className="font-medium">Ngày bắt đầu:</span>{" "}
-                  {data.myRegistration.startDate}
+                  {formatDate(data.myRegistration.startDate)}
                 </p>
                 <p>
                   <span className="font-medium">Ngày kết thúc:</span>{" "}
-                  {data.myRegistration?.endDate}
+                  {formatDate(data.myRegistration?.endDate)}
                 </p>
               </div>
             </div>

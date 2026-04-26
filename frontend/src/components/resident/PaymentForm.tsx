@@ -1,7 +1,8 @@
 import { useState } from "react";
-import type { PaymentMethod } from "../../../types/common";
+import type { PaymentMethod } from "../../types/common";
 import PaymentMethodSection from "./PaymentMethodSection";
-import type { PaymentRequest } from "../../../types/payment";
+import type { PaymentRequest } from "../../types/payment";
+import { formatCurrency } from "../../utils/formatters";
 type Props = {
   billId: number;
   remainingAmount: number;
@@ -36,11 +37,7 @@ const PaymentForm = ({ billId, remainingAmount, handSubmit }: Props) => {
         <div className="relative group">
           <input
             className="w-full h-16 pl-6 pr-12 text-2xl font-bold text-primary bg-slate-50 rounded-lg"
-            value={
-              remainingAmount
-                ? `${remainingAmount.toLocaleString("vi-VN")}đ`
-                : ""
-            }
+            value={remainingAmount ? formatCurrency(remainingAmount) : ""}
             readOnly
           />
         </div>

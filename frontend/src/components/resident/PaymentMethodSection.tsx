@@ -1,5 +1,5 @@
-import type { PaymentMethod } from "../../../types/common";
-import { PAYMENT_METHOD_LABELS } from "../../../utils/constants";
+import type { PaymentMethod } from "../../types/common";
+import { PAYMENT_METHOD_LABELS } from "../../utils/constants";
 
 type Props = {
   value: PaymentMethod;

@@ -1,9 +1,10 @@
-import type { Vehicle } from "../../../types/vehicle";
+import type { Vehicle } from "../../types/vehicle";
 import {
   VEHICLE_STATUS_COLORS,
   VEHICLE_STATUS_LABELS,
   VEHICLE_TYPE_LABELS,
-} from "../../../utils/constants";
+} from "../../utils/constants";
+import { formatDate } from "../../utils/formatters";
 
 type Props = {
   data: Vehicle;
@@ -44,17 +45,13 @@ const VehicleItem = ({ data, onDelete }: Props) => {
         {data?.color ? `${data.color}` : "__"}
       </td>
       <td className="px-6 py-5 text-sm text-slate-600">
-        {data?.registeredAt
-          ? new Date(data.registeredAt).toLocaleDateString()
-          : "__"}
+        {formatDate(data?.registeredAt)}
       </td>
       <td className="px-6 py-5 text-sm text-slate-600">
-        {data?.approvedAt
-          ? new Date(data.approvedAt).toLocaleDateString()
-          : "__"}
+        {formatDate(data?.approvedAt)}
       </td>
       <td className="px-6 py-5 text-sm text-slate-600">
-        {data?.expiredAt ? new Date(data.expiredAt).toLocaleDateString() : "__"}
+        {formatDate(data?.expiredAt)}
       </td>
 
       <td>

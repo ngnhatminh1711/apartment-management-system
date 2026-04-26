@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import type { Announcement, Notification } from "../../../types/notification";
-import NotificationList from "./NotificationList";
+import NotificationList from "../../../components/resident/NotificationList";
 import { Pagination } from "../../../components/common/Pagination";
 import { usePagination } from "../../../hooks/usePagination";
 import { notificationService } from "../../../services/resident/notificationService";
 import { useToast } from "../../../hooks/useToast";
-import AnnouncementList from "./AnnouncementList";
+import AnnouncementList from "../../../components/resident/AnnouncementList";
 import { ToastContainer } from "../../../components/common/ToastContainer";
 
 const NotificationPage = () => {

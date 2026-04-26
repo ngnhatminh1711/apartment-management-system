@@ -1,4 +1,5 @@
-import type { Notification } from "../../../types/notification";
+import type { Notification } from "../../types/notification";
+import { formatDate } from "../../utils/formatters";
 
 type Props = {
   data: Notification;
@@ -19,17 +20,16 @@ const NotificationItem = ({ data, onClick }: Props) => {
         ${data.isRead ? "bg-white opacity-70" : "bg-blue-50"}
       `}
     >
-      <div className="flex-shrink-0 w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center">
+      <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center">
         <span className="material-symbols-outlined text-slate-400">
           ANNOUNCEMENT
         </span>
       </div>
 
-      <div className="flex-grow">
+      <div>
         <div className="flex justify-between items-start mb-1">
           <span className="text-[11px] text-slate-400 italic">
-            {new Date(data.createdAt).toLocaleDateString()} :{" "}
-            {formatTime(data.createdAt)}
+            {formatDate(data.createdAt)} : {formatTime(data.createdAt)}
           </span>
         </div>
 

@@ -1,4 +1,6 @@
-import type { Profile } from "../../../types/apartment";
+import type { Profile } from "../../types/apartment";
+import { ROLE_LABELS } from "../../utils/constants";
+import { formatDate } from "../../utils/formatters";
 
 type Props = {
   data: Profile;
@@ -18,7 +20,7 @@ const PersonalCard = ({ data, onUpdate, onChangePassword }: Props) => {
             key={index}
             className="px-2.5 py-1 bg-primary text-white text-[10px] font-black uppercase rounded"
           >
-            {role}
+            {ROLE_LABELS[role]}
           </span>
         ))}
       </div>
@@ -67,11 +69,7 @@ const PersonalCard = ({ data, onUpdate, onChangePassword }: Props) => {
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
                 Ngày sinh
               </p>
-              <p className="font-semibold">
-                {data?.dateOfBirth
-                  ? new Date(data.dateOfBirth).toLocaleDateString()
-                  : "-"}
-              </p>
+              <p className="font-semibold">{formatDate(data?.dateOfBirth)}</p>
             </div>
             <div className="text-right flex items-end justify-end">
               <button

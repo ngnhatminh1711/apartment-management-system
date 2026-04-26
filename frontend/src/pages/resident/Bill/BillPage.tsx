@@ -7,7 +7,8 @@ import { usePagination } from "../../../hooks/usePagination";
 import { useToast } from "../../../hooks/useToast";
 import BillService from "../../../services/resident/BillService";
 import type { Bill, BillSummary } from "../../../types/bill";
-import BillList from "./BillList";
+import BillList from "../../../components/resident/BillList";
+import { formatCurrency } from "../../../utils/formatters";
 const BillPage = () => {
   const [bills, setBills] = useState<Bill[]>([]);
   const [summary, setSummary] = useState<BillSummary>({
@@ -57,10 +58,10 @@ const BillPage = () => {
 
   return (
     <div className="p-6 space-y-6">
-      {summary.overdueCount > 0 && (
+      {summary?.overdueCount && summary.overdueCount > 0 && (
         <div className="bg-red-100 border border-red-300 p-4 rounded-xl flex justify-between items-center">
           <span className="font-semibold text-red-700">
-            Bạn có {summary.overdueCount} hóa đơn chưa được thanh toán!
+            Bạn có {summary.overdueCount} hóa đơn quá hạn chưa được thanh toán!
           </span>
           <div className="text-red-600 font-bold text-sm">Thanh toán ngay</div>
         </div>
@@ -72,7 +73,7 @@ const BillPage = () => {
             Tổng số tiền còn phải thanh toán{" "}
           </p>
           <h2 className="text-3xl font-bold text-red-600">
-            {(summary.totalOutstanding ?? 0).toLocaleString("vi-VN")} VNĐ
+            {formatCurrency(summary.totalOutstanding ?? 0)}
           </h2>
           <p className="text-slate-600 text-sm mt-4 flex items-center gap-1 italic">
             <span className="material-symbols-outlined text-sm">info</span>

@@ -1,4 +1,4 @@
-import type { ApartmentBuilding } from "../../../types/apartment";
+import type { ApartmentBuilding } from "../../types/apartment";
 type Props = {
   data: ApartmentBuilding;
 };

@@ -3,8 +3,8 @@ import type {
   ServiceRequest,
   ServiceRequestCreateRequest,
 } from "../../../types/serviceRequest";
-import ServiceRequestCard from "./ServiceRequestCard";
-import CreateServiceRequest from "./CreateServiceRequest";
+import ServiceRequestCard from "../../../components/resident/ServiceRequestCard";
+import CreateServiceRequest from "../../../components/resident/CreateServiceRequest";
 import { useToast } from "../../../hooks/useToast";
 import { ToastContainer } from "../../../components/common/ToastContainer";
 import { serviceRequestService } from "../../../services/resident/ServiceRequestService";

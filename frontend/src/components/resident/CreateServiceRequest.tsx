@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import AttachmentUrl from "./AttachmentUrl";
-import type { ServiceRequestCreateRequest } from "../../../types/serviceRequest";
-import type { RequestType, RequestPriority } from "../../../types/common";
+import type { ServiceRequestCreateRequest } from "../../types/serviceRequest";
+import type { RequestType, RequestPriority } from "../../types/common";
 
 type Props = {
   onClose: () => void;

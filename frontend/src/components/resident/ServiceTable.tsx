@@ -1,6 +1,6 @@
-import type { BillItem } from "../../../types/bill";
-import ServiceItem from "../../../components/resident/ServiceItem";
-import { formatCurrency } from "../../../utils/formatters";
+import type { BillItem } from "../../types/bill";
+import ServiceItem from "./ServiceItem";
+import { formatCurrency } from "../../utils/formatters";
 
 type Props = {
   data: BillItem[];

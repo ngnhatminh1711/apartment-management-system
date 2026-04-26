@@ -1,6 +1,6 @@
 import ServiceRegistrationItem from "./ServiceRegistrationItem";
 import { Link } from "react-router-dom";
-import type { ServiceRegistration } from "../../../types/serviceRegistration";
+import type { ServiceRegistration } from "../../types/serviceRegistration";
 type Props = {
   data: ServiceRegistration[];
   onDelete: (id: number) => void;

@@ -1,7 +1,6 @@
 package com.apartmentmanagement.service.resident;
 
 
-import java.time.LocalDate;
 import java.time.YearMonth;
 
 import org.springframework.data.domain.Page;
@@ -23,6 +22,7 @@ import com.apartmentmanagement.exception.AppException;
 import com.apartmentmanagement.exception.ErrorCode;
 import com.apartmentmanagement.repository.ApartmentResidentRepository;
 import com.apartmentmanagement.repository.BillRepository;
+import com.apartmentmanagement.repository.PaymentRepository;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class ResidentBillService {
     private final BillRepository billRepository;
     private final ApartmentResidentRepository apartmentResidentRepository;
+    private final PaymentRepository paymentRepository;
      // -- Bill Info 2-- 
 
     @Transactional(readOnly = true)
@@ -68,6 +69,7 @@ public class ResidentBillService {
         return pageResponse;
     }
 
+    @Transactional(readOnly = true)
     public BillItemResponse getMyBillDetails(Long userId, Long billId){
         ApartmentResident apartmentResident=apartmentResidentRepository.findByUser_Id(userId)
                 .orElseThrow(()->new AppException(ErrorCode.NO_ACTIVE_APARTMENT));
@@ -84,7 +86,7 @@ public class ResidentBillService {
             .unitPrice(i.getUnitPrice())
             .amount(i.getAmount())
             .build()).toList();
-        List<PaymentItemResponse> paymentItems=bill.getPayments().stream().map(p -> PaymentItemResponse.builder()
+        List<PaymentItemResponse> paymentItems=paymentRepository.findByBillId(billId).stream().map(p -> PaymentItemResponse.builder()
             .amount(p.getAmount())
             .paymentMethod(p.getPaymentMethod().name())
             .status(p.getStatus().name())
@@ -99,7 +101,7 @@ public class ResidentBillService {
             .status(bill.getStatus().name())
             .dueDate(bill.getDueDate())
             .items(feeItems)
-            .payments(paymentItems)
+            .myPayments(paymentItems)
             .build();
     }
 

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import type { ChangePasswordRequest } from "../../../types/auth";
-import { useToast } from "../../../hooks/useToast";
-import { ToastContainer } from "../../../components/common/ToastContainer";
+import type { ChangePasswordRequest } from "../../types/auth";
+import { useToast } from "../../hooks/useToast";
+import { ToastContainer } from "../common/ToastContainer";
 type Props = {
   onClose: () => void;
   handleChange: (payload: ChangePasswordRequest) => Promise<void>;

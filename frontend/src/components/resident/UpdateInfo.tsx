@@ -1,8 +1,8 @@
 import { useState } from "react";
-import type { Profile } from "../../../types/apartment";
-import type { UpdateProfileRequest } from "../../../types/auth";
-import { useToast } from "../../../hooks/useToast";
-import { ToastContainer } from "../../../components/common/ToastContainer";
+import type { Profile } from "../../types/apartment";
+import type { UpdateProfileRequest } from "../../types/auth";
+import { useToast } from "../../hooks/useToast";
+import { ToastContainer } from "../common/ToastContainer";
 type Props = {
   onClose: () => void;
   profile: Profile;

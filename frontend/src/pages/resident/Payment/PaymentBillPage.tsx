@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import PaymentForm from "./PaymentForm";
+import PaymentForm from "../../../components/resident/PaymentForm";
 import { useToast } from "../../../hooks/useToast";
 import BillService from "../../../services/resident/BillService";
 import { useEffect, useState } from "react";
@@ -7,7 +7,7 @@ import { ToastContainer } from "../../../components/common/ToastContainer";
 import type { Bill } from "../../../types/bill";
 import type { PaymentRequest } from "../../../types/payment";
 
-const Payment = () => {
+const PaymentBillPage = () => {
   const { id } = useParams();
   const toast = useToast();
   const [data, setData] = useState<Bill>();
@@ -70,4 +70,4 @@ const Payment = () => {
   );
 };
 
-export default Payment;
+export default PaymentBillPage;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ServiceTypeCard from "./ServiceTypeCard";
+import ServiceTypeCard from "../../../components/resident/ServiceTypeCard";
 import type {
   ServiceRegistration,
   ServiceType,
@@ -8,7 +8,7 @@ import serviceRegistrationService from "../../../services/resident/serviceRegist
 import type { ServiceRegistrationCreateRequest } from "../../../types/serviceRegistration";
 import { useToast } from "../../../hooks/useToast";
 import { ToastContainer } from "../../../components/common/ToastContainer";
-import ServiceRegistrationList from "./ServiceRegistrationList";
+import ServiceRegistrationList from "../../../components/resident/ServiceRegistrationList";
 
 const ServiceRegistrationPage = () => {
   const [activeTab, setActiveTab] = useState<"SERVICE" | "MY_SERVICES">(

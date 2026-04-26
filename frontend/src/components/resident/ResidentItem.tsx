@@ -1,5 +1,5 @@
-import React from "react";
-import type { ResidentRef } from "../../../types/apartment";
+import type { ResidentRef } from "../../types/apartment";
+import { formatDate } from "../../utils/formatters";
 type Props = {
   data: ResidentRef;
 };
@@ -19,9 +19,7 @@ const ResidentItem = ({ data }: Props) => {
       </td>
 
       <td className="px-6 py-4 text-sm text-slate-500">
-        {data?.moveInDate
-          ? new Date(data.moveInDate).toLocaleDateString()
-          : "N/A"}
+        {formatDate(data?.moveInDate)}
       </td>
     </tr>
   );

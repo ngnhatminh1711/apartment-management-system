@@ -1,8 +1,8 @@
 import { useState } from "react";
-import type { ServiceType } from "../../../types/serviceRegistration";
-import Registration from "../../../components/resident/Registration";
-import type { ServiceRegistrationCreateRequest } from "../../../types/serviceRegistration";
-import { formatCurrency } from "../../../utils/formatters";
+import type { ServiceType } from "../../types/serviceRegistration";
+import Registration from "./Registration";
+import type { ServiceRegistrationCreateRequest } from "../../types/serviceRegistration";
+import { formatCurrency } from "../../utils/formatters";
 
 type Props = {
   data: ServiceType;

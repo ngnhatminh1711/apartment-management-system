@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-import ServiceTable from "./ServiceTable";
-import PaymentHistory from "./PaymentHistory";
+import ServiceTable from "../../../components/resident/ServiceTable";
+import PaymentHistory from "../../../components/resident/PaymentHistory";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer } from "../../../components/common/ToastContainer";
 import { useToast } from "../../../hooks/useToast";
 import BillService from "../../../services/resident/BillService";
 import type { Bill } from "../../../types/bill";
-import { formatDate } from "../../../utils/formatters";
+import { formatCurrency, formatDate } from "../../../utils/formatters";
+import { BILL_STATUS_LABELS } from "../../../utils/constants";
+import { Spinner } from "../../../components/common/Spinner";
 
-const BillDetail = () => {
+const BillDetailPage = () => {
   const { id } = useParams();
   const [bill, setBill] = useState<Bill | null>(null);
   const toast = useToast();
@@ -35,11 +37,7 @@ const BillDetail = () => {
   }, [id]);
 
   if (!bill) {
-    return (
-      <main className="text-center py-20">
-        <p className="text-slate-500">Không tìm thấy hóa đơn</p>
-      </main>
-    );
+    return <Spinner />;
   }
 
   return (
@@ -60,7 +58,7 @@ const BillDetail = () => {
           <div>
             <div className="flex items-center gap-3 mb-2">
               <span className="px-3 py-1  text-xs font-bold rounded-full uppercase tracking-wider">
-                {bill.status === "PAID" ? "Đã thanh toán" : "Chưa thanh toán"}
+                {BILL_STATUS_LABELS[bill.status]}
               </span>
               <span className="text-slate-500 text-sm font-medium">
                 Hóa đơn: #{bill.id}
@@ -87,7 +85,7 @@ const BillDetail = () => {
                 Tổng cộng cần thanh toán
               </p>
               <p className="text-4xl font-black text-blue-600">
-                {(bill.remainingAmount ?? 0).toLocaleString("vi-VN")}đ
+                {formatCurrency(bill.remainingAmount ?? 0)}
               </p>
               <button
                 onClick={() => navigate(`/resident/bills/${bill.id}/payment`)}
@@ -140,4 +138,4 @@ const BillDetail = () => {
   );
 };
 
-export default BillDetail;
+export default BillDetailPage;

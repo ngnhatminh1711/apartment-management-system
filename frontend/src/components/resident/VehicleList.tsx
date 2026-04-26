@@ -1,5 +1,5 @@
-import type { Vehicle } from "../../../types/vehicle";
-import VehicleItem from "../../../components/resident/VehicleItem";
+import type { Vehicle } from "../../types/vehicle";
+import VehicleItem from "./VehicleItem";
 
 type Props = {
   data: Vehicle[];

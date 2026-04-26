@@ -57,8 +57,15 @@ export interface BillSummary {
   totalBills?: number;
   paidCount?: number;
   pendingCount?: number;
-  overdueCount: number;
+  overdueCount?: number;
   totalAmount?: number;
   collectedAmount?: number;
-  totalOutstanding: number;
+  totalOutstanding?: number;
+}
+export interface PageBillResponse {
+  summary: BillSummary;
+  content: Bill[];
+  totalElements: number;
+  totalPages: number;
+  currentPage: number;
 }

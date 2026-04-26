@@ -1,6 +1,6 @@
-import type { Payment } from "../../../types/payment";
-import { PAYMENT_METHOD_LABELS } from "../../../utils/constants";
-import { formatDateTime } from "../../../utils/formatters";
+import type { Payment } from "../../types/payment";
+import { PAYMENT_METHOD_LABELS } from "../../utils/constants";
+import { formatCurrency, formatDateTime } from "../../utils/formatters";
 
 type Props = {
   item: Payment;
@@ -24,7 +24,7 @@ const PaymentItem = ({ item }: Props) => {
       <td className="px-8 py-5">{PAYMENT_METHOD_LABELS[item.paymentMethod]}</td>
 
       <td className="px-8 py-5 font-bold text-green-600">
-        {(item.bill?.totalAmount ?? 0).toLocaleString("vi-VN")}
+        {formatCurrency(item.bill?.totalAmount ?? 0)}
       </td>
 
       <td className="px-8 py-5">

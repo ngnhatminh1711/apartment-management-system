@@ -1,5 +1,5 @@
-import type { PaymentRef } from "../../../types/bill";
-import PaymentItem from "./PaymentItemBill";
+import type { PaymentRef } from "../../types/bill";
+import PaymentItemBill from "./PaymentItemBill";
 type Props = {
   payments: PaymentRef[];
 };
@@ -22,7 +22,7 @@ const PaymentHistory = ({ payments }: Props) => {
 
       <div className="divide-y divide-slate-100">
         {payments.map((p) => (
-          <PaymentItem key={p.id} payment={p} />
+          <PaymentItemBill key={p.id} payment={p} />
         ))}
       </div>
     </div>

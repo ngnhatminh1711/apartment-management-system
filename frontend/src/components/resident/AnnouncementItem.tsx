@@ -1,5 +1,10 @@
 import { useState } from "react";
-import type { Announcement } from "../../../types/notification";
+import type { Announcement } from "../../types/notification";
+import {
+  ANNOUNCEMENT_PRIORITY_COLORS,
+  ANNOUNCEMENT_PRIORITY_LABELS,
+} from "../../utils/constants";
+import { formatDate } from "../../utils/formatters";
 
 type Props = {
   data: Announcement;
@@ -27,14 +32,20 @@ const AnnouncementItem = ({ data }: Props) => {
       <div className="grow">
         <div className="flex justify-between items-start mb-1">
           <span className="text-[11px] text-slate-400 italic">
-            {new Date(data.publishedAt).toLocaleDateString()} :{" "}
-            {formatTime(data.publishedAt)}
+            {formatDate(data.publishedAt)} : {formatTime(data.publishedAt)}
           </span>
         </div>
 
-        <h3 className="text-[15px] font-bold text-slate-700 mb-1">
-          {data.title}
-        </h3>
+        <div className="flex items-center gap-2 mb-1">
+          <h3 className="text-[15px] font-bold text-slate-700">{data.title}</h3>
+          {data?.priority && (
+            <span
+              className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${ANNOUNCEMENT_PRIORITY_COLORS[data.priority]}`}
+            >
+              {ANNOUNCEMENT_PRIORITY_LABELS[data.priority]}
+            </span>
+          )}
+        </div>
 
         <p
           className={`text-sm text-slate-500 leading-relaxed italic whitespace-pre-line ${expanded ? "" : "line-clamp-3"}`}

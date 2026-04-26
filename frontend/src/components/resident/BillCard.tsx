@@ -1,5 +1,6 @@
-import type { Bill } from "../../../types/bill";
-import { formatDate } from "../../../utils/formatters";
+import type { Bill } from "../../types/bill";
+import { formatDate } from "../../utils/formatters";
+import { formatCurrency } from "../../utils/formatters";
 import { useNavigate } from "react-router-dom";
 type Props = {
   bill: Bill;
@@ -73,15 +74,13 @@ export default function BillCard({ bill }: Props) {
       <div className="space-y-4 mb-6">
         <div className="flex justify-between text-sm">
           <span className="text-slate-600">Tổng số tiền</span>
-          <span className="font-bold">
-            {bill.totalAmount.toLocaleString("vi-VN")} VNĐ
-          </span>
+          <span className="font-bold">{formatCurrency(bill.totalAmount)}</span>
         </div>
 
         <div className="flex justify-between text-sm">
           <span className="text-slate-600">Còn nợ</span>
           <span className={`font-bold ${styles.amount}`}>
-            {bill.remainingAmount?.toLocaleString("vi-VN")} VNĐ
+            {formatCurrency(bill.remainingAmount ?? 0)}
           </span>
         </div>
 

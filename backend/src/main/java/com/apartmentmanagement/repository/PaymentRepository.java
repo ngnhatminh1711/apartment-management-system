@@ -1,7 +1,7 @@
 package com.apartmentmanagement.repository;
 
 import java.time.LocalDate;
-
+import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
@@ -33,4 +33,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
                     LocalDate toDate,
                     Pageable pageable
             );
+@Query("SELECT p FROM Payment p WHERE  p.bill.id = :billId")
+List<Payment> findByBillId(Long billId);
 }

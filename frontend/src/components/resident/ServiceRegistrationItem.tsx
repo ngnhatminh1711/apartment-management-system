@@ -1,4 +1,6 @@
-import type { ServiceRegistration } from "../../../types/serviceRegistration";
+import type { ServiceRegistration } from "../../types/serviceRegistration";
+import { REGISTRATION_STATUS_LABELS } from "../../utils/constants";
+import { formatCurrency, formatDate } from "../../utils/formatters";
 
 type Props = {
   data: ServiceRegistration;
@@ -23,7 +25,7 @@ const ServiceRegistrationItem = ({ data, onDelete }: Props) => {
               {data?.serviceType?.name}
             </h3>
             <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-bold uppercase tracking-wider">
-              {data?.status}
+              {data?.status ? REGISTRATION_STATUS_LABELS[data.status] : ""}
             </span>
           </div>
           <div className="flex flex-wrap gap-x-6 gap-y-1">
@@ -35,11 +37,7 @@ const ServiceRegistrationItem = ({ data, onDelete }: Props) => {
                 payments
               </span>
               <span className="font-medium">
-                {data.serviceType?.monthlyFee?.toLocaleString("vi-VN", {
-                  style: "currency",
-                  currency: "VND",
-                })}
-                /tháng
+                {formatCurrency(data.serviceType?.monthlyFee ?? 0)}/tháng
               </span>
             </div>
             <div className="flex items-center gap-1.5 text-slate-600 text-sm">
@@ -50,26 +48,11 @@ const ServiceRegistrationItem = ({ data, onDelete }: Props) => {
                 calendar_today
               </span>
               {!data?.startDate ? (
-                <span>
-                  Ngày đăng ký:{" "}
-                  {data?.registeredAt
-                    ? new Date(data.registeredAt).toLocaleDateString()
-                    : "__"}
-                </span>
+                <span>Ngày đăng ký: {formatDate(data?.registeredAt)}</span>
               ) : (
                 <>
-                  <span>
-                    Bắt đầu:{" "}
-                    {data?.startDate
-                      ? new Date(data.startDate).toLocaleDateString()
-                      : "__"}
-                  </span>
-                  <span>
-                    Ngày kết thúc:{" "}
-                    {data?.endDate
-                      ? new Date(data.endDate).toLocaleDateString()
-                      : "__"}
-                  </span>
+                  <span>Bắt đầu: {formatDate(data?.startDate)}</span>
+                  <span>Ngày kết thúc: {formatDate(data?.endDate)}</span>
                 </>
               )}
             </div>
