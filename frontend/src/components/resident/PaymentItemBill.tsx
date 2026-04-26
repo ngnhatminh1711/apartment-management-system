@@ -1,4 +1,8 @@
 import type { PaymentRef } from "../../types/bill";
+import {
+  PAYMENT_STATUS_COLORS,
+  PAYMENT_STATUS_LABELS,
+} from "../../utils/constants";
 import { formatCurrency, formatDate } from "../../utils/formatters";
 type Props = {
   payment: PaymentRef;
@@ -11,8 +15,10 @@ const PaymentItemBill = ({ payment }: Props) => {
           {formatCurrency(payment.amount)}
         </p>
 
-        <span className="px-2 py-0.5 text-[10px] font-bold rounded uppercase bg-green-50 text-green-600">
-          {payment.status}
+        <span
+          className={`px-2 py-0.5 text-[10px] font-bold rounded uppercase ${PAYMENT_STATUS_COLORS[payment.status]}`}
+        >
+          {PAYMENT_STATUS_LABELS[payment.status]}
         </span>
       </div>
 

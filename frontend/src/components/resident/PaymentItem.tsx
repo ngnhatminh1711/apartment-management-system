@@ -1,5 +1,9 @@
 import type { Payment } from "../../types/payment";
-import { PAYMENT_METHOD_LABELS } from "../../utils/constants";
+import {
+  PAYMENT_METHOD_LABELS,
+  PAYMENT_STATUS_COLORS,
+  PAYMENT_STATUS_LABELS,
+} from "../../utils/constants";
 import { formatCurrency, formatDateTime } from "../../utils/formatters";
 
 type Props = {
@@ -27,8 +31,10 @@ const PaymentItem = ({ item }: Props) => {
         {formatCurrency(item.bill?.totalAmount ?? 0)}
       </td>
 
-      <td className="px-8 py-5">
-        <span>{item.status}</span>
+      <td className={`px-8 py-5  font-medium `}>
+        <span className={PAYMENT_STATUS_COLORS[item.status]}>
+          {PAYMENT_STATUS_LABELS[item.status]}
+        </span>
       </td>
     </tr>
   );

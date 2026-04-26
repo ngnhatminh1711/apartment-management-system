@@ -11,6 +11,7 @@ import type {
   RegistrationStatus,
   AnnouncementPriority,
   UserRole,
+  PaymentStatus,
 } from "../types/common";
 
 export const PAGE_SIZE = 10;
@@ -55,6 +56,19 @@ export const FEE_TYPE_LABELS: Record<FeeType, string> = {
   GARBAGE: "Phí rác",
   INTERNET: "Phí Internet",
   ELEVATOR: "Phí thang máy",
+};
+export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
+  PENDING: "Chờ xử lý",
+  SUCCESS: "Thành công",
+  FAILED: "Thất bại",
+  REFUNDED: "Đã hoàn tiền",
+};
+
+export const PAYMENT_STATUS_COLORS: Record<PaymentStatus, string> = {
+  PENDING: "bg-yellow-100 text-yellow-700",
+  SUCCESS: "bg-green-100 text-green-700",
+  FAILED: "bg-red-100 text-red-700",
+  REFUNDED: "bg-gray-100 text-gray-600",
 };
 
 export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {

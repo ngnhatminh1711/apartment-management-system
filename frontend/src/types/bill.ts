@@ -1,4 +1,4 @@
-import type { BillStatus, FeeType } from "./common";
+import type { BillStatus, FeeType, PaymentStatus } from "./common";
 
 export interface BillItem {
   id: number;
@@ -15,7 +15,7 @@ export interface PaymentRef {
   id: number;
   amount: number;
   paymentMethod: string;
-  status: string;
+  status: PaymentStatus;
   paidAt: string | null;
 }
 
