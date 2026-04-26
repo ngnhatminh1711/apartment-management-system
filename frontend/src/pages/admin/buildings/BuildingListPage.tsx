@@ -1,34 +1,37 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { buildingService } from "../../../services/admin/buildingService";
+import { Badge } from "../../../components/common/Badge";
+import { ConfirmDialog } from "../../../components/common/ConfirmDialog";
+import { EmptyState } from "../../../components/common/EmptyState";
 import { Pagination } from "../../../components/common/Pagination";
 import { SearchInput } from "../../../components/common/SearchInput";
-import { EmptyState } from "../../../components/common/EmptyState";
 import { Spinner } from "../../../components/common/Spinner";
-import { ConfirmDialog } from "../../../components/common/ConfirmDialog";
-import { useToast } from "../../../hooks/useToast";
-import { usePagination } from "../../../hooks/usePagination";
 import { ToastContainer } from "../../../components/common/ToastContainer";
-import type { Building } from "../../../types/building";
+import { usePagination } from "../../../hooks/usePagination";
+import { useToast } from "../../../hooks/useToast";
+import { adminBuildingService } from "../../../services/admin/buildingService";
+import type { Building } from "../../../types/admin";
 
 export function BuildingListPage() {
     const [buildings, setBuildings] = useState<Building[]>([]);
     const [total, setTotal] = useState(0);
     const [totalPages, setPages] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [filterActive, setFilterActive] = useState<boolean | undefined>(undefined);
     const [deleteId, setDeleteId] = useState<number | null>(null);
 
     const toast = useToast();
     const pag = usePagination();
 
-    const fetch = useCallback(async () => {
+    const fetchData = useCallback(async () => {
         setLoading(true);
         try {
-            const data = await buildingService.getAll({
+            const data = await adminBuildingService.getAll({
                 page: pag.page,
                 size: pag.size,
-                search: pag.search,
                 sort: pag.sort,
+                search: pag.search || undefined,
+                isActive: filterActive,
             });
             setBuildings(data.content);
             setTotal(data.totalElements);
@@ -38,47 +41,49 @@ export function BuildingListPage() {
         } finally {
             setLoading(false);
         }
-    }, [pag.page, pag.size, pag.search, pag.sort]); // eslint-disable-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pag.page, pag.size, pag.sort, pag.search, filterActive]);
 
     useEffect(() => {
-        fetch();
-    }, [fetch]);
+        fetchData();
+    }, [fetchData]);
 
-    const handleDelete = async () => {
+    const handleDeactivate = async () => {
         if (!deleteId) return;
         try {
-            await buildingService.deactivate(deleteId);
+            await adminBuildingService.deactivate(deleteId);
             toast.success("Đã vô hiệu hóa tòa nhà");
             setDeleteId(null);
-            fetch();
+            fetchData();
         } catch (e: unknown) {
-            const msg =
-                (e as { response?: { data?: { message?: string } } })?.response?.data?.message ??
-                "Có lỗi xảy ra";
-            toast.error(msg);
+            toast.error((e as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "Có lỗi xảy ra");
             setDeleteId(null);
         }
     };
-
     return (
         <div className="space-y-5">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <div className="flex flex-col">
-                    <h1 className="text-3xl font-extrabold tracking-tight mb-1">Tòa nhà</h1>
-                    <p className="text-sm font-medium">
-                        Quản lý danh sách các tòa nhà cao cấp trên toàn TP. Hồ Chí Minh.
-                    </p>
-                </div>
-
+                <h1>🏢 Quản lý Tòa nhà</h1>
                 <Link to="new" className="btn-primary">
                     + Thêm tòa nhà
                 </Link>
             </div>
 
             {/* Toolbar */}
-            <div className="card py-3">
-                <SearchInput placeholder="Tìm theo tên, địa chỉ..." onSearch={pag.setSearch} />
+            <div className="card py-3 flex gap-3 flex-wrap">
+                <div className="flex-1 min-w-[200px]">
+                    <SearchInput placeholder="Tìm theo tên, địa chỉ..." onSearch={pag.setSearch} />
+                </div>
+                <select
+                    className="input-field w-44"
+                    value={filterActive === undefined ? "" : String(filterActive)}
+                    onChange={(e) => setFilterActive(e.target.value === "" ? undefined : e.target.value === "true")}
+                >
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="true">Đang hoạt động</option>
+                    <option value="false">Đã vô hiệu</option>
+                </select>
             </div>
 
             {/* Table */}
@@ -88,85 +93,106 @@ export function BuildingListPage() {
                         <Spinner />
                     </div>
                 ) : buildings.length === 0 ? (
-                    <EmptyState icon="🏢" title="Chưa có tòa nhà nào" />
+                    <EmptyState
+                        icon=""
+                        title="Chưa có tòa nhà nào"
+                        action={
+                            <Link to="new" className="btn-primary">
+                                + Thêm tòa nhà
+                            </Link>
+                        }
+                    />
                 ) : (
                     <>
-                        <table className="w-full">
-                            <thead>
-                                <tr>
-                                    {[
-                                        "Tên tòa nhà",
-                                        "Địa chỉ",
-                                        "Số tầng",
-                                        "Căn hộ",
-                                        "Ban quản lý",
-                                        "Trạng thái",
-                                        "",
-                                    ].map((h) => (
-                                        <th key={h} className="table-header text-left">
-                                            {h}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {buildings.map((b) => (
-                                    <tr key={b.id} className="hover:bg-gray-50 transition-colors">
-                                        <td className="table-cell font-medium text-gray-900">
-                                            {b.name}
-                                        </td>
-                                        <td className="table-cell text-black/50 max-w-50 truncate">
-                                            {b.address}
-                                        </td>
-                                        <td className="table-cell">{b.numFloors}</td>
-                                        <td className="table-cell">
-                                            {b.stats?.totalApartments ?? b.numApartments}
-                                        </td>
-                                        <td className="table-cell">
-                                            <div className="flex items-center gap-2">
-                                                <img
-                                                    alt="Manager"
-                                                    className="w-7 h-7 rounded-full object-cover"
-                                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6HirtKU7xaZGomed1uFArIoMfuwxb86pPX6g486HRtksDf4A9rRgiE3hXAkLSDQatypigpaK6FLUNwrrh9enjW1lQZKpsEw9BMQE7O7yLsLiyLUbzSwINFPpPrfeGnnvj9MyiHYjh0kjQVUwudIissAQzsEm3YUp95L_Ivw4swLwaUUW5eZlAWiUynnWcRYj3cPVC7IYHf7GOOO6LkYya7lr0bDk_aNcZg-qgOIN6p_8-m82GWxdqJ0H4k-RFkJgYs73k-TbH3BY"
-                                                ></img>
-                                                <div className="text-sm font-medium">
-                                                    {b.manager?.fullName ?? "—"}
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="table-cell">
-                                            <span
-                                                className={`inline-flex items-center rounded-full text-sm px-2.5 py-0.5 font-medium
-                                        ${b.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}
-                                            >
-                                                {b.isActive ? "Hoạt động" : "Vô hiệu"}
-                                            </span>
-                                        </td>
-                                        <td className="table-cell">
-                                            <div className="flex gap-2">
-                                                <Link
-                                                    to={`${b.id}/edit`}
-                                                    className="text-xs text-primary hover:underline"
-                                                >
-                                                    Sửa
-                                                </Link>
-                                                <button
-                                                    onClick={() => setDeleteId(b.id)}
-                                                    className="text-xs text-red-500 hover:underline"
-                                                    disabled={!b.isActive}
-                                                >
-                                                    Vô hiệu
-                                                </button>
-                                            </div>
-                                        </td>
+                        <div className="overflow-x-auto">
+                            <table className="w-full min-w-[800px]">
+                                <thead>
+                                    <tr>
+                                        {["Tên tòa nhà", "Địa chỉ", "Tầng", "Căn hộ", "Lấp đầy", "Ban QL", "Trạng thái", ""].map(
+                                            (h) => (
+                                                <th key={h} className="table-header text-left">
+                                                    {h}
+                                                </th>
+                                            ),
+                                        )}
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {buildings.map((b) => {
+                                        const occupiedPct =
+                                            b.stats.totalApartments > 0
+                                                ? Math.round((b.stats.occupiedApartments / b.stats.totalApartments) * 100)
+                                                : 0;
+                                        return (
+                                            <tr key={b.id} className="hover:bg-gray-50 transition-colors">
+                                                <td className="table-cell">
+                                                    <Link to={`${b.id}`} className="font-medium text-primary hover:underline">
+                                                        {b.name}
+                                                    </Link>
+                                                </td>
+                                                <td className="table-cell text-gray-500 max-w-[200px] truncate">{b.address}</td>
+                                                <td className="table-cell text-center">{b.numFloors}</td>
+                                                <td className="table-cell text-center">
+                                                    <span className="font-medium">{b.stats.occupiedApartments}</span>
+                                                    <span className="text-gray-400"> / {b.stats.totalApartments}</span>
+                                                </td>
+                                                <td className="table-cell">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                                            <div
+                                                                className="h-full bg-primary rounded-full"
+                                                                style={{ width: `${occupiedPct}%` }}
+                                                            />
+                                                        </div>
+                                                        <span className="text-xs text-gray-500 w-8">{occupiedPct}%</span>
+                                                    </div>
+                                                </td>
+                                                <td className="table-cell">
+                                                    {b.manager ? (
+                                                        <span className="text-sm">{b.manager.fullName}</span>
+                                                    ) : (
+                                                        <span className="text-gray-400 text-xs italic">Chưa gán</span>
+                                                    )}
+                                                </td>
+                                                <td className="table-cell">
+                                                    <Badge
+                                                        label={b.isActive ? "Hoạt động" : "Vô hiệu"}
+                                                        className={
+                                                            b.isActive
+                                                                ? "bg-green-100 text-green-700"
+                                                                : "bg-gray-100 text-gray-500"
+                                                        }
+                                                    />
+                                                </td>
+                                                <td className="table-cell">
+                                                    <div className="flex gap-3">
+                                                        <Link
+                                                            to={`${b.id}/edit`}
+                                                            className="text-xs text-primary hover:underline"
+                                                        >
+                                                            Sửa
+                                                        </Link>
+                                                        {b.isActive && (
+                                                            <button
+                                                                onClick={() => setDeleteId(b.id)}
+                                                                className="text-xs text-red-500 hover:underline"
+                                                            >
+                                                                Vô hiệu
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
                         <Pagination
                             currentPage={pag.page}
                             totalPages={totalPages}
                             totalElements={total}
+                            name="Tòa nhà"
                             pageSize={pag.size}
                             onPageChange={pag.setPage}
                         />
@@ -177,8 +203,8 @@ export function BuildingListPage() {
             <ConfirmDialog
                 isOpen={!!deleteId}
                 title="Vô hiệu hóa tòa nhà"
-                message="Bạn có chắc muốn vô hiệu hóa tòa nhà này? Thao tác này có thể khôi phục sau."
-                onConfirm={handleDelete}
+                message="Bạn có chắc muốn vô hiệu hóa tòa nhà này? Thao tác có thể khôi phục bằng cách cập nhật lại."
+                onConfirm={handleDeactivate}
                 onCancel={() => setDeleteId(null)}
                 confirmLabel="Vô hiệu hóa"
                 danger

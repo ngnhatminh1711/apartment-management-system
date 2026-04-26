@@ -19,13 +19,14 @@ import { BuildingListPage } from "../pages/admin/buildings/BuildingListPage";
 // Manager pages
 import { ManagerDashboardPage } from "../pages/manager/DashboardPage";
 import { AnnouncementFormPage } from "../pages/manager/announcements/AnnouncementFormPage";
+import { AnnouncementListPage } from "../pages/manager/announcements/AnnouncementListPage";
+import { ApartmentDetailPage } from "../pages/manager/apartments/ApartmentDetailPage";
 import { ApartmentListPage as ManagerApartmentList } from "../pages/manager/apartments/ApartmentListPage";
+import { ResidentDetailPage } from "../pages/manager/residents/ResidentDetailPage";
 import { ResidentListPage } from "../pages/manager/residents/ResidentListPage";
 
 // Resident pages
-import { AnnouncementListPage } from "../pages/manager/announcements/AnnouncementListPage";
-import { ApartmentDetailPage } from "../pages/manager/apartments/ApartmentDetailPage";
-import { ResidentDetailPage } from "../pages/manager/residents/ResidentDetailPage";
+import { BuildingFormPage } from "../pages/admin/buildings/BuildingFormPage";
 import { ResidentDashboardPage } from "../pages/resident/DashboardPage";
 
 const router = createBrowserRouter([
@@ -50,7 +51,10 @@ const router = createBrowserRouter([
         ),
         children: [
             { index: true, element: <AdminDashboardPage /> },
+            // Buildings
             { path: "buildings", element: <BuildingListPage /> },
+            { path: "buildings/new", element: <BuildingFormPage /> },
+            { path: "buildings/:id/edit", element: <BuildingFormPage /> },
         ],
     },
 
