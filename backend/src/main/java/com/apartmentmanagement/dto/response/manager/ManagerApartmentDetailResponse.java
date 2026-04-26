@@ -27,7 +27,7 @@ public class ManagerApartmentDetailResponse {
     private ApartmentStatus status;
     private String notes;
     private List<CurrentResidentRef> currentResidents;
-    private List<HistoryRef> residentHistory;
+    private List<HistoryRef> residenceHistory;
     private List<VehicleRef> vehicles;
     private List<BillRef> recentBills;
 

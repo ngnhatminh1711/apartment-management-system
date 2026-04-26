@@ -1,18 +1,19 @@
 package com.apartmentmanagement.entity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.apartmentmanagement.config.StringListConverter;
 import com.apartmentmanagement.enums.RequestPriority;
 import com.apartmentmanagement.enums.RequestStatus;
 import com.apartmentmanagement.enums.RequestType;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
@@ -46,7 +47,7 @@ public class ServiceRequest {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "request_type", nullable = false, length = 30)
-    private RequestType RequestType;
+    private RequestType requestType;
 
     @Column(nullable = false, length = 200)
     private String title;
@@ -54,10 +55,9 @@ public class ServiceRequest {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    /** Mang URL ảnh đính kèm - dùng PostgreSQL TEXT[] array. */
+    @Convert(converter = StringListConverter.class)
     @Column(name = "attachment_urls", columnDefinition = "TEXT")
-    @Builder.Default
-    private List<String> attachmentUrls = new ArrayList<>();
+    private List<String> attachmentUrls;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)

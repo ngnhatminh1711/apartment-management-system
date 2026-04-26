@@ -72,3 +72,5 @@ export type NotificationType =
     | "SERVICE_APPROVED"
     | "ANNOUNCEMENT"
     | "SYSTEM";
+
+export type ServiceRegistrationStatus = "PENDING" | "ACTIVE" | "EXPIRED" | "CANCELLED";

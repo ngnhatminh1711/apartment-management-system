@@ -29,10 +29,11 @@ public class ManagerAnnouncementService {
     private final AnnouncementRepository announcementRepo;
 
     @Transactional(readOnly = true)
-    public PageResponse<AnnouncementResponse> getAll(Boolean isPublished, AnnouncementPriority priority, String search,
-            int page, int size) {
+    public PageResponse<AnnouncementResponse> getAll(Boolean isPublished, AnnouncementPriority priority,
+            String search, int page, int size) {
         Long buildingId = buildingHelper.getMyBuildingId();
-        var pageData = announcementRepo.findByBuilding(buildingId, isPublished, priority, search,
+        var pageData = announcementRepo.findByBuilding(
+                buildingId, isPublished, priority, search,
                 PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "publishedAt")));
         return PageResponse.of(pageData, this::toResponse);
     }
@@ -60,6 +61,46 @@ public class ManagerAnnouncementService {
                 .publishedAt(LocalDateTime.now())
                 .build();
 
+        return toResponse(announcementRepo.save(a));
+    }
+
+    @Transactional
+    public AnnouncementResponse update(Long id, AnnouncementRequest req) {
+        Long buildingId = buildingHelper.getMyBuildingId();
+        Announcement a = findInMyBuilding(id, buildingId);
+
+        if (!a.getSender().getId().equals(SecurityUtils.getCurrentUserId())) {
+            throw new AppException(ErrorCode.ACCESS_DENIED);
+        }
+
+        if (req.getTitle() != null) {
+            a.setTitle(req.getTitle());
+        }
+
+        if (req.getContent() != null) {
+            a.setContent(req.getContent());
+        }
+
+        if (req.getPriority() != null) {
+            a.setPriority(req.getPriority());
+        }
+
+        if (req.getExpiresAt() != null) {
+            a.setExpiresAt(req.getExpiresAt());
+        }
+
+        if (req.getAttachmentUrls() != null) {
+            a.setAttachmentUrls(req.getAttachmentUrls());
+        }
+
+        return toResponse(announcementRepo.save(a));
+    }
+
+    @Transactional
+    public AnnouncementResponse togglePublish(Long id) {
+        Long buildingId = buildingHelper.getMyBuildingId();
+        Announcement a = findInMyBuilding(id, buildingId);
+        a.setIsPublished(!a.getIsPublished());
         return toResponse(announcementRepo.save(a));
     }
 
