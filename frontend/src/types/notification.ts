@@ -11,26 +11,3 @@ export interface Notification {
     readAt: string | null;
     createdAt: string;
 }
-
-export interface Announcement {
-    id: number;
-    title: string;
-    content: string;
-    priority: string;
-    senderName: string;
-    buildingId?: number;
-    attachmentUrls: string[];
-    isPublished: boolean;
-    publishedAt: string;
-    expiresAt: string | null;
-    viewCount?: number;
-    createdAt: string;
-}
-
-export interface AnnouncementCreateRequest {
-    title: string;
-    content: string;
-    priority: string;
-    attachmentUrls?: string[];
-    expiresAt?: string;
-}

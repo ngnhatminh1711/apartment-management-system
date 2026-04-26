@@ -1,16 +1,16 @@
 import type {
+    AnnouncementPriority,
     ApartmentStatus,
     BillStatus,
     FeeType,
     PaymentMethod,
-    VehicleType,
-    VehicleStatus,
-    RequestType,
-    RequestStatus,
-    RequestPriority,
     RegistrationStatus,
-    AnnouncementPriority,
+    RequestPriority,
+    RequestStatus,
+    RequestType,
     UserRole,
+    VehicleStatus,
+    VehicleType,
 } from "../types/common";
 
 export const PAGE_SIZE = 10;

@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 
 // Auth
 import { LoginPage } from "../pages/auth/LoginPage";
@@ -18,10 +18,14 @@ import { BuildingListPage } from "../pages/admin/buildings/BuildingListPage";
 
 // Manager pages
 import { ManagerDashboardPage } from "../pages/manager/DashboardPage";
+import { AnnouncementFormPage } from "../pages/manager/announcements/AnnouncementFormPage";
 import { ApartmentListPage as ManagerApartmentList } from "../pages/manager/apartments/ApartmentListPage";
 import { ResidentListPage } from "../pages/manager/residents/ResidentListPage";
 
 // Resident pages
+import { AnnouncementListPage } from "../pages/manager/announcements/AnnouncementListPage";
+import { ApartmentDetailPage } from "../pages/manager/apartments/ApartmentDetailPage";
+import { ResidentDetailPage } from "../pages/manager/residents/ResidentDetailPage";
 import { ResidentDashboardPage } from "../pages/resident/DashboardPage";
 
 const router = createBrowserRouter([
@@ -30,9 +34,7 @@ const router = createBrowserRouter([
     {
         path: "/unauthorized",
         element: (
-            <div className="flex h-screen items-center justify-center text-xl text-red-500">
-                403 – Không có quyền truy cập
-            </div>
+            <div className="flex h-screen items-center justify-center text-xl text-red-500">403 – Không có quyền truy cập</div>
         ),
     },
 
@@ -64,8 +66,19 @@ const router = createBrowserRouter([
         ),
         children: [
             { index: true, element: <ManagerDashboardPage /> },
+
+            // Apartments
             { path: "apartments", element: <ManagerApartmentList /> },
+            { path: "apartments/:id", element: <ApartmentDetailPage /> },
+
+            // Residents
             { path: "residents", element: <ResidentListPage /> },
+            { path: "residents/:id", element: <ResidentDetailPage /> },
+
+            // Announcements
+            { path: "announcements", element: <AnnouncementListPage /> },
+            { path: "announcements/new", element: <AnnouncementFormPage /> },
+            { path: "announcements/:id/edit", element: <AnnouncementFormPage /> },
         ],
     },
 

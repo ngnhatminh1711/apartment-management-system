@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
-import { usePagination } from "../../../hooks/usePagination";
-import { useToast } from "../../../hooks/useToast";
-import { Link } from "react-router-dom";
-import { SearchInput } from "../../../components/common/SearchInput";
-import { Spinner } from "../../../components/common/Spinner";
+import { useNavigate } from "react-router-dom";
 import { EmptyState } from "../../../components/common/EmptyState";
 import { Pagination } from "../../../components/common/Pagination";
-import type { Resident } from "../../../types/residents";
-import { residentService } from "../../../services/manager/residentService";
-import { formatDate, formatPhone } from "../../../utils/formatters";
+import { SearchInput } from "../../../components/common/SearchInput";
+import { Spinner } from "../../../components/common/Spinner";
+import { ToastContainer } from "../../../components/common/ToastContainer";
+import { usePagination } from "../../../hooks/usePagination";
+import { useToast } from "../../../hooks/useToast";
+import { managerResidentService } from "../../../services/manager/residentService";
+import type { Resident } from "../../../types/manager";
+import { formatCurrency, formatDate, formatPhone } from "../../../utils/formatters";
 
 export function ResidentListPage() {
     const [residents, setResidents] = useState<Resident[]>([]);
@@ -16,17 +17,18 @@ export function ResidentListPage() {
     const [totalPages, setPages] = useState(0);
     const [loading, setLoading] = useState(true);
 
+    const navigate = useNavigate();
     const toast = useToast();
     const pag = usePagination();
 
-    const fetch = useCallback(async () => {
+    const fetchData = useCallback(async () => {
         setLoading(true);
         try {
-            const data = await residentService.getAll({
+            const data = await managerResidentService.getAll({
                 page: pag.page,
                 size: pag.size,
-                search: pag.search,
                 sort: pag.sort,
+                search: pag.search || undefined,
             });
             setResidents(data.content);
             setTotal(data.totalElements);
@@ -36,123 +38,92 @@ export function ResidentListPage() {
         } finally {
             setLoading(false);
         }
-    }, [pag.page, pag.size, pag.search, pag.sort]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [pag.page, pag.size, pag.sort, pag.search]); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
-        fetch();
-    }, [fetch]);
+        fetchData();
+    }, [fetchData]);
 
     return (
         <div className="space-y-5">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div className="flex flex-col">
-                    <h1 className="text-3xl font-extrabold tracking-tight mb-1">Căn hộ</h1>
-                    <p className="text-sm font-medium">
-                        Quản lý căn hộ, tình trạng sử dụng và thông tin chi tiết trong toàn bộ hệ
-                        thống tại TP.HCM.
-                    </p>
-                </div>
+            <h1>Danh sách Cư dân</h1>
 
-                <Link to="new" className="btn-primary">
-                    + Thêm tòa nhà
-                </Link>
-            </div>
-
-            {/* Toolbar */}
             <div className="card py-3">
-                <SearchInput placeholder="Tìm theo tên, địa chỉ..." onSearch={pag.setSearch} />
+                <SearchInput placeholder="Tìm theo tên, email, SĐT, CCCD..." onSearch={pag.setSearch} />
             </div>
 
-            {/* Table */}
             <div className="card p-0">
                 {loading ? (
                     <div className="py-16 flex justify-center">
                         <Spinner />
                     </div>
                 ) : residents.length === 0 ? (
-                    <EmptyState icon="🏢" title="Chưa có căn hộ nào" />
+                    <EmptyState icon="👥" title="Không tìm thấy cư dân" />
                 ) : (
                     <>
-                        <table className="w-full">
-                            <thead>
-                                <tr>
-                                    {[
-                                        "Họ tên",
-                                        "Thông tin liên lạc",
-                                        "CMND/CCCD",
-                                        "Căn hộ",
-                                        "Vai trò",
-                                        "",
-                                    ].map((h) => (
-                                        <th key={h} className="table-header text-left">
-                                            {h}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {residents.map((r) => (
-                                    <tr key={r.id} className="hover:bg-gray-50 transition-colors">
-                                        <td className="table-cell font-bold text-slate-900 py-5">
-                                            <div className="flex items-center gap-3">
-                                                <img
-                                                    alt="Manager"
-                                                    className="w-8 h-8 rounded-md object-cover"
-                                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6HirtKU7xaZGomed1uFArIoMfuwxb86pPX6g486HRtksDf4A9rRgiE3hXAkLSDQatypigpaK6FLUNwrrh9enjW1lQZKpsEw9BMQE7O7yLsLiyLUbzSwINFPpPrfeGnnvj9MyiHYjh0kjQVUwudIissAQzsEm3YUp95L_Ivw4swLwaUUW5eZlAWiUynnWcRYj3cPVC7IYHf7GOOO6LkYya7lr0bDk_aNcZg-qgOIN6p_8-m82GWxdqJ0H4k-RFkJgYs73k-TbH3BY"
-                                                ></img>
-                                                <div className="flex flex-col">
-                                                    <div className="text-sm font-bold">
-                                                        {r.fullName}
-                                                    </div>
-                                                    <div className="text-[11px] font-normal text-slate-500">
-                                                        Chuyển vào ngày {formatDate(r.moveInDate)}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="table-cell text-slate-600">
-                                            <div className="flex flex-col">
-                                                <div className="text-sm font-medium">{r.email}</div>
-                                                <div className="text-[11px] font-normal text-slate-500">
-                                                    {formatPhone(r.phone)}
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="table-cell text-slate-600">{r.idCard}</td>
-                                        <td className="table-cell">
-                                            <div className="flex flex-col">
-                                                <div className="text-sm font-medium">
-                                                    {r.apartment?.apartmentNumber}
-                                                </div>
-                                                <div className="text-[11px] font-normal text-slate-500">
-                                                    Tầng {r.apartment?.floor}
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="table-cell">
-                                            <div className="flex items-center gap-2">
-                                                {r.isPrimary ? "Chủ hộ" : "Thành viên"}
-                                            </div>
-                                        </td>
-
-                                        <td className="table-cell">
-                                            <div className="flex gap-2">
-                                                <Link
-                                                    to={`${r.id}/edit`}
-                                                    className="text-xs text-primary hover:underline"
-                                                >
-                                                    Sửa
-                                                </Link>
-                                                <button className="text-xs text-red-500 hover:underline">
-                                                    Vô hiệu
-                                                </button>
-                                            </div>
-                                        </td>
+                        <div className="overflow-x-auto">
+                            <table className="w-full min-w-175">
+                                <thead>
+                                    <tr>
+                                        {["Cư dân", "Căn hộ", "SĐT", "Vai trò", "Công nợ", "Vào ngày", ""].map((h) => (
+                                            <th key={h} className="table-header text-left">
+                                                {h}
+                                            </th>
+                                        ))}
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {residents.map((r) => (
+                                        <tr
+                                            key={r.id}
+                                            className="hover:bg-gray-50 transition-colors cursor-pointer"
+                                            onClick={() => navigate(`/manager/residents/${r.id}`)}
+                                        >
+                                            <td className="table-cell">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="h-8 w-8 rounded-full bg-manager/10 flex items-center justify-center text-manager font-bold text-sm flex-shrink-0">
+                                                        {r.fullName[0]}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-medium text-sm text-gray-800">{r.fullName}</p>
+                                                        <p className="text-xs text-gray-400">{r.email}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="table-cell">
+                                                <p className="font-medium text-sm">{r.apartment.apartmentNumber}</p>
+                                                <p className="text-xs text-gray-400">Tầng {r.apartment.floor}</p>
+                                            </td>
+                                            <td className="table-cell text-sm text-gray-600">{formatPhone(r.phone)}</td>
+                                            <td className="table-cell">
+                                                {r.isPrimary ? (
+                                                    <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+                                                        Chủ hộ
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-xs text-gray-400">Thành viên</span>
+                                                )}
+                                            </td>
+                                            <td className="table-cell">
+                                                {r.outstandingDebt > 0 ? (
+                                                    <span className="text-danger font-medium text-sm">
+                                                        {formatCurrency(r.outstandingDebt)}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-success text-sm">✓ Không nợ</span>
+                                                )}
+                                            </td>
+                                            <td className="table-cell text-sm text-gray-500">{formatDate(r.moveInDate)}</td>
+                                            <td className="table-cell">
+                                                <span className="text-gray-400 text-sm material-symbols-outlined">
+                                                    chevron_right
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                         <Pagination
                             currentPage={pag.page}
                             totalPages={totalPages}
@@ -164,6 +135,8 @@ export function ResidentListPage() {
                     </>
                 )}
             </div>
+
+            <ToastContainer toasts={toast.toasts} dismiss={toast.dismiss} />
         </div>
     );
 }
