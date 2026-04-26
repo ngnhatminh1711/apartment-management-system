@@ -22,20 +22,20 @@ export default function BillCard({ bill }: Props) {
           badge: "bg-amber-100 text-amber-700",
           border: "border-outline hover:border-amber-400/50",
           amount: "text-amber-600",
-          dueDate: "text-on-surface",
+          dueDate: "text-slate-900",
         };
       case "PARTIALLY_PAID":
         return {
           badge: "bg-primary-container text-primary",
           border: "border-outline hover:border-primary/50",
           amount: "text-primary",
-          dueDate: "text-on-surface",
+          dueDate: "text-slate-900",
         };
       case "PAID":
         return {
           badge: "bg-emerald-100 text-emerald-700",
           border: "border-outline/50",
-          amount: "text-on-surface",
+          amount: "text-slate-900",
           dueDate: "text-emerald-600",
         };
       default:
@@ -52,14 +52,14 @@ export default function BillCard({ bill }: Props) {
 
   return (
     <div
-      className={`bg-surface-container rounded-xl p-6 editorial-shadow border ${styles.border} transition-all group`}
+      className={`bg-white rounded-xl p-6 editorial-shadow border ${styles.border} transition-all group`}
     >
       <div className="flex justify-between items-start mb-6">
         <div>
-          <p className="text-on-surface-variant text-[10px] font-bold uppercase tracking-widest mb-1">
+          <p className="text-slate-600 text-[10px] font-bold uppercase tracking-widest mb-1">
             Kỳ hóa đơn
           </p>
-          <h4 className="text-lg font-bold text-on-surface">
+          <h4 className="text-lg font-bold text-slate-900">
             {bill.billingMonth}
           </h4>
         </div>
@@ -72,14 +72,14 @@ export default function BillCard({ bill }: Props) {
 
       <div className="space-y-4 mb-6">
         <div className="flex justify-between text-sm">
-          <span className="text-on-surface-variant">Tổng số tiền</span>
+          <span className="text-slate-600">Tổng số tiền</span>
           <span className="font-bold">
             {bill.totalAmount.toLocaleString("vi-VN")} VNĐ
           </span>
         </div>
 
         <div className="flex justify-between text-sm">
-          <span className="text-on-surface-variant">Còn nợ</span>
+          <span className="text-slate-600">Còn nợ</span>
           <span className={`font-bold ${styles.amount}`}>
             {bill.remainingAmount?.toLocaleString("vi-VN")} VNĐ
           </span>

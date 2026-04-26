@@ -5,7 +5,7 @@ type Props = {
 };
 const ResidentItem = ({ data }: Props) => {
   return (
-    <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+    <tr className="hover:bg-slate-50 transition-colors">
       <td className="px-6 py-4">
         <div className="flex items-center gap-3">
           <span className="font-semibold">{data?.fullName}</span>

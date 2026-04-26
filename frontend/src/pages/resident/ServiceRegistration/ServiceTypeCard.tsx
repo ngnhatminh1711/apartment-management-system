@@ -11,7 +11,7 @@ const ServiceTypeCard = ({ data, createService }: Props) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="group bg-surface-container rounded-xl border border-outline shadow-sm overflow-hidden hover:shadow-md transition-all">
+    <div className="group bg-white rounded-xl border border-outline shadow-sm overflow-hidden hover:shadow-md transition-all">
       <div className="relative h-48 overflow-hidden">
         <img
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -22,10 +22,10 @@ const ServiceTypeCard = ({ data, createService }: Props) => {
 
       <div className="p-6">
         <div className="flex justify-between items-start mb-2">
-          <h3 className="text-lg font-bold text-on-surface">{data?.name}</h3>
+          <h3 className="text-lg font-bold text-slate-900">{data?.name}</h3>
         </div>
 
-        <p className="text-sm text-on-surface-variant mb-6 line-clamp-2">
+        <p className="text-sm text-slate-600 mb-6 line-clamp-2">
           {data?.description}
         </p>
 
@@ -35,17 +35,15 @@ const ServiceTypeCard = ({ data, createService }: Props) => {
               style: "currency",
               currency: "VND",
             })}
-            <span className="text-xs text-on-surface-variant font-normal">
-              /tháng
-            </span>
+            <span className="text-xs text-slate-600 font-normal">/tháng</span>
           </p>
 
           <button
             onClick={() => setOpen(true)}
             className={`px-4 py-2 text-xs font-bold rounded-lg transition-all${
               data?.isRegistered
-                ? "bg-gray-300 text-gray-500 bg-sky-500 text-white"
-                : "bg-primary-container text-primary bg-primary text-white"
+                ? "bg-gray-200 text-gray-600"
+                : "bg-primary text-white"
             }
   `}
           >

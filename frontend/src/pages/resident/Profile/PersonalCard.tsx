@@ -7,8 +7,8 @@ type Props = {
 };
 const PersonalCard = ({ data, onUpdate, onChangePassword }: Props) => {
   return (
-    <section className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
-      <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-700 bg-primary/5 flex items-center justify-between">
+    <section className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+      <div className="px-6 py-4 border-b border-slate-100 bg-primary/5 flex items-center justify-between">
         <h3 className="font-bold flex items-center gap-2">
           <span className="material-symbols-outlined text-primary">person</span>
           Thông tin cá nhân người dùng
@@ -41,7 +41,7 @@ const PersonalCard = ({ data, onUpdate, onChangePassword }: Props) => {
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
                 Họ và tên
               </p>
-              <p className="font-bold text-lg text-slate-900 dark:text-white">
+              <p className="font-bold text-lg text-slate-900">
                 {data?.fullName}
               </p>
             </div>

@@ -35,7 +35,7 @@ const PaymentForm = ({ billId, remainingAmount, handSubmit }: Props) => {
 
         <div className="relative group">
           <input
-            className="w-full h-16 pl-6 pr-12 text-2xl font-bold text-primary bg-surface-variant rounded-lg"
+            className="w-full h-16 pl-6 pr-12 text-2xl font-bold text-primary bg-slate-50 rounded-lg"
             value={
               remainingAmount
                 ? `${remainingAmount.toLocaleString("vi-VN")}đ`
@@ -52,7 +52,7 @@ const PaymentForm = ({ billId, remainingAmount, handSubmit }: Props) => {
         </label>
 
         <textarea
-          className="w-full p-4 text-sm bg-surface-variant rounded-lg"
+          className="w-full p-4 text-sm bg-slate-50 rounded-lg"
           placeholder="Nhập ghi chú..."
           value={paymentNote}
           onChange={(e) => setPaymentNote(e.target.value)}

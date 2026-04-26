@@ -56,15 +56,15 @@ const ServiceRegistrationPage = () => {
   return (
     <main>
       <header className="mb-10 ">
-        <h1 className="text-[30px] font-bold text-on-surface tracking-tight mb-2">
+        <h1 className="text-[30px] font-bold text-slate-900 tracking-tight mb-2">
           Quản lý Dịch vụ
         </h1>
-        <p className="text-on-surface-variant max-w-2xl">
+        <p className="text-slate-600 max-w-2xl">
           Khám phá và đăng ký các tiện ích cao cấp dành riêng cho cư dân .
         </p>
       </header>
 
-      <div className="flex items-center gap-2 p-1 bg-surface-variant/50 w-fit rounded-xl border border-outline">
+      <div className="flex items-center gap-2 p-1 bg-slate-50/50 w-fit rounded-xl border border-outline">
         <button
           className={`px-6 py-2 text-[13px] font-bold ${activeTab === "SERVICE" ? "text-primary bg-white rounded-lg active-tab-shadow" : "text-slate-500 hover:text-slate-800 transition-colors"}`}
           onClick={() => setActiveTab("SERVICE")}

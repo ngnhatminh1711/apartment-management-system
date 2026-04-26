@@ -74,7 +74,7 @@ const BillPage = () => {
           <h2 className="text-3xl font-bold text-red-600">
             {(summary.totalOutstanding ?? 0).toLocaleString("vi-VN")} VNĐ
           </h2>
-          <p className="text-on-surface-variant text-sm mt-4 flex items-center gap-1 italic">
+          <p className="text-slate-600 text-sm mt-4 flex items-center gap-1 italic">
             <span className="material-symbols-outlined text-sm">info</span>
             Bao gồm phí quản lý, điện, nước và các dịch vụ khác.
           </p>

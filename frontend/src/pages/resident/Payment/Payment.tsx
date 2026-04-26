@@ -39,7 +39,7 @@ const Payment = () => {
   return (
     <main>
       <div className="max-w-4xl mx-auto">
-        <div className="bg-surface-container rounded-xl shadow-sm border border-outline overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-outline overflow-hidden">
           <div className="p-8 border-b border-outline bg-linear-to-r from-white to-primary-container/20">
             <div className="flex justify-between items-start">
               <div>

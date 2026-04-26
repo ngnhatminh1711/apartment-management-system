@@ -7,7 +7,7 @@ type Props = {
 
 const ServiceRequestCard = ({ data }: Props) => {
   return (
-    <div className="bg-surface-container p-6 rounded-xl shadow-sm border border-outline hover:shadow-md transition-shadow group flex flex-col h-full">
+    <div className="bg-white p-6 rounded-xl shadow-sm border border-outline hover:shadow-md transition-shadow group flex flex-col h-full">
       <div className="flex justify-between items-start mb-4">
         <span className="px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase bg-red-100 text-red-600">
           {data?.priority}

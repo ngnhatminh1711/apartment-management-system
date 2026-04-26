@@ -65,9 +65,7 @@ const ChangePassword = ({ onClose, handleChange }: Props) => {
                   lock_reset
                 </span>
               </div>
-              <h2 className="text-xl font-bold text-on-surface">
-                Đổi mật khẩu
-              </h2>
+              <h2 className="text-xl font-bold text-slate-900">Đổi mật khẩu</h2>
             </div>
             <form className="space-y-5" onSubmit={handleSubmit}>
               <div>
@@ -76,7 +74,7 @@ const ChangePassword = ({ onClose, handleChange }: Props) => {
                 </label>
                 <div className="relative">
                   <input
-                    className="w-full h-12 px-4 rounded-lg bg-surface-variant border-transparent focus:border-primary focus:ring-0 focus:bg-white transition-all text-on-surface"
+                    className="w-full h-12 px-4 rounded-lg bg-slate-50 border-transparent focus:border-primary focus:ring-0 focus:bg-white transition-all text-slate-900"
                     placeholder="••••••••"
                     type={showCurrentPassword ? "text" : "password"}
                     value={currentPassword}
@@ -103,7 +101,7 @@ const ChangePassword = ({ onClose, handleChange }: Props) => {
                 </label>
                 <div className="relative">
                   <input
-                    className="w-full h-12 px-4 rounded-lg bg-surface-variant border-transparent focus:border-primary focus:ring-0 focus:bg-white transition-all text-on-surface"
+                    className="w-full h-12 px-4 rounded-lg bg-slate-50 border-transparent focus:border-primary focus:ring-0 focus:bg-white transition-all text-slate-900"
                     placeholder="••••••••"
                     type={showNewPassword ? "text" : "password"}
                     value={newPassword}
@@ -129,7 +127,7 @@ const ChangePassword = ({ onClose, handleChange }: Props) => {
                 </label>
                 <div className="relative">
                   <input
-                    className="w-full h-12 px-4 rounded-lg bg-surface-variant border-transparent focus:border-primary focus:ring-0 focus:bg-white transition-all text-on-surface"
+                    className="w-full h-12 px-4 rounded-lg bg-slate-50 border-transparent focus:border-primary focus:ring-0 focus:bg-white transition-all text-slate-900"
                     placeholder="••••••••"
                     type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}

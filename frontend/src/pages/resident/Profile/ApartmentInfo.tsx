@@ -4,15 +4,15 @@ type Props = {
 };
 const ApartmentInfo = ({ data }: Props) => {
   return (
-    <section className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-      <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 flex items-center justify-between">
+    <section className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
         <h3 className="font-bold flex items-center gap-2">
           <span className="material-symbols-outlined text-primary">
             apartment
           </span>
           Thông tin cơ bản căn hộ
         </h3>
-        <span className="px-2.5 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-[10px] font-black uppercase rounded">
+        <span className="px-2.5 py-1 bg-green-100 text-green-700 text-[10px] font-black uppercase rounded">
           Đang ở
         </span>
       </div>

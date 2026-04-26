@@ -27,14 +27,14 @@ const vehicleIconMap = {
 
 const VehicleItem = ({ data, onDelete }: Props) => {
   return (
-    <tr className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+    <tr className="hover:bg-slate-50/50 transition-colors">
       <td className="px-8 py-5">
-        <span className="font-mono font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded border border-slate-200 dark:border-slate-700">
+        <span className="font-mono font-bold text-slate-900 bg-slate-100 px-2 py-1 rounded border border-slate-200">
           {data.licensePlate}
         </span>
       </td>
       <td className="px-6 py-5">
-        <div className="flex items-center gap-2 text-on-surface">
+        <div className="flex items-center gap-2 text-slate-900">
           <span
             className="material-symbols-outlined text-lg"
             data-icon={vehicleIconMap[data.vehicleType]}
@@ -43,23 +43,21 @@ const VehicleItem = ({ data, onDelete }: Props) => {
           </span>
         </div>
       </td>
-      <td className="px-6 py-5 text-sm text-slate-700 dark:text-slate-300">
+      <td className="px-6 py-5 text-sm text-slate-700">
         {data.brand} {data.model}
       </td>
-      <td className="px-6 py-5 text-sm text-slate-700 dark:text-slate-300">
-        {data.color}
-      </td>
-      <td className="px-6 py-5 text-sm text-slate-600 dark:text-slate-400">
+      <td className="px-6 py-5 text-sm text-slate-700">{data.color}</td>
+      <td className="px-6 py-5 text-sm text-slate-600">
         {data?.registeredAt
           ? new Date(data.registeredAt).toLocaleDateString()
           : "__"}
       </td>
-      <td className="px-6 py-5 text-sm text-slate-600 dark:text-slate-400">
+      <td className="px-6 py-5 text-sm text-slate-600">
         {data?.approvedAt
           ? new Date(data.approvedAt).toLocaleDateString()
           : "__"}
       </td>
-      <td className="px-6 py-5 text-sm text-slate-600 dark:text-slate-400">
+      <td className="px-6 py-5 text-sm text-slate-600">
         {data.expiredAt ? new Date(data.expiredAt).toLocaleDateString() : "__"}
       </td>
 

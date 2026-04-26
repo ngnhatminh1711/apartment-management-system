@@ -73,9 +73,13 @@ public class ResidentInfoService {
     public void changeInfoUser(Long userId, UpdateInfoRequest request ){
         User user =userRepository.findById(userId).
         orElseThrow(()->new AppException(ErrorCode.USER_NOT_FOUND));
+        if(userRepository.existsByPhone(request.getPhone()) ){
+            throw new AppException(ErrorCode.PHONE_ALREADY_EXISTS);
+        }
         if(request.getPhone()!=null){
             user.setPhone(request.getPhone());
         }
+
         if (request.getDateOfBirth() != null && request.getDateOfBirth().isAfter(LocalDate.now())) {
             throw new AppException(ErrorCode.VALIDATION_ERROR);
         }

@@ -159,7 +159,7 @@ const ServiceRequestDetail = () => {
                   </div>
 
                   <textarea
-                    className="w-full bg-surface-bright border border-outline rounded-lg p-4 text-[14px] focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                    className="w-full bg-white border border-outline rounded-lg p-4 text-[14px] focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                     placeholder="Nhập cảm nhận của bạn về thái độ và chất lượng sửa chữa..."
                     rows={5}
                     value={comment}

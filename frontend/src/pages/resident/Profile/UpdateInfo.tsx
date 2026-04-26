@@ -43,10 +43,10 @@ const UpdateInfo = ({ onClose, profile, handleSubmit }: Props) => {
         <div className="lg:col-span-7 bg-white rounded-xl shadow-sm border border-outline p-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-xl font-bold text-on-surface">
+              <h2 className="text-xl font-bold text-slate-900">
                 Cập nhật hồ sơ
               </h2>
-              <p className="text-sm text-on-surface-variant mt-1 italic">
+              <p className="text-sm text-slate-600 mt-1 italic">
                 Thông tin cá nhân được sử dụng cho các thủ tục hành chính tại
                 tòa nhà.
               </p>
@@ -80,7 +80,7 @@ const UpdateInfo = ({ onClose, profile, handleSubmit }: Props) => {
                 </label>
               </div>
               <div className="flex-1">
-                <div className="border-2 border-dashed border-outline-variant rounded-xl p-4 text-center group cursor-pointer hover:border-primary transition-all">
+                <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center group cursor-pointer hover:border-primary transition-all">
                   <span
                     className="material-symbols-outlined text-slate-400 group-hover:text-primary group-hover:scale-110 transition-transform block mb-1"
                     data-icon="upload_file"
@@ -91,7 +91,7 @@ const UpdateInfo = ({ onClose, profile, handleSubmit }: Props) => {
                     Nhập đường link (URL) ảnh đại diện mới
                   </p>
                   <input
-                    className="w-full h-12 px-4 rounded-lg bg-surface-variant border border-outline focus:border-primary focus:ring-0 focus:bg-white transition-all text-on-surface font-medium"
+                    className="w-full h-12 px-4 rounded-lg bg-slate-50 border border-slate-200 focus:border-primary focus:ring-0 focus:bg-white transition-all text-slate-900 font-medium"
                     type="text"
                     value={avatarUrl}
                     onChange={(e) => setAvatarUrl(e.target.value)}
@@ -106,7 +106,7 @@ const UpdateInfo = ({ onClose, profile, handleSubmit }: Props) => {
                   Họ và tên
                 </label>
                 <input
-                  className="w-full h-12 px-4 rounded-lg bg-surface-variant border-transparent focus:border-primary focus:ring-0 focus:bg-white transition-all text-on-surface font-medium"
+                  className="w-full h-12 px-4 rounded-lg bg-slate-50 border-transparent focus:border-primary focus:ring-0 focus:bg-white transition-all text-slate-900 font-medium"
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
@@ -117,7 +117,7 @@ const UpdateInfo = ({ onClose, profile, handleSubmit }: Props) => {
                   Số điện thoại
                 </label>
                 <input
-                  className="w-full h-12 px-4 rounded-lg bg-surface-variant border-transparent focus:border-primary focus:ring-0 focus:bg-white transition-all text-on-surface font-medium"
+                  className="w-full h-12 px-4 rounded-lg bg-slate-50 border-transparent focus:border-primary focus:ring-0 focus:bg-white transition-all text-slate-900 font-medium"
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
@@ -129,7 +129,7 @@ const UpdateInfo = ({ onClose, profile, handleSubmit }: Props) => {
                 </label>
                 <div className="relative">
                   <input
-                    className="w-full h-12 px-4 rounded-lg bg-surface-variant border-transparent focus:border-primary focus:ring-0 focus:bg-white transition-all text-on-surface font-medium appearance-none"
+                    className="w-full h-12 px-4 rounded-lg bg-slate-50 border-transparent focus:border-primary focus:ring-0 focus:bg-white transition-all text-slate-900 font-medium appearance-none"
                     type="date"
                     value={dateOfBirth}
                     max={new Date().toISOString().slice(0, 10)}

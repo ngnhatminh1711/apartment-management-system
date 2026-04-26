@@ -5,7 +5,7 @@ type Props = {
 };
 const BuildingInfo = ({ data }: Props) => {
   return (
-    <section className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-800 p-6 space-y-6">
+    <section className="bg-white rounded-xl border border-slate-200 p-6 space-y-6">
       <h3 className="font-bold flex items-center gap-2">
         <span className="material-symbols-outlined text-primary">domain</span>
         Thông tin tòa nhà
@@ -15,7 +15,7 @@ const BuildingInfo = ({ data }: Props) => {
         <InfoItem label="Địa chỉ" value={data?.building?.address} />
       </div>
 
-      <div className="pt-4 border-t border-slate-100 dark:border-slate-700">
+      <div className="pt-4 border-t border-slate-100">
         <p className="text-xs text-slate-400 font-medium uppercase mb-2">
           Người Quản lý Tòa nhà
         </p>
@@ -39,7 +39,7 @@ const BuildingInfo = ({ data }: Props) => {
 const InfoItem = ({ label, value }: any) => (
   <div>
     <p className="text-xs text-slate-400 font-medium uppercase mb-1">{label}</p>
-    <p className="font-bold text-slate-900 dark:text-white">{value}</p>
+    <p className="font-bold text-slate-900">{value}</p>
   </div>
 );
 export default BuildingInfo;

@@ -53,16 +53,16 @@ const ServiceRequestPage = () => {
   return (
     <main>
       <header className="mb-10">
-        <h1 className="text-[30px] font-bold text-on-surface tracking-tight mb-2">
+        <h1 className="text-[30px] font-bold text-slate-900 tracking-tight mb-2">
           Danh sách yêu cầu dịch vụ
         </h1>
-        <p className="text-on-surface-variant max-w-2xl">
+        <p className="text-slate-600 max-w-2xl">
           Quản lý và theo dõi các yêu cầu dịch vụ của bạn một cách dễ dàng và
           thuận tiện.
         </p>
       </header>
       <button
-        className="gap-4 mb-8 flex items-center gap-2 bg-primary text-white px-5 py-2 rounded-lg font-bold shadow-md hover:bg-blue-600 transition-all active:scale-95 text-sm"
+        className="mb-8 flex items-center gap-2 bg-primary text-white px-5 py-2 rounded-lg font-bold shadow-md hover:bg-blue-600 transition-all active:scale-95 text-sm"
         onClick={() => setOpenCreate(true)}
       >
         <span className="material-symbols-outlined text-[20px]">add</span>

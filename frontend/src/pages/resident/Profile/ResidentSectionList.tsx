@@ -16,9 +16,9 @@ const ResidentSection = ({ data }: Props) => {
         </h3>
       </div>
 
-      <div className="bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
         <table className="w-full text-left">
-          <thead className="bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">
+          <thead className="bg-slate-50 border-b border-slate-200">
             <tr>
               <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase">
                 Họ và tên
@@ -33,7 +33,7 @@ const ResidentSection = ({ data }: Props) => {
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+          <tbody className="divide-y divide-slate-100">
             {data?.householdMembers?.map((member) => (
               <ResidentItem key={member.id} data={member} />
             ))}

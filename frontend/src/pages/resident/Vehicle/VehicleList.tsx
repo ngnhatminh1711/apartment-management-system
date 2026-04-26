@@ -17,7 +17,7 @@ const VehicleList = ({ data, onDelete }: Props) => {
   return (
     <table className="w-full text-left border-collapse">
       <thead>
-        <tr className="bg-slate-50 dark:bg-slate-800/50">
+        <tr className="bg-slate-50">
           <th className="px-8 py-4 text-xs font-extrabold text-slate-500 uppercase tracking-wider">
             Biển số
           </th>

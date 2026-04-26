@@ -134,11 +134,11 @@ function CreateVehicle({ open, onClose, onSubmit }: Props) {
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-[14px] font-semibold text-slate-900 dark:text-white flex items-center gap-1">
+              <label className="text-[14px] font-semibold text-slate-900 flex items-center gap-1">
                 Biển số <span className="text-error">*</span>
               </label>
               <input
-                className="w-full h-12 px-4 rounded-lg bg-surface-variant border-none focus:ring-2 focus:ring-primary/20 text-slate-900 text-sm font-medium placeholder:text-slate-400"
+                className="w-full h-12 px-4 rounded-lg bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 text-slate-900 text-sm font-medium placeholder:text-slate-400"
                 placeholder="Vd: 30A-123.45"
                 value={form.licensePlate}
                 onChange={(e) =>

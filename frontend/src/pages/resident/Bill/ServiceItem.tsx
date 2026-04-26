@@ -1,4 +1,5 @@
 import type { BillItem } from "../../../types/bill";
+import { FEE_TYPE_LABELS } from "../../../utils/constants";
 
 type Props = {
   data: BillItem;
@@ -9,7 +10,9 @@ const ServiceItem = ({ data }: Props) => {
       <td className="px-6 py-6 align-top">
         <div className="flex items-center gap-3">
           <div>
-            <p className="font-bold text-slate-900">{data.feeType}</p>
+            <p className="font-bold text-slate-900">
+              {FEE_TYPE_LABELS[data.feeType]}
+            </p>
           </div>
         </div>
       </td>

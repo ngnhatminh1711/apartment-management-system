@@ -22,10 +22,10 @@ const Registration = ({ data, onclose, createService }: Props) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 bg-slate-900/40 backdrop-blur-sm">
-      <div className="bg-surface-container w-full max-w-[560px] rounded-xl shadow-2xl overflow-hidden border border-outline bg-white">
+    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 md:p-6 bg-slate-900/40 backdrop-blur-sm">
+      <div className="bg-white w-full max-w-140 rounded-xl shadow-2xl overflow-hidden border border-outline">
         <div className="p-8 border-b border-outline flex items-center justify-between bg-white">
-          <h2 className="text-[20px] font-bold text-on-surface tracking-tight">
+          <h2 className="text-[20px] font-bold text-slate-900 tracking-tight">
             {data?.isRegistered
               ? "Thông tin dịch vụ đã đăng ký "
               : "Đăng ký dịch vụ"}
@@ -40,13 +40,13 @@ const Registration = ({ data, onclose, createService }: Props) => {
           </button>
         </div>
 
-        <div className="p-8 space-y-8 max-h-[716px] overflow-y-auto">
+        <div className="p-8 space-y-8 max-h-179 overflow-y-auto">
           <div className="bg-primary-container/30 rounded-xl p-6 flex items-start gap-5 border border-primary/10">
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-1">
                 Dịch vụ lựa chọn
               </p>
-              <h4 className="text-[18px] font-bold text-on-surface">
+              <h4 className="text-[18px] font-bold text-slate-900">
                 {data?.name}
               </h4>
               <div className="mt-2 flex items-center gap-2">
@@ -69,7 +69,7 @@ const Registration = ({ data, onclose, createService }: Props) => {
 
           {!data?.myRegistration ? (
             <div className="space-y-2">
-              <label className="text-[14px] font-semibold text-on-surface flex items-center gap-2">
+              <label className="text-[14px] font-semibold text-slate-900 flex items-center gap-2">
                 <span className="material-symbols-outlined text-[18px] text-slate-500">
                   notes
                 </span>
@@ -77,7 +77,7 @@ const Registration = ({ data, onclose, createService }: Props) => {
               </label>
 
               <textarea
-                className="w-full p-4 bg-surface-variant border border-transparent rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary text-[14px] text-on-surface placeholder:text-slate-400 transition-all resize-none"
+                className="w-full p-4 bg-slate-50 border border-transparent rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary text-[14px] text-slate-900 placeholder:text-slate-400 transition-all resize-none"
                 id="notes"
                 placeholder="Ghi chú thêm cho Ban quản lý..."
                 rows={4}

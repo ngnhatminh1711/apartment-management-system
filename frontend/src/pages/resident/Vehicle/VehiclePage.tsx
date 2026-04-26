@@ -60,10 +60,10 @@ const VehiclePage = () => {
   }, []);
   return (
     <div>
-      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-outline overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-outline overflow-hidden">
         <div className="px-8 py-6 border-b border-outline flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h4 className="text-lg font-bold text-slate-900 dark:text-white">
+            <h4 className="text-lg font-bold text-slate-900">
               Danh sách phương tiện
             </h4>
             <p className="text-sm text-slate-500">

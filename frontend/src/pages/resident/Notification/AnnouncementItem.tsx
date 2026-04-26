@@ -18,13 +18,13 @@ const AnnouncementItem = ({ data }: Props) => {
       className="p-6 rounded-xl shadow-sm border flex gap-4 cursor-pointer transition bg-blue-50 hover:shadow-md"
       onClick={() => setExpanded(!expanded)}
     >
-      <div className="flex-shrink-0 w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center">
+      <div className="shrink-0 w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center">
         <span className="material-symbols-outlined text-slate-400">
           campaign
         </span>
       </div>
 
-      <div className="flex-grow">
+      <div className="grow">
         <div className="flex justify-between items-start mb-1">
           <span className="text-[11px] text-slate-400 italic">
             {new Date(data.publishedAt).toLocaleDateString()} :{" "}
