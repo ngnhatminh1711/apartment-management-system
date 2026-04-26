@@ -1,4 +1,5 @@
 import type { PaymentMethod } from "../../../types/common";
+import { PAYMENT_METHOD_LABELS } from "../../../utils/constants";
 
 type Props = {
   value: PaymentMethod;
@@ -6,15 +7,14 @@ type Props = {
 };
 
 const PaymentMethodSection = ({ value, onChange }: Props) => {
-  const methods: { name: PaymentMethod; icon: string; label: string }[] = [
-    { name: "VNPAY", icon: "qr_code_2", label: "VNPAY QR" },
-    { name: "MOMO", icon: "account_balance_wallet", label: "Ví MOMO " },
+  const methods: { name: PaymentMethod; icon: string }[] = [
+    { name: "VNPAY", icon: "qr_code_2" },
+    { name: "MOMO", icon: "account_balance_wallet" },
     {
       name: "BANK_TRANSFER",
       icon: "account_balance",
-      label: "Chuyển khoản ngân hàng",
     },
-    { name: "CASH", icon: "payments", label: "Tiền mặt" },
+    { name: "CASH", icon: "payments" },
   ];
   return (
     <div className="space-y-4">
@@ -40,7 +40,7 @@ const PaymentMethodItem = ({
   selected,
   onSelect,
 }: {
-  method: { name: PaymentMethod; icon: string; label: string };
+  method: { name: PaymentMethod; icon: string };
   selected: PaymentMethod;
   onSelect: (value: PaymentMethod) => void;
 }) => {
@@ -63,7 +63,9 @@ const PaymentMethodItem = ({
       </div>
 
       <div className="flex-1">
-        <p className="text-sm font-bold">{method.label}</p>
+        <p className="text-sm font-bold">
+          {PAYMENT_METHOD_LABELS[method.name]}
+        </p>
       </div>
     </label>
   );

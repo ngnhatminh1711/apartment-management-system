@@ -4,7 +4,13 @@ import { ToastContainer } from "../../../components/common/ToastContainer";
 import { serviceRequestService } from "../../../services/resident/ServiceRequestService";
 import type { ServiceRequest } from "../../../types/serviceRequest";
 import { useToast } from "../../../hooks/useToast";
-
+import {
+  REQUEST_STATUS_LABELS,
+  REQUEST_TYPE_LABELS,
+  REQUEST_PRIORITY_LABELS,
+  REQUEST_STATUS_COLORS,
+  REQUEST_PRIORITY_COLORS,
+} from "../../../utils/constants";
 const ServiceRequestDetail = () => {
   const navigate = useNavigate();
   const [data, setData] = useState<ServiceRequest>();
@@ -67,11 +73,15 @@ const ServiceRequestDetail = () => {
               <h1 className="text-[30px] font-bold">{data?.title}</h1>
 
               <div className="flex gap-3 mt-4">
-                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs">
-                  {data?.status}
+                <span
+                  className={`px-3 py-1 rounded-full text-xs ${REQUEST_STATUS_COLORS[data?.status]}`}
+                >
+                  {REQUEST_STATUS_LABELS[data.status]}
                 </span>
-                <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs">
-                  {data?.priority}
+                <span
+                  className={`px-3 py-1 rounded-full text-xs ${REQUEST_PRIORITY_COLORS[data?.priority]}`}
+                >
+                  {REQUEST_PRIORITY_LABELS[data.priority]}
                 </span>
               </div>
             </div>

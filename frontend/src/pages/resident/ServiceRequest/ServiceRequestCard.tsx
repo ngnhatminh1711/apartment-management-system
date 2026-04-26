@@ -1,5 +1,12 @@
 import { Link } from "react-router-dom";
 import type { ServiceRequest } from "../../../types/serviceRequest";
+import {
+  REQUEST_STATUS_COLORS,
+  REQUEST_STATUS_LABELS,
+  REQUEST_TYPE_LABELS,
+  REQUEST_PRIORITY_LABELS,
+  REQUEST_PRIORITY_COLORS,
+} from "../../../utils/constants";
 
 type Props = {
   data: ServiceRequest;
@@ -9,11 +16,15 @@ const ServiceRequestCard = ({ data }: Props) => {
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border border-outline hover:shadow-md transition-shadow group flex flex-col h-full">
       <div className="flex justify-between items-start mb-4">
-        <span className="px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase bg-red-100 text-red-600">
-          {data?.priority}
+        <span
+          className={`px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase ${REQUEST_PRIORITY_COLORS[data.priority]}`}
+        >
+          {REQUEST_PRIORITY_LABELS[data.priority]}
         </span>
-        <span className="px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase bg-slate-100 text-slate-500">
-          {data?.status}
+        <span
+          className={`px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase ${REQUEST_STATUS_COLORS[data.status]}`}
+        >
+          {REQUEST_STATUS_LABELS[data.status]}
         </span>
       </div>
       <h3 className="text-lg font-bold text-slate-900 mb-2 leading-tight group-hover:text-primary transition-colors">
@@ -22,8 +33,8 @@ const ServiceRequestCard = ({ data }: Props) => {
       <p className="text-sm text-slate-500 mb-6 flex-1">{data?.description}</p>
       <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-[11px] text-slate-400 italic">
-            {data?.requestType}
+          <span className="text-[11px] text-slate-400 italic ">
+            {REQUEST_TYPE_LABELS[data.requestType]}
           </span>
         </div>
 

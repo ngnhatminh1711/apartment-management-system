@@ -1,23 +1,15 @@
-import React from "react";
 import type { Vehicle } from "../../../types/vehicle";
+import {
+  VEHICLE_STATUS_COLORS,
+  VEHICLE_STATUS_LABELS,
+  VEHICLE_TYPE_LABELS,
+} from "../../../utils/constants";
 
 type Props = {
   data: Vehicle;
   onDelete: (id: number) => void;
 };
-const statusMap = {
-  ACTIVE: "bg-green-100 text-green-600",
-  PENDING_APPROVAL: "bg-amber-100 text-amber-600",
-  INACTIVE: "bg-gray-100 text-gray-500",
-  REJECTED: "bg-red-100 text-red-600",
-};
 
-const labelMap = {
-  ACTIVE: "Đang hoạt động",
-  PENDING_APPROVAL: "Chờ duyệt",
-  INACTIVE: "Đã huỷ",
-  REJECTED: "Từ chối",
-};
 const vehicleIconMap = {
   MOTORBIKE: "motorcycle",
   CAR: "directions_car",
@@ -41,12 +33,16 @@ const VehicleItem = ({ data, onDelete }: Props) => {
           >
             {vehicleIconMap[data.vehicleType]}
           </span>
+          {VEHICLE_TYPE_LABELS[data.vehicleType]}
         </div>
       </td>
       <td className="px-6 py-5 text-sm text-slate-700">
-        {data.brand} {data.model}
+        {data?.brand ? `${data.brand} ` : "__"}{" "}
+        {data?.model ? `${data.model}` : "__"}
       </td>
-      <td className="px-6 py-5 text-sm text-slate-700">{data.color}</td>
+      <td className="px-6 py-5 text-sm text-slate-700">
+        {data?.color ? `${data.color}` : "__"}
+      </td>
       <td className="px-6 py-5 text-sm text-slate-600">
         {data?.registeredAt
           ? new Date(data.registeredAt).toLocaleDateString()
@@ -58,16 +54,16 @@ const VehicleItem = ({ data, onDelete }: Props) => {
           : "__"}
       </td>
       <td className="px-6 py-5 text-sm text-slate-600">
-        {data.expiredAt ? new Date(data.expiredAt).toLocaleDateString() : "__"}
+        {data?.expiredAt ? new Date(data.expiredAt).toLocaleDateString() : "__"}
       </td>
 
       <td>
         <span
           className={`px-2 py-1 text-xs font-medium rounded-full ${
-            statusMap[data.status]
+            VEHICLE_STATUS_COLORS[data.status]
           }`}
         >
-          {labelMap[data.status]}
+          {VEHICLE_STATUS_LABELS[data.status]}
         </span>
       </td>
 
