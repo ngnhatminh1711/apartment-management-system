@@ -14,10 +14,12 @@ import type {
   ChangePasswordRequest,
   UpdateProfileRequest,
 } from "../../types/auth";
+import { Spinner } from "../../components/common/Spinner";
 export function ResidentDashboardPage() {
   const [dataProfile, setDataProfile] = useState<Profile>();
   const [dataApartment, setDataApartment] = useState<ApartmentBuilding>();
   const toast = useToast();
+  const [loading, setLoading] = useState(false);
   const [updateProfile, setUpdateProfile] = useState(false);
   const [changePassword, setChangePassword] = useState(false);
   const handleUpdateProfile = async (payload: UpdateProfileRequest) => {
@@ -60,6 +62,7 @@ export function ResidentDashboardPage() {
     }
   };
   const fetchData = async () => {
+    setLoading(true);
     try {
       const resProfile = await ProfileService.getProfile();
       setDataProfile(resProfile);
@@ -68,11 +71,20 @@ export function ResidentDashboardPage() {
       toast.success("Tải thông tin cá nhân thành công!");
     } catch (error) {
       toast.error("Có lỗi xảy ra khi tải thông tin cá nhân!");
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
     fetchData();
   }, []);
+  if (loading) {
+    return (
+      <div className="p-6 space-y-6">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
   return (
     <main>
       <div>

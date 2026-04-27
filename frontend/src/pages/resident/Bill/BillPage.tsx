@@ -55,7 +55,13 @@ const BillPage = () => {
   useEffect(() => {
     fetchBills();
   }, [pag.page, pag.size]);
-
+  if (loading) {
+    return (
+      <div className="p-6 space-y-6">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
   return (
     <div className="p-6 space-y-6">
       {summary?.overdueCount && summary.overdueCount > 0 && (

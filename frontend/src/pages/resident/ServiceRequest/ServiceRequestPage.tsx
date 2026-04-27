@@ -9,6 +9,7 @@ import { useToast } from "../../../hooks/useToast";
 import { ToastContainer } from "../../../components/common/ToastContainer";
 import { serviceRequestService } from "../../../services/resident/ServiceRequestService";
 import { usePagination } from "../../../hooks/usePagination";
+import { Spinner } from "../../../components/common/Spinner";
 
 const ServiceRequestPage = () => {
   const [data, setData] = useState<ServiceRequest[]>([]);
@@ -49,7 +50,13 @@ const ServiceRequestPage = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
+  if (loading) {
+    return (
+      <div className="p-6 space-y-6">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
   return (
     <main>
       <header className="mb-10">
@@ -68,19 +75,11 @@ const ServiceRequestPage = () => {
         <span className="material-symbols-outlined text-[20px]">add</span>
         Gửi yêu cầu mới
       </button>
-      {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <span className="material-symbols-outlined animate-spin text-slate-400 text-[40px]">
-            Đang tải
-          </span>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data.map((item) => (
-            <ServiceRequestCard key={item.id} data={item} />
-          ))}
-        </div>
-      )}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {data.map((item) => (
+          <ServiceRequestCard key={item.id} data={item} />
+        ))}
+      </div>
       {openCreate && (
         <CreateServiceRequest onClose={onClose} handleCreate={handleCreate} />
       )}
