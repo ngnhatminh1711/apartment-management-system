@@ -169,8 +169,9 @@ public class ManagerApartmentService {
                 .status(apartment.getStatus())
                 .notes(apartment.getNotes())
                 .currentResidents(currentRefs)
-                .residentHistory(historyRefs)
+                .residenceHistory(historyRefs)
                 .vehicles(vehicleRefs)
+                .recentBills(billRefs)
                 .build();
     }
 

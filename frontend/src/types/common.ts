@@ -79,14 +79,16 @@ export type RegistrationStatus = "PENDING" | "ACTIVE" | "EXPIRED" | "CANCELLED";
 export type AnnouncementPriority = "NORMAL" | "IMPORTANT" | "URGENT";
 
 export type NotificationType =
-  | "BILL_CREATED"
-  | "BILL_DUE_SOON"
-  | "BILL_OVERDUE"
-  | "PAYMENT_SUCCESS"
-  | "REQUEST_UPDATE"
-  | "REQUEST_RESOLVED"
-  | "VEHICLE_APPROVED"
-  | "VEHICLE_REJECTED"
-  | "SERVICE_APPROVED"
-  | "ANNOUNCEMENT"
-  | "SYSTEM";
+    | "BILL_CREATED"
+    | "BILL_DUE_SOON"
+    | "BILL_OVERDUE"
+    | "PAYMENT_SUCCESS"
+    | "REQUEST_UPDATE"
+    | "REQUEST_RESOLVED"
+    | "VEHICLE_APPROVED"
+    | "VEHICLE_REJECTED"
+    | "SERVICE_APPROVED"
+    | "ANNOUNCEMENT"
+    | "SYSTEM";
+
+export type ServiceRegistrationStatus = "PENDING" | "ACTIVE" | "EXPIRED" | "CANCELLED";
