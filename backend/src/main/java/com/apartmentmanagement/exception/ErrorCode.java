@@ -2,6 +2,7 @@ package com.apartmentmanagement.exception;
 
 import org.springframework.http.HttpStatus;
 
+
 import lombok.Getter;
 
 @Getter
@@ -57,19 +58,29 @@ public enum ErrorCode {
     FEE_CONFIG_OVERLAP(HttpStatus.CONFLICT, "Khoảng thời gian bị trùng với cấu hình khác"),
     FEE_CONFIG_IN_USE(HttpStatus.CONFLICT, "Không thể xóa cấu hình phí đã có hóa đơn sử dụng"),
     EFFECTIVE_DATE_IN_PAST(HttpStatus.BAD_REQUEST, "Ngày áp dụng không được là ngày trong quá khứ"),
+    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Không tìm thấy thanh toán"),
+    PAYMENT_NOT_YOURS(HttpStatus.FORBIDDEN, "Thanh toán không phải của bạn"),
 
     // --Vehicle--
     VEHICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "Không tìm thấy phương tiện"),
     LICENSE_PLATE_EXISTED(HttpStatus.CONFLICT, "Biển số xe đã được đăng ký"),
     VEHICLE_NOT_PENDING(HttpStatus.CONFLICT, "Phương tiện không ở trạng thái chờ phê duyệt"),
     VEHICLE_NOT_ACTIVE(HttpStatus.CONFLICT, "Phương tiện hiện không hoạt động"),
+    VEHICLE_NOT_YOURS(HttpStatus.FORBIDDEN, "Phương tiện không phải của bạn"),
 
     // --Service Request--
     SERVICE_TYPE_NOT_FOUND(HttpStatus.NOT_FOUND, "Không tìm thấy loại dịch vụ"),
     SERVICE_TYPE_INACTIVE(HttpStatus.BAD_REQUEST, "Loại dịch vụ hiện đang ngừng hoạt động"),
-    SERVICE_ALREADY_REGISTERED(HttpStatus.CONFLICT, "Bạn dã đăng ký dịch vụ này rồi"),
+    SERVICE_ALREADY_REGISTERED(HttpStatus.CONFLICT, "Bạn đã đăng ký dịch vụ này rồi"),
+    SERVICE_REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "Không tìm thấy yêu cầu dịch vụ"),
+    SERVICE_REQUEST_NOT_RESOLVED(HttpStatus.CONFLICT, "Dịch vụ chưa được giải quyết, không thể đánh giá"),
+    SERVICE_REQUEST_ALREADY_RATED(HttpStatus.CONFLICT, "Yêu cầu dịch vụ đã được đánh giá"),
+    SERVICE_REQUEST_NOT_YOURS(HttpStatus.FORBIDDEN, "Yêu cầu dịch vụ không phải của bạn"),
     REGISTRATION_NOT_FOUND(HttpStatus.NOT_FOUND, "Không tìm thấy đăng ký dịch vụ"),
     REGISTRATION_NOT_ACTIVE(HttpStatus.CONFLICT, "Đăng ký hiện không còn hiệu lực"),
+
+    // --Notification--
+    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "Không tìm thấy thông báo"),
 
     // --General--
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "Dữ liệu không hợp lệ"),
