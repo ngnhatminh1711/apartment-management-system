@@ -28,18 +28,29 @@ import { ResidentListPage } from "../pages/manager/residents/ResidentListPage";
 // Resident pages
 import { BuildingFormPage } from "../pages/admin/buildings/BuildingFormPage";
 import { ResidentDashboardPage } from "../pages/resident/DashboardPage";
+import NotificationPage from "../pages/resident/Notification/NotificationPage";
+import VehiclePage from "../pages/resident/Vehicle/VehiclePage";
+import ServiceRegistrationPage from "../pages/resident/ServiceRegistration/ServiceRegistrationPage";
+import ServiceRequestPage from "../pages/resident/ServiceRequest/ServiceRequestPage";
+import BillPage from "../pages/resident/Bill/BillPage";
+import PaymentPage from "../pages/resident/Payment/PaymentPage";
+import BillDetailPage from "../pages/resident/Bill/BillDetailPage";
+import PaymentBillPage from "../pages/resident/Payment/PaymentBillPage";
+import ServiceRequestDetailPage from "../pages/resident/ServiceRequest/ServiceRequestDetailPage";
 
 const router = createBrowserRouter([
-    // ── Public ──────────────────────────────────────────────────────────────
-    { path: "/login", element: <LoginPage /> },
-    {
-        path: "/unauthorized",
-        element: (
-            <div className="flex h-screen items-center justify-center text-xl text-red-500">403 – Không có quyền truy cập</div>
-        ),
-    },
+  // ── Public ──────────────────────────────────────────────────────────────
+  { path: "/login", element: <LoginPage /> },
+  {
+    path: "/unauthorized",
+    element: (
+      <div className="flex h-screen items-center justify-center text-xl text-red-500">
+        403 – Không có quyền truy cập
+      </div>
+    ),
+  },
 
-    // ── Admin ────────────────────────────────────────────────────────────────
+ // ── Admin ────────────────────────────────────────────────────────────────
     {
         path: "/admin",
         element: (
@@ -58,7 +69,7 @@ const router = createBrowserRouter([
         ],
     },
 
-    // ── Manager ──────────────────────────────────────────────────────────────
+ // ── Manager ──────────────────────────────────────────────────────────────
     {
         path: "/manager",
         element: (
@@ -84,26 +95,37 @@ const router = createBrowserRouter([
             { path: "announcements/new", element: <AnnouncementFormPage /> },
             { path: "announcements/:id/edit", element: <AnnouncementFormPage /> },
         ],
-    },
+    }, 
 
-    // ── Resident ─────────────────────────────────────────────────────────────
-    {
-        path: "/resident",
-        element: (
-            <PrivateRoute>
-                <RoleRoute allowedRoles={["ROLE_RESIDENT"]}>
-                    <ResidentLayout />
-                </RoleRoute>
-            </PrivateRoute>
-        ),
-        children: [{ index: true, element: <ResidentDashboardPage /> }],
-    },
+  // ── Resident ─────────────────────────────────────────────────────────────
+  {
+    path: "/resident",
+    element: (
+      <PrivateRoute>
+        <RoleRoute allowedRoles={["ROLE_RESIDENT"]}>
+          <ResidentLayout />
+        </RoleRoute>
+      </PrivateRoute>
+    ),
+    children: [
+      { index: true, element: <ResidentDashboardPage /> },
+      { path: "bills", element: <BillPage /> },
+      { path: "bills/:id", element: <BillDetailPage /> },
+      { path: "bills/:id/payment", element: <PaymentBillPage /> },
+      { path: "payments", element: <PaymentPage /> },
+      { path: "notifications", element: <NotificationPage /> },
+      { path: "vehicles", element: <VehiclePage /> },
+      { path: "service-registrations", element: <ServiceRegistrationPage /> },
+      { path: "service-requests", element: <ServiceRequestPage /> },
+      { path: "service-requests/:id", element: <ServiceRequestDetailPage /> },
+    ],
+  },
 
-    // ── Redirect root ────────────────────────────────────────────────────────
-    { path: "/", element: <Navigate to="/login" replace /> },
-    { path: "*", element: <Navigate to="/login" replace /> },
+  // ── Redirect root ────────────────────────────────────────────────────────
+  { path: "/", element: <Navigate to="/login" replace /> },
+  { path: "*", element: <Navigate to="/login" replace /> },
 ]);
 
 export function AppRouter() {
-    return <RouterProvider router={router} />;
+  return <RouterProvider router={router} />;
 }

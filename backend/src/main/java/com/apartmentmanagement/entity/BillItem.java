@@ -74,5 +74,6 @@ public class BillItem {
         if (quantity != null && unitPrice != null)
             this.amount = this.quantity.multiply(this.unitPrice);
     }
+    
 
 }
