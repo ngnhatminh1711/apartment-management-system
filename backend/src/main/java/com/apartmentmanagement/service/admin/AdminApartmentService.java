@@ -1,5 +1,13 @@
 package com.apartmentmanagement.service.admin;
 
+import java.util.Comparator;
+import java.util.List;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.apartmentmanagement.dto.request.admin.ApartmentRequest;
 import com.apartmentmanagement.dto.request.admin.ApartmentStatusRequest;
 import com.apartmentmanagement.dto.response.PageResponse;
@@ -13,21 +21,16 @@ import com.apartmentmanagement.exception.ErrorCode;
 import com.apartmentmanagement.repository.ApartmentRepository;
 import com.apartmentmanagement.repository.ApartmentResidentRepository;
 import com.apartmentmanagement.repository.BuildingRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class AdminApartmentService {
 
-    private final ApartmentRepository         apartmentRepo;
-    private final ApartmentResidentRepository  residentRepo;
-    private final BuildingRepository           buildingRepo;
+    private final ApartmentRepository apartmentRepo;
+    private final ApartmentResidentRepository residentRepo;
+    private final BuildingRepository buildingRepo;
 
     @Transactional(readOnly = true)
     public PageResponse<ApartmentResponse> getAll(
@@ -36,23 +39,23 @@ public class AdminApartmentService {
 
         String[] parts = sort.split(",");
         Sort.Direction dir = parts.length > 1 && parts[1].equalsIgnoreCase("asc")
-                             ? Sort.Direction.ASC : Sort.Direction.DESC;
+                ? Sort.Direction.ASC
+                : Sort.Direction.DESC;
 
         var pageData = apartmentRepo.findAll(
                 buildingId, status, search,
-                PageRequest.of(page, size, Sort.by(dir, parts[0]))
-        );
+                PageRequest.of(page, size, Sort.by(dir, parts[0])));
 
         return PageResponse.of(pageData, apt -> {
-            ApartmentResponse.ResidentRef ref = buildResidentRef(apt.getId());
-            return ApartmentResponse.from(apt, ref);
+            List<ApartmentResponse.ResidentRef> refs = buildResidentRefs(apt.getId());
+            return ApartmentResponse.from(apt, refs);
         });
     }
 
     @Transactional(readOnly = true)
     public ApartmentResponse getById(Long id) {
         Apartment apt = findOrThrow(id);
-        return ApartmentResponse.from(apt, buildResidentRef(id));
+        return ApartmentResponse.from(apt, buildResidentRefs(id));
     }
 
     @Transactional
@@ -77,7 +80,7 @@ public class AdminApartmentService {
                 .status(ApartmentStatus.AVAILABLE)
                 .build();
 
-        return ApartmentResponse.from(apartmentRepo.save(apt), null);
+        return ApartmentResponse.from(apartmentRepo.save(apt), List.of());
     }
 
     @Transactional
@@ -90,15 +93,22 @@ public class AdminApartmentService {
             throw new AppException(ErrorCode.APARTMENT_NUMBER_EXISTED);
         }
 
-        if (req.getApartmentNumber() != null) apt.setApartmentNumber(req.getApartmentNumber());
-        if (req.getFloor()           != null) apt.setFloor(req.getFloor());
-        if (req.getAreaM2()          != null) apt.setAreaM2(req.getAreaM2());
-        if (req.getNumBedrooms()     != null) apt.setNumBedrooms(req.getNumBedrooms());
-        if (req.getNumBathrooms()    != null) apt.setNumBathrooms(req.getNumBathrooms());
-        if (req.getDirection()       != null) apt.setDirection(req.getDirection());
-        if (req.getNotes()           != null) apt.setNotes(req.getNotes());
+        if (req.getApartmentNumber() != null)
+            apt.setApartmentNumber(req.getApartmentNumber());
+        if (req.getFloor() != null)
+            apt.setFloor(req.getFloor());
+        if (req.getAreaM2() != null)
+            apt.setAreaM2(req.getAreaM2());
+        if (req.getNumBedrooms() != null)
+            apt.setNumBedrooms(req.getNumBedrooms());
+        if (req.getNumBathrooms() != null)
+            apt.setNumBathrooms(req.getNumBathrooms());
+        if (req.getDirection() != null)
+            apt.setDirection(req.getDirection());
+        if (req.getNotes() != null)
+            apt.setNotes(req.getNotes());
 
-        return ApartmentResponse.from(apartmentRepo.save(apt), buildResidentRef(id));
+        return ApartmentResponse.from(apartmentRepo.save(apt), buildResidentRefs(id));
     }
 
     @Transactional
@@ -122,9 +132,10 @@ public class AdminApartmentService {
         }
 
         apt.setStatus(req.getStatus());
-        if (req.getNotes() != null) apt.setNotes(req.getNotes());
+        if (req.getNotes() != null)
+            apt.setNotes(req.getNotes());
 
-        return ApartmentResponse.from(apartmentRepo.save(apt), buildResidentRef(id));
+        return ApartmentResponse.from(apartmentRepo.save(apt), buildResidentRefs(id));
     }
 
     // ── Helpers ────────────────────────────────────────────────────────────────
@@ -133,14 +144,18 @@ public class AdminApartmentService {
                 .orElseThrow(() -> new AppException(ErrorCode.APARTMENT_NOT_FOUND));
     }
 
-    private ApartmentResponse.ResidentRef buildResidentRef(Long apartmentId) {
-        Optional<ApartmentResident> primary = residentRepo.findPrimaryResident(apartmentId);
-        return primary.map(ar -> ApartmentResponse.ResidentRef.builder()
-                .id(ar.getUser().getId())
-                .fullName(ar.getUser().getFullName())
-                .phone(ar.getUser().getPhone())
-                .isPrimary(ar.getIsPrimary())
-                .moveInDate(ar.getMoveInDate().toString())
-                .build()).orElse(null);
+    private List<ApartmentResponse.ResidentRef> buildResidentRefs(Long apartmentId) {
+        return residentRepo.findCurrentResidents(apartmentId).stream()
+                .sorted(Comparator.comparing(
+                        (ApartmentResident ar) -> Boolean.TRUE.equals(ar.getIsPrimary()))
+                        .reversed())
+                .map(ar -> ApartmentResponse.ResidentRef.builder()
+                        .id(ar.getUser().getId())
+                        .fullName(ar.getUser().getFullName())
+                        .phone(ar.getUser().getPhone())
+                        .isPrimary(ar.getIsPrimary())
+                        .moveInDate(ar.getMoveInDate() == null ? null : ar.getMoveInDate().toString())
+                        .build())
+                .toList();
     }
 }

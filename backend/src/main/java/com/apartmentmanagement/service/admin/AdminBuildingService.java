@@ -143,7 +143,7 @@ public class AdminBuildingService {
 
     private BuildingResponse.Stats buildStats(Long buildingId) {
         return BuildingResponse.Stats.builder()
-                .totalApartments(apartmentRepo.countByBuildingIdAndStatus(buildingId, null))
+                .totalApartments(apartmentRepo.countByBuildingId(buildingId))
                 .occupiedApartments(apartmentRepo.countByBuildingIdAndStatus(
                         buildingId, ApartmentStatus.OCCUPIED))
                 .availableApartments(apartmentRepo.countByBuildingIdAndStatus(

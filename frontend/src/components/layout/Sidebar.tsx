@@ -1,5 +1,5 @@
-import { NavLink } from "react-router-dom";
 import clsx from "clsx";
+import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 interface NavItem {
@@ -18,9 +18,7 @@ export function Sidebar({ title, nav, color = "bg-secondary" }: Props) {
     const { logout } = useAuth();
 
     return (
-        <aside
-            className={`w-1/9 min-w-fit min-h-screen flex flex-col ${color} text-white shadow-lg`}
-        >
+        <aside className={`w-1/7 min-w-fit min-h-screen flex flex-col ${color} text-white shadow-lg`}>
             {/* Logo / Title */}
             <div className="py-10 px-4">
                 <h1 className="text-lg font-semibold leading-tight text-primary">{title}</h1>
