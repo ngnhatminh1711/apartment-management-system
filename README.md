@@ -10,6 +10,7 @@ Hệ thống quản lý chung cư gồm backend Spring Boot và frontend React/V
 - [Cấu trúc thư mục](#cấu-trúc-thư-mục)
 - [Yêu cầu môi trường](#yêu-cầu-môi-trường)
 - [Cài đặt và chạy project](#cài-đặt-và-chạy-project)
+- [Chạy bằng Docker Compose](#chạy-bằng-docker-compose)
 - [Cấu hình môi trường](#cấu-hình-môi-trường)
 - [Tài khoản mặc định](#tài-khoản-mặc-định)
 - [API và phân quyền](#api-và-phân-quyền)
@@ -134,6 +135,7 @@ Theo tài liệu nghiệp vụ, module Manager còn định hướng xử lý th
 
 ```text
 PTHTWeb/
+├── docker-compose.yml
 ├── backend/
 │   ├── pom.xml
 │   ├── mvnw
@@ -184,12 +186,92 @@ Cần cài đặt trước:
 - PostgreSQL.
 - Git.
 
+Nếu chạy bằng Docker Compose, chỉ cần cài:
+
+- Docker Desktop hoặc Docker Engine.
+- Docker Compose v2.
+
 Khuyến nghị:
 
 - Dùng IntelliJ IDEA hoặc VS Code.
 - Mở workspace bằng file `ApartmentManagement.code-workspace` nếu dùng VS Code.
 
 ## Cài đặt và chạy project
+
+Có 2 cách chạy project:
+
+- Docker Compose: phù hợp khi muốn dựng nhanh cả PostgreSQL, backend và frontend.
+- Chạy thủ công: phù hợp khi cần debug backend/frontend trực tiếp trên máy local.
+
+## Chạy bằng Docker Compose
+
+File Compose nằm ở root project:
+
+```text
+docker-compose.yml
+```
+
+Compose tạo 3 service:
+
+| Service | Image | Port | Mô tả |
+| --- | --- | --- | --- |
+| `postgres` | `postgres:16-alpine` | `5432` | Database PostgreSQL, database mặc định `apartment_db`. |
+| `backend` | `maven:3.9.11-eclipse-temurin-25` | `8080` | Spring Boot API, kết nối đến service `postgres`. |
+| `frontend` | `node:24-alpine` | `3000` | React/Vite dev server. |
+
+Chạy toàn bộ hệ thống:
+
+```bash
+docker compose up
+```
+
+Chạy nền:
+
+```bash
+docker compose up -d
+```
+
+Sau khi các container chạy xong:
+
+```text
+Frontend: http://localhost:3000
+Backend:  http://localhost:8080
+Database: localhost:5432
+```
+
+Xem log:
+
+```bash
+docker compose logs -f
+```
+
+Xem log riêng backend:
+
+```bash
+docker compose logs -f backend
+```
+
+Dừng container:
+
+```bash
+docker compose down
+```
+
+Dừng và xóa luôn volume database/cache:
+
+```bash
+docker compose down -v
+```
+
+Lưu ý:
+
+- Lần chạy đầu có thể mất vài phút vì container backend tải Maven dependencies và container frontend chạy `npm install`.
+- Dữ liệu PostgreSQL được lưu trong volume `postgres_data`.
+- Maven dependencies được cache trong volume `maven_cache`.
+- `node_modules` của frontend được lưu trong volume `frontend_node_modules`.
+- Nếu máy đang có PostgreSQL chạy ở port `5432`, hãy dừng PostgreSQL local hoặc đổi port mapping trong `docker-compose.yml`.
+
+## Chạy thủ công
 
 ### 1. Clone hoặc mở project
 
@@ -258,7 +340,7 @@ npm run dev
 Frontend mặc định chạy tại:
 
 ```text
-http://localhost:5173
+http://localhost:3000
 ```
 
 Nếu muốn frontend gọi đúng backend, tạo file `frontend/.env`:
@@ -292,7 +374,7 @@ Các cấu hình quan trọng:
 | `jwt.secret` | cấu hình trong YAML | Secret ký JWT. |
 | `jwt.access-token-expiration` | `86400000` | Thời hạn access token, đơn vị millisecond. |
 | `jwt.refresh-token-expiration` | `604800000` | Thời hạn refresh token, đơn vị millisecond. |
-| `cors.allowed-origins` | `http://localhost:3000,http://localhost:5173` | Origin frontend được phép gọi API. |
+| `cors.allowed-origins` | `http://localhost:3000,http://localhost:5173` | Origin frontend được phép gọi API. Port đang dùng trong `vite.config.ts` là `3000`. |
 
 Khuyến nghị khi deploy:
 
@@ -481,6 +563,48 @@ cd backend
 ./mvnw test
 ```
 
+Nếu đã cài Maven local, có thể chạy trực tiếp:
+
+```bash
+cd backend
+mvn test
+```
+
+Backend hiện có 34 test case: 1 test khởi động context Spring Boot và bộ unit test cho các service phía cư dân. Các unit test này dùng JUnit 5 + Mockito, mock repository/service phụ thuộc và kiểm tra mapping response, cập nhật trạng thái, lưu notification, phân quyền dữ liệu theo căn hộ/người dùng và các nhánh lỗi nghiệp vụ.
+
+Các test class chính:
+
+| Test class | Phạm vi kiểm thử |
+| --- | --- |
+| `ApartmentManagementApplicationTests` | Kiểm tra Spring context load được. |
+| `ResidentInfoServiceTest` | Hồ sơ cư dân, cập nhật thông tin, ngày sinh hợp lệ, thông tin căn hộ và thành viên hộ gia đình. |
+| `ResidentBillServiceTest` | Danh sách hóa đơn, tổng nợ, hóa đơn quá hạn, chi tiết hóa đơn, thanh toán của cư dân và lỗi truy cập hóa đơn không thuộc căn hộ. |
+| `ResidentPaymentServiceTest` | Lịch sử thanh toán, chi tiết thanh toán và kiểm tra quyền xem thanh toán/hóa đơn. |
+| `ResidentVehicleServiceTest` | Danh sách xe, đăng ký xe, kiểm tra trùng biển số, hủy xe và lỗi xe không thuộc cư dân. |
+| `ResidentServiceRegistrationServiceTest` | Danh sách dịch vụ, đăng ký dịch vụ, chặn đăng ký trùng, hủy dịch vụ và lỗi hủy khi đăng ký không active. |
+| `ResidentServiceRequestServiceTest` | Danh sách/chi tiết yêu cầu, tạo yêu cầu, gửi notification, đánh giá yêu cầu đã xử lý và validate rating. |
+| `ResidentNotificationServiceTest` | Danh sách thông báo, đánh dấu đã đọc, đánh dấu tất cả đã đọc, lỗi không có thông báo và danh sách announcement theo tòa nhà. |
+
+Chạy một test class cụ thể trên Windows:
+
+```bash
+cd backend
+.\mvnw.cmd -Dtest=ResidentBillServiceTest test
+```
+
+Chạy một test class cụ thể trên macOS/Linux:
+
+```bash
+cd backend
+./mvnw -Dtest=ResidentBillServiceTest test
+```
+
+Các unit test service nằm trong:
+
+```text
+backend/src/test/java/com/apartmentmanagement/service/resident/
+```
+
 ### Backend package
 
 ```bash
@@ -526,7 +650,7 @@ npm run preview
 1. Bật PostgreSQL.
 2. Kiểm tra database `apartment_db` đã tồn tại.
 3. Chạy backend tại `http://localhost:8080`.
-4. Chạy frontend tại `http://localhost:5173`.
+4. Chạy frontend tại `http://localhost:3000`.
 5. Đăng nhập bằng tài khoản admin mặc định.
 6. Tạo manager/resident, tòa nhà, căn hộ và cấu hình phí để có dữ liệu sử dụng các module khác.
 
