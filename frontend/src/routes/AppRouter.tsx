@@ -14,7 +14,15 @@ import { RoleRoute } from "./RoleRoute";
 
 // Admin pages
 import { AdminDashboardPage } from "../pages/admin/DashboardPage";
+import { ApartmentDetailPage as AdminApartmentDetailPage } from "../pages/admin/apartments/ApartmentDetailPage";
+import { ApartmentFormPage } from "../pages/admin/apartments/ApartmentFormPage";
+import { ApartmentListPage } from "../pages/admin/apartments/ApartmentListPage";
+import { BuildingFormPage } from "../pages/admin/buildings/BuildingFormPage";
 import { BuildingListPage } from "../pages/admin/buildings/BuildingListPage";
+import { FeeConfigPage } from "../pages/admin/fee-configs/FeeConfigPage";
+import { UserDetailPage } from "../pages/admin/users/UserDetailPage";
+import { UserFormPage } from "../pages/admin/users/UserFormPage";
+import { UserListPage } from "../pages/admin/users/UserListPage";
 
 // Manager pages
 import { ManagerDashboardPage } from "../pages/manager/DashboardPage";
@@ -26,31 +34,28 @@ import { ResidentDetailPage } from "../pages/manager/residents/ResidentDetailPag
 import { ResidentListPage } from "../pages/manager/residents/ResidentListPage";
 
 // Resident pages
-import { BuildingFormPage } from "../pages/admin/buildings/BuildingFormPage";
+import BillDetailPage from "../pages/resident/Bill/BillDetailPage";
+import BillPage from "../pages/resident/Bill/BillPage";
 import { ResidentDashboardPage } from "../pages/resident/DashboardPage";
 import NotificationPage from "../pages/resident/Notification/NotificationPage";
-import VehiclePage from "../pages/resident/Vehicle/VehiclePage";
-import ServiceRegistrationPage from "../pages/resident/ServiceRegistration/ServiceRegistrationPage";
-import ServiceRequestPage from "../pages/resident/ServiceRequest/ServiceRequestPage";
-import BillPage from "../pages/resident/Bill/BillPage";
-import PaymentPage from "../pages/resident/Payment/PaymentPage";
-import BillDetailPage from "../pages/resident/Bill/BillDetailPage";
 import PaymentBillPage from "../pages/resident/Payment/PaymentBillPage";
+import PaymentPage from "../pages/resident/Payment/PaymentPage";
+import ServiceRegistrationPage from "../pages/resident/ServiceRegistration/ServiceRegistrationPage";
 import ServiceRequestDetailPage from "../pages/resident/ServiceRequest/ServiceRequestDetailPage";
+import ServiceRequestPage from "../pages/resident/ServiceRequest/ServiceRequestPage";
+import VehiclePage from "../pages/resident/Vehicle/VehiclePage";
 
 const router = createBrowserRouter([
-  // ── Public ──────────────────────────────────────────────────────────────
-  { path: "/login", element: <LoginPage /> },
-  {
-    path: "/unauthorized",
-    element: (
-      <div className="flex h-screen items-center justify-center text-xl text-red-500">
-        403 – Không có quyền truy cập
-      </div>
-    ),
-  },
+    // ── Public ──────────────────────────────────────────────────────────────
+    { path: "/login", element: <LoginPage /> },
+    {
+        path: "/unauthorized",
+        element: (
+            <div className="flex h-screen items-center justify-center text-xl text-red-500">403 – Không có quyền truy cập</div>
+        ),
+    },
 
- // ── Admin ────────────────────────────────────────────────────────────────
+    // ── Admin ────────────────────────────────────────────────────────────────
     {
         path: "/admin",
         element: (
@@ -66,10 +71,25 @@ const router = createBrowserRouter([
             { path: "buildings", element: <BuildingListPage /> },
             { path: "buildings/new", element: <BuildingFormPage /> },
             { path: "buildings/:id/edit", element: <BuildingFormPage /> },
+
+            // Apartments
+            { path: "apartments", element: <ApartmentListPage /> },
+            { path: "apartments/new", element: <ApartmentFormPage /> },
+            { path: "apartments/:id", element: <AdminApartmentDetailPage /> },
+            { path: "apartments/:id/edit", element: <ApartmentFormPage /> },
+
+            // Users
+            { path: "users", element: <UserListPage /> },
+            { path: "users/new", element: <UserFormPage /> },
+            { path: "users/:id", element: <UserDetailPage /> },
+            { path: "users/:id/edit", element: <UserFormPage /> },
+
+            // Other
+            { path: "fee-configs", element: <FeeConfigPage /> },
         ],
     },
 
- // ── Manager ──────────────────────────────────────────────────────────────
+    // ── Manager ──────────────────────────────────────────────────────────────
     {
         path: "/manager",
         element: (
@@ -95,37 +115,37 @@ const router = createBrowserRouter([
             { path: "announcements/new", element: <AnnouncementFormPage /> },
             { path: "announcements/:id/edit", element: <AnnouncementFormPage /> },
         ],
-    }, 
+    },
 
-  // ── Resident ─────────────────────────────────────────────────────────────
-  {
-    path: "/resident",
-    element: (
-      <PrivateRoute>
-        <RoleRoute allowedRoles={["ROLE_RESIDENT"]}>
-          <ResidentLayout />
-        </RoleRoute>
-      </PrivateRoute>
-    ),
-    children: [
-      { index: true, element: <ResidentDashboardPage /> },
-      { path: "bills", element: <BillPage /> },
-      { path: "bills/:id", element: <BillDetailPage /> },
-      { path: "bills/:id/payment", element: <PaymentBillPage /> },
-      { path: "payments", element: <PaymentPage /> },
-      { path: "notifications", element: <NotificationPage /> },
-      { path: "vehicles", element: <VehiclePage /> },
-      { path: "service-registrations", element: <ServiceRegistrationPage /> },
-      { path: "service-requests", element: <ServiceRequestPage /> },
-      { path: "service-requests/:id", element: <ServiceRequestDetailPage /> },
-    ],
-  },
+    // ── Resident ─────────────────────────────────────────────────────────────
+    {
+        path: "/resident",
+        element: (
+            <PrivateRoute>
+                <RoleRoute allowedRoles={["ROLE_RESIDENT"]}>
+                    <ResidentLayout />
+                </RoleRoute>
+            </PrivateRoute>
+        ),
+        children: [
+            { index: true, element: <ResidentDashboardPage /> },
+            { path: "bills", element: <BillPage /> },
+            { path: "bills/:id", element: <BillDetailPage /> },
+            { path: "bills/:id/payment", element: <PaymentBillPage /> },
+            { path: "payments", element: <PaymentPage /> },
+            { path: "notifications", element: <NotificationPage /> },
+            { path: "vehicles", element: <VehiclePage /> },
+            { path: "service-registrations", element: <ServiceRegistrationPage /> },
+            { path: "service-requests", element: <ServiceRequestPage /> },
+            { path: "service-requests/:id", element: <ServiceRequestDetailPage /> },
+        ],
+    },
 
-  // ── Redirect root ────────────────────────────────────────────────────────
-  { path: "/", element: <Navigate to="/login" replace /> },
-  { path: "*", element: <Navigate to="/login" replace /> },
+    // ── Redirect root ────────────────────────────────────────────────────────
+    { path: "/", element: <Navigate to="/login" replace /> },
+    { path: "*", element: <Navigate to="/login" replace /> },
 ]);
 
 export function AppRouter() {
-  return <RouterProvider router={router} />;
+    return <RouterProvider router={router} />;
 }

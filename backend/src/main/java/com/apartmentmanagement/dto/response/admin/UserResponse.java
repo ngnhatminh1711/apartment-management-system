@@ -1,5 +1,6 @@
 package com.apartmentmanagement.dto.response.admin;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,6 +25,7 @@ public class UserResponse {
     private String fullName;
     private String email;
     private String phone;
+    private LocalDate dateOfBirth;
     private String idCard;
     private Boolean isActive;
     private Set<RoleName> roles;
@@ -44,6 +46,7 @@ public class UserResponse {
                 .fullName(u.getFullName())
                 .email(u.getEmail())
                 .phone(u.getPhone())
+                .dateOfBirth(u.getDateOfBirth())
                 .idCard(u.getIdCard())
                 .isActive(u.getIsActive())
                 .roles(u.getRoles().stream()

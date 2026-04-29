@@ -42,7 +42,7 @@ public class AdminUserController {
             @RequestParam(required = false) RoleName role,
             @RequestParam(required = false) Boolean isActive,
             @RequestParam(required = false) Long buildingId,
-            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "") String search,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt,desc") String sort) {

@@ -131,8 +131,8 @@ export function BuildingListPage() {
                                                     </Link>
                                                 </td>
                                                 <td className="table-cell text-gray-500 max-w-[200px] truncate">{b.address}</td>
-                                                <td className="table-cell text-center">{b.numFloors}</td>
-                                                <td className="table-cell text-center">
+                                                <td className="table-cell">{b.numFloors}</td>
+                                                <td className="table-cell">
                                                     <span className="font-medium">{b.stats.occupiedApartments}</span>
                                                     <span className="text-gray-400"> / {b.stats.totalApartments}</span>
                                                 </td>

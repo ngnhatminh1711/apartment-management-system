@@ -47,6 +47,8 @@ public interface ApartmentRepository extends JpaRepository<Apartment, Long> {
             @Param("search") String search,
             Pageable pageable);
 
+    long countByBuildingId(Long buildingId);
+
     long countByBuildingIdAndStatus(Long buildingId, ApartmentStatus status);
 
     long countByStatus(ApartmentStatus status);

@@ -50,7 +50,7 @@ public class AdminUserService {
 
         // Dùng JPA Specification hoặc query đơn giản hơn
         var pageable = PageRequest.of(page, size, Sort.by(dir, parts[0]));
-        var pageData = userRepo.findAll(pageable); // TODO: thêm filter khi cần
+        var pageData = userRepo.findAll(search, role, isActive, buildingId, pageable);
 
         return PageResponse.of(pageData, u -> {
             UserResponse.ApartmentRef aptRef = buildAptRef(u.getId());
