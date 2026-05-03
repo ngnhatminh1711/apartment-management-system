@@ -17,6 +17,7 @@ import { AdminDashboardPage } from "../pages/admin/DashboardPage";
 import { ApartmentDetailPage as AdminApartmentDetailPage } from "../pages/admin/apartments/ApartmentDetailPage";
 import { ApartmentFormPage } from "../pages/admin/apartments/ApartmentFormPage";
 import { ApartmentListPage } from "../pages/admin/apartments/ApartmentListPage";
+import { BuildingDetailPage } from "../pages/admin/buildings/BuildingDetailPage";
 import { BuildingFormPage } from "../pages/admin/buildings/BuildingFormPage";
 import { BuildingListPage } from "../pages/admin/buildings/BuildingListPage";
 import { FeeConfigPage } from "../pages/admin/fee-configs/FeeConfigPage";
@@ -70,6 +71,7 @@ const router = createBrowserRouter([
             // Buildings
             { path: "buildings", element: <BuildingListPage /> },
             { path: "buildings/new", element: <BuildingFormPage /> },
+            { path: "buildings/:id", element: <BuildingDetailPage /> },
             { path: "buildings/:id/edit", element: <BuildingFormPage /> },
 
             // Apartments

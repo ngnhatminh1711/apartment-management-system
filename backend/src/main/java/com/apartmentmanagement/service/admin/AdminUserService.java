@@ -24,6 +24,7 @@ import com.apartmentmanagement.repository.ApartmentResidentRepository;
 import com.apartmentmanagement.repository.RoleRepository;
 import com.apartmentmanagement.repository.UserRepository;
 import com.apartmentmanagement.security.SecurityUtils;
+import com.apartmentmanagement.service.MailService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,7 @@ public class AdminUserService {
     private final RoleRepository roleRepo;
     private final ApartmentResidentRepository residentRepo;
     private final PasswordEncoder encoder;
+    private final MailService mailService;
 
     @Transactional(readOnly = true)
     public PageResponse<UserResponse> getAll(
@@ -99,8 +101,8 @@ public class AdminUserService {
 
         // Gửi email thông tin đăng nhập
         try {
-            // mailService.sendWelcomeEmail(saved.getEmail(), saved.getFullName(),
-            // rawPassword);
+            mailService.sendWelcomeEmail(saved.getEmail(), saved.getFullName(),
+                    rawPassword);
         } catch (Exception e) {
             log.warn("Gửi email thất bại cho user {}: {}", saved.getEmail(), e.getMessage());
         }
@@ -150,8 +152,8 @@ public class AdminUserService {
         userRepo.save(user);
 
         try {
-            // mailService.sendPasswordResetEmail(user.getEmail(), user.getFullName(),
-            // rawPassword);
+            mailService.sendPasswordResetEmail(user.getEmail(), user.getFullName(),
+                    rawPassword);
         } catch (Exception e) {
             log.warn("Gửi email reset password thất bại: {}", e.getMessage());
         }
