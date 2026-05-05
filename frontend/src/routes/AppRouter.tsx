@@ -39,6 +39,7 @@ import { ResidentDetailPage } from "../pages/manager/residents/ResidentDetailPag
 import { ResidentListPage } from "../pages/manager/residents/ResidentListPage";
 
 // Resident pages
+import { ManagerVehicleListPage } from "../pages/manager/vehicles/VehicleListPage";
 import BillDetailPage from "../pages/resident/Bill/BillDetailPage";
 import BillPage from "../pages/resident/Bill/BillPage";
 import { ResidentDashboardPage } from "../pages/resident/DashboardPage";
@@ -121,6 +122,9 @@ const router = createBrowserRouter([
             // Residents
             { path: "residents", element: <ResidentListPage /> },
             { path: "residents/:id", element: <ResidentDetailPage /> },
+
+            // Vehicles
+            { path: "vehicles", element: <ManagerVehicleListPage /> },
 
             // Announcements
             { path: "announcements", element: <AnnouncementListPage /> },

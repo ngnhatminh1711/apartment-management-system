@@ -42,15 +42,16 @@ public class ManagerDashboardService {
         LocalDate now = LocalDate.now();
 
         // ── Apartments ──────────────────────────────────────────────────────
-        long total = apartmentRepo.countByBuildingIdAndStatus(buildingId, null);
+        long total = apartmentRepo.countByBuildingId(buildingId);
         long occupied = apartmentRepo.countByBuildingIdAndStatus(buildingId, ApartmentStatus.OCCUPIED);
+        long reserved = apartmentRepo.countByBuildingIdAndStatus(buildingId, ApartmentStatus.RESERVED);
         long available = apartmentRepo.countByBuildingIdAndStatus(buildingId, ApartmentStatus.AVAILABLE);
         long maintenance = apartmentRepo.countByBuildingIdAndStatus(buildingId, ApartmentStatus.MAINTENANCE);
         double occupancyRate = total == 0 ? 0 : Math.round((double) occupied / total * 1000.0) / 10.0;
 
         // ── Billing (tháng hiện tại) ────────────────────────────────────────
-        BigDecimal billed = billRepo.sumBilledByBuildingAndMonth(buildingId, now.getYear(), now.getMonthValue());
-        BigDecimal collected = billRepo.sumCollectedByBuildingAndMonth(buildingId, now.getYear(), now.getMonthValue());
+        BigDecimal billed = billRepo.sumBilledByBuilding(buildingId);
+        BigDecimal collected = billRepo.sumCollectedByBuilding(buildingId);
         BigDecimal overdueDebt = billRepo.sumOutstandingDebt(buildingId);
         long pendingBills = 0;
         long overdueBills = 0;
@@ -83,7 +84,7 @@ public class ManagerDashboardService {
                 .building(ManagerDashboardResponse.BuildingInfo.builder()
                         .id(building.getId()).name(building.getName()).build())
                 .apartments(ManagerDashboardResponse.ApartmentStats.builder()
-                        .total(total).occupied(occupied).available(available)
+                        .total(total).reserved(reserved).occupied(occupied).available(available)
                         .maintenance(maintenance).occupancyRate(occupancyRate).build())
                 .billing(ManagerDashboardResponse.BillingStats.builder()
                         .currentMonth(now.format(DateTimeFormatter.ofPattern("yyyy-MM")))

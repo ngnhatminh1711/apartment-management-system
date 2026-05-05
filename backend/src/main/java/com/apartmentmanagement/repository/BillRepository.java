@@ -29,6 +29,15 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
             @Param("buildingId") Long buildingId,
             @Param("year") int year, @Param("month") int month);
 
+    /** Tổng tiền đã lập hóa đơn */
+    @Query("""
+            SELECT COALESCE(SUM(b.totalAmount), 0)
+            FROM Bill b
+            WHERE b.apartment.building.id = :buildingId
+            AND b.status != 'CANCELLED'
+            """)
+    BigDecimal sumBilledByBuilding(@Param("buildingId") Long buildingId);
+
     /** Tổng tiền đã thu trong tháng */
     @Query("""
             SELECT COALESCE(SUM(b.paidAmount), 0)
@@ -39,6 +48,14 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
     BigDecimal sumCollectedByBuildingAndMonth(
             @Param("buildingId") Long buildingId,
             @Param("year") int year, @Param("month") int month);
+
+    /** Tổng tiền đã thu */
+    @Query("""
+            SELECT COALESCE(SUM(b.paidAmount), 0)
+            FROM Bill b
+            WHERE b.apartment.building.id = :buildingId
+            """)
+    BigDecimal sumCollectedByBuilding(@Param("buildingId") Long buildingId);
 
     @Query("""
             SELECT COALESCE(SUM(b.totalAmount - b.paidAmount), 0)

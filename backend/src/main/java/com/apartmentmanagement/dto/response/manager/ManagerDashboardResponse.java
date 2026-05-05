@@ -34,6 +34,7 @@ public class ManagerDashboardResponse {
     @Builder
     public static class ApartmentStats {
         private long total;
+        private long reserved;
         private long occupied;
         private long available;
         private long maintenance;
