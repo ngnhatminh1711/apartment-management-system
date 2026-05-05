@@ -60,10 +60,31 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
     @Query("""
             SELECT COALESCE(SUM(b.totalAmount - b.paidAmount), 0)
             FROM Bill b
-            WHERE b.status IN ('PENDING', 'OVERDUE')
+            WHERE b.status != 'CANCELLED'
+            AND b.paidAmount < b.totalAmount
             AND (:buildingId IS NULL OR b.apartment.building.id = :buildingId)
             """)
     BigDecimal sumOutstandingDebt(@Param("buildingId") Long buildingId);
+
+    @Query("""
+            SELECT COUNT(b)
+            FROM Bill b
+            WHERE b.apartment.building.id = :buildingId
+            AND b.status != 'CANCELLED'
+            AND b.paidAmount < b.totalAmount
+            AND b.dueDate >= :today
+            """)
+    long countPendingBillsByBuilding(@Param("buildingId") Long buildingId, @Param("today") LocalDate today);
+
+    @Query("""
+            SELECT COUNT(b)
+            FROM Bill b
+            WHERE b.apartment.building.id = :buildingId
+            AND b.status != 'CANCELLED'
+            AND b.paidAmount < b.totalAmount
+            AND b.dueDate < :today
+            """)
+    long countOverdueBillsByBuilding(@Param("buildingId") Long buildingId, @Param("today") LocalDate today);
 
     /** Đếm hóa đơn PENDING/OVERDUE của một căn hộ */
     @Query("""
@@ -132,7 +153,8 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
     /** Đếm số căn hộ đang nợ */
     @Query("""
             SELECT COUNT(DISTINCT b.apartment.id) FROM Bill b
-            WHERE b.status IN ('PENDING', 'OVERDUE')
+            WHERE b.status != 'CANCELLED'
+            AND b.paidAmount < b.totalAmount
             AND (:buildingId IS NULL OR b.apartment.building.id = :buildingId)
             """)
     long countDebtors(@Param("buildingId") Long buildingId);
@@ -174,7 +196,8 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
             SELECT b FROM Bill b
             JOIN FETCH b.apartment a
             JOIN FETCH a.building bl
-            WHERE b.status IN ('PENDING', 'OVERDUE')
+            WHERE b.status != 'CANCELLED'
+            AND b.paidAmount < b.totalAmount
             AND (:buildingId IS NULL OR bl.id = :buildingId)
             ORDER BY b.dueDate ASC
             """)

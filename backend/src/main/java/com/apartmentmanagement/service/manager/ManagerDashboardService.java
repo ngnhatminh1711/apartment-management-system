@@ -53,13 +53,8 @@ public class ManagerDashboardService {
         BigDecimal billed = billRepo.sumBilledByBuilding(buildingId);
         BigDecimal collected = billRepo.sumCollectedByBuilding(buildingId);
         BigDecimal overdueDebt = billRepo.sumOutstandingDebt(buildingId);
-        long pendingBills = 0;
-        long overdueBills = 0;
-        Object[] raw = billRepo.findBillSummaryByBuilding(buildingId);
-        if (raw != null && raw.length >= 4) {
-            pendingBills = raw[2] != null ? ((Number) raw[2]).longValue() : 0;
-            overdueBills = raw[3] != null ? ((Number) raw[3]).longValue() : 0;
-        }
+        long pendingBills = billRepo.countPendingBillsByBuilding(buildingId, now);
+        long overdueBills = billRepo.countOverdueBillsByBuilding(buildingId, now);
         double collectionRate = billed.compareTo(BigDecimal.ZERO) == 0 ? 0
                 : collected.divide(billed, 4, RoundingMode.HALF_UP)
                         .multiply(BigDecimal.valueOf(100))
