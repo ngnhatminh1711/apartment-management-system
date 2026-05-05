@@ -202,14 +202,7 @@ export const MANAGER_NAV = [
     { label: "Dashboard", path: "/manager", icon: "dashboard" },
     { label: "Căn hộ", path: "/manager/apartments", icon: "domain" },
     { label: "Cư dân", path: "/manager/residents", icon: "groups" },
-    { label: "Hóa đơn", path: "/manager/bills", icon: "receipt_long" },
-    { label: "Yêu cầu", path: "/manager/service-requests", icon: "assignment" },
     { label: "Đăng ký xe", path: "/manager/vehicles", icon: "directions_car" },
-    {
-        label: "Dịch vụ",
-        path: "/manager/service-registrations",
-        icon: "app_registration",
-    },
     { label: "Thông báo", path: "/manager/announcements", icon: "campaign" },
 ];
 
