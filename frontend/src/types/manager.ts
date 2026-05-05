@@ -1,9 +1,38 @@
 import type { ApartmentStatus, BillStatus, RequestStatus, ServiceRegistrationStatus, VehicleStatus, VehicleType } from "./common";
 
-// ─────────────────────────────────────────────────────────────
-// APARTMENTS
-// ─────────────────────────────────────────────────────────────
+// DASHBOARD
+export interface ManagerDashboard {
+    building: { id: number; name: string };
+    apartments: {
+        total: number;
+        reserved: number;
+        occupied: number;
+        available: number;
+        maintenance: number;
+        occupancyRate: number;
+    };
+    billing: {
+        currentMonth: string;
+        totalBilled: number;
+        totalCollected: number;
+        collectionRate: number;
+        pendingCount: number;
+        overdueCount: number;
+        overdueAmount: number;
+    };
+    requests: {
+        pendingCount: number;
+        inProgressCount: number;
+        resolvedThisWeek: number;
+    };
+    pendingApprovals: {
+        vehicleCount: number;
+        serviceRegistrationCount: number;
+    };
+    recentActivity: { type: string; message: string; time: string }[];
+}
 
+// APARTMENTS
 export interface ResidentRef {
     id: number;
     fullName: string;
@@ -79,10 +108,7 @@ export interface MoveOutRequest {
     notes?: string;
 }
 
-// ─────────────────────────────────────────────────────────────
 // RESIDENTS
-// ─────────────────────────────────────────────────────────────
-
 export interface ApartmentRefShort {
     id: number;
     apartmentNumber: string;
@@ -142,4 +168,19 @@ export interface ResidentDetail {
         status: RequestStatus;
         createdAt: string;
     }[];
+}
+
+// VEHICLES
+export interface ManagerVehicle {
+    id: number;
+    owner: { id: number; fullName: string; phone: string | null };
+    apartmentNumber: string;
+    vehicleType: VehicleType;
+    licensePlate: string;
+    brand: string | null;
+    model: string | null;
+    color: string | null;
+    status: VehicleStatus;
+    registeredAt: string;
+    rejectionReason: string | null;
 }
