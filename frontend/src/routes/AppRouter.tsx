@@ -17,9 +17,14 @@ import { AdminDashboardPage } from "../pages/admin/DashboardPage";
 import { ApartmentDetailPage as AdminApartmentDetailPage } from "../pages/admin/apartments/ApartmentDetailPage";
 import { ApartmentFormPage } from "../pages/admin/apartments/ApartmentFormPage";
 import { ApartmentListPage } from "../pages/admin/apartments/ApartmentListPage";
+import { BuildingDetailPage } from "../pages/admin/buildings/BuildingDetailPage";
 import { BuildingFormPage } from "../pages/admin/buildings/BuildingFormPage";
 import { BuildingListPage } from "../pages/admin/buildings/BuildingListPage";
 import { FeeConfigPage } from "../pages/admin/fee-configs/FeeConfigPage";
+import { DebtPage } from "../pages/admin/reports/DebtPage";
+import { OccupancyPage } from "../pages/admin/reports/OccupancyPage";
+import { RevenuePage } from "../pages/admin/reports/RevenuePage";
+import { ServiceTypePage } from "../pages/admin/service-types/ServiceTypePage";
 import { UserDetailPage } from "../pages/admin/users/UserDetailPage";
 import { UserFormPage } from "../pages/admin/users/UserFormPage";
 import { UserListPage } from "../pages/admin/users/UserListPage";
@@ -70,6 +75,7 @@ const router = createBrowserRouter([
             // Buildings
             { path: "buildings", element: <BuildingListPage /> },
             { path: "buildings/new", element: <BuildingFormPage /> },
+            { path: "buildings/:id", element: <BuildingDetailPage /> },
             { path: "buildings/:id/edit", element: <BuildingFormPage /> },
 
             // Apartments
@@ -86,6 +92,12 @@ const router = createBrowserRouter([
 
             // Other
             { path: "fee-configs", element: <FeeConfigPage /> },
+            { path: "service-types", element: <ServiceTypePage /> },
+
+            // Reports
+            { path: "reports/revenue", element: <RevenuePage /> },
+            { path: "reports/occupancy", element: <OccupancyPage /> },
+            { path: "reports/debt", element: <DebtPage /> },
         ],
     },
 

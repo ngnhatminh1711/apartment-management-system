@@ -58,7 +58,8 @@ class ResidentServiceRegistrationServiceTest {
 
     @Test
     void getServiceTypes_marksRegisteredServicesWithLatestRegistration() {
-        ServiceType internet = ServiceType.builder().id(1).name("Internet").monthlyFee(new BigDecimal("100.00")).build();
+        ServiceType internet = ServiceType.builder().id(1).name("Internet").monthlyFee(new BigDecimal("100.00"))
+                .build();
         ServiceRegistration oldRegistration = ServiceRegistration.builder()
                 .id(1L)
                 .serviceType(internet)
@@ -84,7 +85,8 @@ class ResidentServiceRegistrationServiceTest {
 
     @Test
     void getServiceRegistration_withStatus_returnsMappedRegistrations() {
-        ServiceType serviceType = ServiceType.builder().id(1).name("Internet").monthlyFee(new BigDecimal("100.00")).build();
+        ServiceType serviceType = ServiceType.builder().id(1).name("Internet").monthlyFee(new BigDecimal("100.00"))
+                .build();
         ServiceRegistration registration = ServiceRegistration.builder()
                 .id(1L)
                 .serviceType(serviceType)
@@ -94,8 +96,8 @@ class ResidentServiceRegistrationServiceTest {
         when(serviceRegistrationRepository.findByUser_IdAndStatus(99L, RegistrationStatus.ACTIVE))
                 .thenReturn(List.of(registration));
 
-        List<ServiceRegistrationResponse> response =
-                residentServiceRegistrationService.getServiceRegistration("ACTIVE", 99L);
+        List<ServiceRegistrationResponse> response = residentServiceRegistrationService.getServiceRegistration("ACTIVE",
+                99L);
 
         assertEquals(1, response.size());
         assertEquals(RegistrationStatus.ACTIVE, response.get(0).getStatus());
@@ -113,13 +115,13 @@ class ResidentServiceRegistrationServiceTest {
                 .build();
         ServiceType serviceType = ServiceType.builder().id(1).name("Internet").isActive(true).build();
         ServiceRegistrationRequest request = new ServiceRegistrationRequest();
-        request.setServiceTypeId(1L);
+        request.setServiceTypeId(1);
         request.setNotes("Please register");
 
         when(userRepository.findById(99L)).thenReturn(Optional.of(user));
         when(apartmentResidentRepository.findByUser_Id(99L))
                 .thenReturn(Optional.of(ApartmentResident.builder().apartment(apartment).build()));
-        when(serviceTypeRepository.findById(1L)).thenReturn(Optional.of(serviceType));
+        when(serviceTypeRepository.findById(1)).thenReturn(Optional.of(serviceType));
         when(serviceRegistrationRepository.findByUser_Id(99L)).thenReturn(List.of());
 
         residentServiceRegistrationService.createServiceRegistration(99L, request);
@@ -132,14 +134,14 @@ class ResidentServiceRegistrationServiceTest {
     void createServiceRegistration_whenAlreadyPending_throwsAlreadyRegistered() {
         ServiceType serviceType = ServiceType.builder().id(1).name("Internet").isActive(true).build();
         ServiceRegistrationRequest request = new ServiceRegistrationRequest();
-        request.setServiceTypeId(1L);
+        request.setServiceTypeId(1);
 
         when(userRepository.findById(99L)).thenReturn(Optional.of(User.builder().id(99L).build()));
         when(apartmentResidentRepository.findByUser_Id(99L))
                 .thenReturn(Optional.of(ApartmentResident.builder()
                         .apartment(Apartment.builder().building(Building.builder().build()).build())
                         .build()));
-        when(serviceTypeRepository.findById(1L)).thenReturn(Optional.of(serviceType));
+        when(serviceTypeRepository.findById(1)).thenReturn(Optional.of(serviceType));
         when(serviceRegistrationRepository.findByUser_Id(99L)).thenReturn(List.of(ServiceRegistration.builder()
                 .serviceType(serviceType)
                 .status(RegistrationStatus.PENDING)

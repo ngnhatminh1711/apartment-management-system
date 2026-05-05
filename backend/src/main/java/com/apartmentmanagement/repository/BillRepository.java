@@ -1,6 +1,8 @@
 package com.apartmentmanagement.repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -83,32 +85,81 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
             """)
     Object[] findBillSummaryByBuilding(@Param("buildingId") Long buildingId);
 
+    @Query("""
+            SELECT b FROM Bill b
+            WHERE b.apartment.id = :apartmentId
+            AND (:status IS NULL OR b.status = :status)
+            AND (:year IS NULL OR YEAR(b.billingMonth) = :year)
+                """)
+    Page<Bill> findByApartmentId(@Param("apartmentId") Long apartmentId,
+            @Param("status") String status,
+            @Param("year") Integer year,
+            Pageable pageable);
 
     @Query("""
-                SELECT b FROM Bill b
-                WHERE b.apartment.id = :apartmentId
-                AND (:status IS NULL OR b.status = :status)
-                AND (:year IS NULL OR YEAR(b.billingMonth) = :year)
-                    """)
-    Page<Bill> findByApartmentId(@Param("apartmentId") Long apartmentId,
-        @Param("status") String status,
-        @Param("year") Integer year,
-        Pageable pageable);
-
-
-        @Query("""
-            SELECT COALESCE(SUM(b.totalAmount - b.paidAmount), 0) 
+            SELECT COALESCE(SUM(b.totalAmount - b.paidAmount), 0)
             FROM Bill b
             WHERE b.apartment.id = :apartmentId
             AND b.status not In ('PAID','CANCELLED')
             """)
-        BigDecimal sumTotalOutstanding(@Param("apartmentId") Long apartmentId);
-        
-        @Query("""
-            SELECT COUNT(b) 
+    BigDecimal sumTotalOutstanding(@Param("apartmentId") Long apartmentId);
+
+    @Query("""
+            SELECT COUNT(b)
             FROM Bill b
             WHERE b.apartment.id = :apartmentId
             AND b.status = 'OVERDUE'
             """)
-        Long countOverdueBills(@Param("apartmentId") Long apartmentId);
+    Long countOverdueBills(@Param("apartmentId") Long apartmentId);
+
+    /** Đếm số căn hộ đang nợ */
+    @Query("""
+            SELECT COUNT(DISTINCT b.apartment.id) FROM Bill b
+            WHERE b.status IN ('PENDING', 'OVERDUE')
+            AND (:buildingId IS NULL OR b.apartment.building.id = :buildingId)
+            """)
+    long countDebtors(@Param("buildingId") Long buildingId);
+
+    /** Thống kê doanh thu theo từng tháng (6 tháng gần nhất) */
+    @Query(value = """
+            SELECT
+                TO_CHAR(billing_month, 'YYYY-MM') AS period,
+                SUM(total_amount)                 AS billed,
+                SUM(paid_amount)                  AS collected
+            FROM bills b
+            JOIN apartments a ON b.apartment_id = a.id
+            WHERE a.building_id = :buildingId
+              AND b.status != 'CANCELLED'
+              AND b.billing_month >= :fromDate
+            GROUP BY TO_CHAR(billing_month, 'YYYY-MM')
+            ORDER BY period
+            """, nativeQuery = true)
+    List<Object[]> findMonthlyRevenue(
+            @Param("buildingId") Long buildingId,
+            @Param("fromDate") LocalDate fromDate);
+
+    @Query(value = """
+            SELECT
+                TO_CHAR(billing_month, 'YYYY-MM') AS period,
+                SUM(total_amount)                 AS billed,
+                SUM(paid_amount)                  AS collected
+            FROM bills b
+            JOIN apartments a ON b.apartment_id = a.id
+            WHERE b.status != 'CANCELLED'
+              AND b.billing_month >= :fromDate
+            GROUP BY TO_CHAR(billing_month, 'YYYY-MM')
+            ORDER BY period
+            """, nativeQuery = true)
+    List<Object[]> findMonthlyRevenueFromDate(@Param("fromDate") LocalDate fromDate);
+
+    /** Danh sách hóa đơn chưa thanh toán (debt report) */
+    @Query("""
+            SELECT b FROM Bill b
+            JOIN FETCH b.apartment a
+            JOIN FETCH a.building bl
+            WHERE b.status IN ('PENDING', 'OVERDUE')
+            AND (:buildingId IS NULL OR bl.id = :buildingId)
+            ORDER BY b.dueDate ASC
+            """)
+    List<Bill> findOutstandingBills(@Param("buildingId") Long buildingId);
 }

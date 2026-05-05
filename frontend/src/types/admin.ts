@@ -162,3 +162,116 @@ export interface UserUpdateFormData {
     dateOfBirth?: string;
     avatarUrl?: string;
 }
+
+// SERVICE TYPES
+
+export interface ServiceType {
+    id: number;
+    name: string;
+    description: string | null;
+    monthlyFee: number;
+    isActive: boolean;
+    iconUrl: string | null;
+    totalRegistrations: number;
+    createdAt: string;
+}
+
+export interface ServiceTypeFormData {
+    name: string;
+    description?: string;
+    monthlyFee: number;
+    iconUrl?: string;
+}
+
+// REPORTS & DASHBOARD
+
+export interface DashboardStats {
+    overview: {
+        totalBuildings: number;
+        totalApartments: number;
+        occupiedApartments: number;
+        availableApartments: number;
+        maintenanceApartments: number;
+        reservedApartments: number;
+        totalResidents: number;
+        occupancyRate: number;
+    };
+    financials: {
+        currentMonthBilled: number;
+        currentMonthCollected: number;
+        currentMonthCollectionRate: number;
+        outstandingDebt: number;
+        totalDebtors: number;
+    };
+    operations: {
+        pendingServiceRequests: number;
+        inProgressServiceRequests: number;
+        pendingVehicleApprovals: number;
+        pendingServiceRegistrations: number;
+    };
+    revenueChart: { month: string; billed: number; collected: number }[];
+    occupancyByBuilding: { buildingId: number; buildingName: string; occupancyRate: number }[];
+}
+
+export interface RevenuePeriod {
+    period: string;
+    totalBilled: number;
+    totalCollected: number;
+    outstanding: number;
+    collectionRate: number;
+}
+
+export interface RevenueReport {
+    summary: {
+        totalBilled: number;
+        totalCollected: number;
+        totalOutstanding: number;
+        collectionRate: number;
+    };
+    breakdown: RevenuePeriod[];
+}
+
+export interface OccupancyBuilding {
+    buildingId: number;
+    buildingName: string;
+    totalApartments: number;
+    occupied: number;
+    available: number;
+    maintenance: number;
+    occupancyRate: number;
+}
+
+export interface OccupancyReport {
+    reportMonth: string;
+    buildings: OccupancyBuilding[];
+    overall: { totalApartments: number; occupancyRate: number };
+}
+
+export interface DebtBillRef {
+    billId: number;
+    billingMonth: string;
+    totalAmount: number;
+    paidAmount: number;
+    dueDate: string;
+    daysOverdue: number;
+}
+
+export interface Debtor {
+    apartmentId: number;
+    apartmentNumber: string;
+    buildingName: string;
+    residentName: string;
+    residentPhone: string;
+    totalDebt: number;
+    outstandingBills: DebtBillRef[];
+}
+
+export interface DebtReport {
+    asOfDate: string;
+    summary: {
+        totalDebtors: number;
+        totalDebtAmount: number;
+        overdueCount: number;
+    };
+    debtors: Debtor[];
+}

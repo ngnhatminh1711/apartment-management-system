@@ -2,6 +2,8 @@ server:
   port: 8080
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: apartment-management
   datasource:
@@ -17,6 +19,18 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+        mail.smtp.auth: true
+        mail.smtp.starttls.enable: true
+
+scheduling:
+  async:
+    enabled: true
 
 jwt:
   secret: 51CKGfW8L3Gsk7USAqpiQWlWOe33XDjzYfJrCHACb8N

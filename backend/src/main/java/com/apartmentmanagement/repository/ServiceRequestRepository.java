@@ -2,7 +2,6 @@ package com.apartmentmanagement.repository;
 
 import java.util.Optional;
 
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,14 +23,14 @@ public interface ServiceRequestRepository extends JpaRepository<ServiceRequest, 
             """)
     long countByBuildingAndStatus(@Param("buildingId") Long buildingId, @Param("status") RequestStatus status);
 
-
     @Query("""
             SELECT sr FROM ServiceRequest sr
             WHERE sr.apartment.id = :apartmentId
             AND (:status IS NULL OR sr.status = :status)
             AND (:requestType IS NULL OR sr.requestType = :requestType)
             """)
-    Page<ServiceRequest> findByApartmentIdAndFilters(@Param("apartmentId") Long apartmentId, @Param("status") String status, @Param("requestType") String requestType, Pageable pageable);
+    Page<ServiceRequest> findByApartmentIdAndFilters(@Param("apartmentId") Long apartmentId,
+            @Param("status") String status, @Param("requestType") String requestType, Pageable pageable);
 
     Optional<ServiceRequest> findById(@Param("id") Long serviceRequestId);
 
@@ -47,4 +46,5 @@ public interface ServiceRequestRepository extends JpaRepository<ServiceRequest, 
             @Param("buildingId") Long buildingId,
             @Param("weekStart") java.time.LocalDateTime weekStart);
 
+    long countByStatus(RequestStatus status);
 }

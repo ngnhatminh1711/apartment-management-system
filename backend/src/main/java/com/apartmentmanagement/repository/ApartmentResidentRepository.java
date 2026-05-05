@@ -1,22 +1,19 @@
 package com.apartmentmanagement.repository;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import org.springframework.stereotype.Repository;
 
 import com.apartmentmanagement.entity.ApartmentResident;
 
-
 @Repository
 public interface ApartmentResidentRepository extends JpaRepository<ApartmentResident, Long> {
-    
 
     @Query("""
             SELECT ar FROM ApartmentResident ar
@@ -25,23 +22,23 @@ public interface ApartmentResidentRepository extends JpaRepository<ApartmentResi
             AND ar.isPrimary = true
             AND ar.moveOutDate IS NULL
             """)
-        Optional<ApartmentResident> findByUser_IdAndIsPrimaryTrue(@Param("userId") Long user_id);
+    Optional<ApartmentResident> findByUser_IdAndIsPrimaryTrue(@Param("userId") Long user_id);
+
     @Query("""
             SELECT ar FROM ApartmentResident ar
             JOIN FETCH ar.user u
             WHERE u.id = :userId
             AND ar.moveOutDate IS NULL
             """)
-        Optional<ApartmentResident> findByUser_Id(@Param("userId") Long user_id);
+    Optional<ApartmentResident> findByUser_Id(@Param("userId") Long user_id);
+
     @Query("""
             SELECT ar FROM ApartmentResident ar
             JOIN FETCH ar.user u
             WHERE ar.apartment.id = :apartmentId
             And ar.moveOutDate IS NULL
             """)
-        List<ApartmentResident> findByApartment_Id(@Param("apartmentId") Long apartment_id);
-
-
+    List<ApartmentResident> findByApartment_Id(@Param("apartmentId") Long apartment_id);
 
     @Query("""
             SELECT ar FROM ApartmentResident ar
@@ -120,4 +117,7 @@ public interface ApartmentResidentRepository extends JpaRepository<ApartmentResi
             @Param("buildingId") Long buildingId,
             @Param("userId") Long userId);
 
+    /** Tổng cư dân đang ở toàn hệ thống */
+    @Query("SELECT COUNT(DISTINCT ar.user.id) FROM ApartmentResident ar WHERE ar.moveOutDate IS NULL")
+    long countAllActiveResidents();
 }
