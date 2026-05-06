@@ -3,12 +3,15 @@ import { useForm } from "react-hook-form";
 import { Badge } from "../../../components/common/Badge";
 import { ConfirmDialog } from "../../../components/common/ConfirmDialog";
 import { EmptyState } from "../../../components/common/EmptyState";
+import { ExportButton } from "../../../components/common/ExportButton";
 import { Modal } from "../../../components/common/Modal";
 import { Spinner } from "../../../components/common/Spinner";
 import { ToastContainer } from "../../../components/common/ToastContainer";
+import { useExport } from "../../../hooks/useExport";
 import { useToast } from "../../../hooks/useToast";
 import { adminBuildingService } from "../../../services/admin/buildingService";
 import { adminFeeConfigService } from "../../../services/admin/feeConfigService";
+import { exportService } from "../../../services/exportService";
 import type { Building, CurrentFeeResponse, FeeConfig, FeeConfigFormData } from "../../../types/admin";
 import type { FeeType } from "../../../types/common";
 import { FEE_TYPE_LABELS, FEE_UNITS } from "../../../utils/constants";
@@ -23,6 +26,7 @@ export function FeeConfigPage() {
     const [addOpen, setAddOpen] = useState(false);
     const [deleteId, setDeleteId] = useState<number | null>(null);
     const [activeOnly, setActiveOnly] = useState(true);
+    const { exporting, error: exportError, handleExport } = useExport();
 
     const toast = useToast();
     const {
@@ -99,11 +103,29 @@ export function FeeConfigPage() {
         <div className="space-y-5">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <h1>💰 Cấu hình Bảng Giá</h1>
-                <button onClick={() => setAddOpen(true)} className="btn-primary">
-                    + Thêm giá mới
-                </button>
+                <h1>Cấu hình Bảng Giá</h1>
+                <div className="flex gap-2">
+                    <ExportButton
+                        loading={exporting}
+                        label="Xuất bảng giá"
+                        onExport={(fmt) =>
+                            handleExport(() =>
+                                exportService.exportFeeConfigs({
+                                    buildingId: buildingId,
+                                    format: fmt,
+                                }),
+                            )
+                        }
+                    />
+                    <button onClick={() => setAddOpen(true)} className="btn-primary">
+                        + Thêm giá mới
+                    </button>
+                </div>
             </div>
+
+            {exportError && (
+                <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3">{exportError}</div>
+            )}
 
             {/* Filters */}
             <div className="card py-3 flex gap-3 items-center flex-wrap">
@@ -133,7 +155,7 @@ export function FeeConfigPage() {
             {/* Current fee summary */}
             {current && (
                 <div className="card">
-                    <h3 className="mb-3">📋 Bảng giá đang áp dụng – {current.buildingName}</h3>
+                    <h3 className="mb-3">Bảng giá đang áp dụng – {current.buildingName}</h3>
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                         {(Object.entries(current.fees) as [FeeType, { unitPrice: number; unit: string }][]).map(([type, fee]) => (
                             <div key={type} className="bg-gray-50 rounded-xl p-3">

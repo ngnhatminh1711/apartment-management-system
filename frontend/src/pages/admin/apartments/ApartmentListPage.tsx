@@ -3,14 +3,17 @@ import { Link } from "react-router-dom";
 import { Badge } from "../../../components/common/Badge";
 import { ConfirmDialog } from "../../../components/common/ConfirmDialog";
 import { EmptyState } from "../../../components/common/EmptyState";
+import { ExportButton } from "../../../components/common/ExportButton";
 import { Pagination } from "../../../components/common/Pagination";
 import { SearchInput } from "../../../components/common/SearchInput";
 import { Spinner } from "../../../components/common/Spinner";
 import { ToastContainer } from "../../../components/common/ToastContainer";
+import { useExport } from "../../../hooks/useExport";
 import { usePagination } from "../../../hooks/usePagination";
 import { useToast } from "../../../hooks/useToast";
 import { adminApartmentService } from "../../../services/admin/apartmentService";
 import { adminBuildingService } from "../../../services/admin/buildingService";
+import { exportService } from "../../../services/exportService";
 import type { Apartment, Building } from "../../../types/admin";
 import type { ApartmentStatus } from "../../../types/common";
 import { APARTMENT_STATUS_COLORS, APARTMENT_STATUS_LABELS } from "../../../utils/constants";
@@ -24,6 +27,7 @@ export function ApartmentListPage() {
     const [filterBuilding, setFilterBuilding] = useState<number | undefined>();
     const [filterStatus, setFilterStatus] = useState<ApartmentStatus | "">("");
     const [deleteId, setDeleteId] = useState<number | null>(null);
+    const { exporting, error: exportError, handleExport } = useExport();
 
     const toast = useToast();
     const pag = usePagination("floor,asc");
@@ -74,14 +78,33 @@ export function ApartmentListPage() {
         <div className="space-y-5">
             <div className="flex items-center justify-between">
                 <h1>Quản lý Căn hộ</h1>
-                <Link to="new" className="btn-primary">
-                    + Thêm căn hộ
-                </Link>
+                <div className="flex gap-2">
+                    <ExportButton
+                        loading={exporting}
+                        label="Xuất danh sách"
+                        onExport={(fmt) =>
+                            handleExport(() =>
+                                exportService.exportApartments({
+                                    buildingId: filterBuilding,
+                                    status: filterStatus || undefined,
+                                    format: fmt,
+                                }),
+                            )
+                        }
+                    />
+                    <Link to="new" className="btn-primary">
+                        + Thêm căn hộ
+                    </Link>
+                </div>
             </div>
+
+            {exportError && (
+                <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3">{exportError}</div>
+            )}
 
             {/* Filters */}
             <div className="card py-3 flex gap-3 flex-wrap">
-                <div className="flex-1 min-w-[200px]">
+                <div className="flex-1 min-w-50">
                     <SearchInput placeholder="Tìm theo số căn hộ..." onSearch={pag.setSearch} />
                 </div>
                 <select

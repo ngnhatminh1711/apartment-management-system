@@ -2,13 +2,15 @@ package com.apartmentmanagement.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.apartmentmanagement.entity.Payment;
+import com.apartmentmanagement.enums.PaymentStatus;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
     @Query("SELECT p FROM Payment p WHERE (:billId IS NULL OR p.bill.id = :billId) AND " +
@@ -16,23 +18,30 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             "(:paymentMethod IS NULL OR p.paymentMethod = :paymentMethod) AND " +
             "(CAST(:fromDate AS timestamp) IS NULL OR p.paidAt >= :fromDate ) AND " +
             "(CAST(:toDate AS timestamp)  IS NULL OR p.paidAt <= :toDate)")
-    Page<Payment> findByBillIdAndOptions
-    (Long billId, String status, String paymentMethod,
-         LocalDate fromDate, LocalDate toDate, Pageable pageable);
-    
+    Page<Payment> findByBillIdAndOptions(Long billId, String status, String paymentMethod,
+            LocalDate fromDate, LocalDate toDate, Pageable pageable);
+
     @Query("SELECT p FROM Payment p WHERE  p.bill.apartment.id = :apartmentId AND " +
             "(:status IS NULL OR p.status = :status) AND " +
             "(:paymentMethod IS NULL OR p.paymentMethod = :paymentMethod) AND " +
             "(CAST(:fromDate AS timestamp) IS NULL OR p.paidAt >= :fromDate ) AND " +
             "(CAST(:toDate AS timestamp)  IS NULL OR p.paidAt <= :toDate)")
     Page<Payment> findByApartmentAndOptions(
-                    Long apartmentId,
-                    String status,
-                    String paymentMethod,
-                    LocalDate fromDate,
-                    LocalDate toDate,
-                    Pageable pageable
-            );
-@Query("SELECT p FROM Payment p WHERE  p.bill.id = :billId")
-List<Payment> findByBillId(Long billId);
+            Long apartmentId,
+            String status,
+            String paymentMethod,
+            LocalDate fromDate,
+            LocalDate toDate,
+            Pageable pageable);
+
+    @Query("SELECT p FROM Payment p WHERE  p.bill.id = :billId")
+    List<Payment> findByBillId(Long billId);
+
+    /** Tìm Payment PENDING gần nhất của bill (dùng khi webhook về) */
+    Optional<Payment> findFirstByBillIdAndStatusOrderByCreatedAtDesc(Long billId, PaymentStatus status);
+
+    Optional<Payment> findByBillIdAndUserId(Long billId, Long userId);
+
+    /** Tìm tất cả payment theo bill */
+    List<Payment> findByBillIdOrderByCreatedAtDesc(Long billId);
 }

@@ -47,20 +47,29 @@ public class AdminReportService {
 
         // Overview
         long totalBuildings = buildingRepo.countByIsActiveTrue();
+
         long occupied = buildingId != null
                 ? apartmentRepo.countByBuildingIdAndStatus(buildingId, ApartmentStatus.OCCUPIED)
                 : apartmentRepo.countByStatus(ApartmentStatus.OCCUPIED);
+
         long available = buildingId != null
                 ? apartmentRepo.countByBuildingIdAndStatus(buildingId, ApartmentStatus.AVAILABLE)
                 : apartmentRepo.countByStatus(ApartmentStatus.AVAILABLE);
+
         long maintenance = buildingId != null
                 ? apartmentRepo.countByBuildingIdAndStatus(buildingId, ApartmentStatus.MAINTENANCE)
                 : apartmentRepo.countByStatus(ApartmentStatus.MAINTENANCE);
+
         long reserved = buildingId != null
                 ? apartmentRepo.countByBuildingIdAndStatus(buildingId, ApartmentStatus.RESERVED)
                 : apartmentRepo.countByStatus(ApartmentStatus.RESERVED);
+
         long totalApartments = occupied + available + maintenance + reserved;
-        long totalResidents = residentRepo.countAllActiveResidents();
+
+        long totalResidents = buildingId != null
+                ? residentRepo.countActiveResidentsByBuilding(buildingId)
+                : residentRepo.countAllActiveResidents();
+
         double occupancyRate = totalApartments == 0 ? 0
                 : (double) occupied / totalApartments * 100;
 
@@ -69,12 +78,15 @@ public class AdminReportService {
         long buildingId2 = buildingId != null ? buildingId : -1L;
 
         BigDecimal billed = buildingId != null
-                ? billRepo.sumBilledByBuildingAndMonth(buildingId, now.getYear(), now.getMonthValue())
-                : BigDecimal.ZERO;
+                ? billRepo.sumBilledByBuilding(buildingId)
+                : billRepo.sumAllBilled();
+
         BigDecimal collected = buildingId != null
-                ? billRepo.sumCollectedByBuildingAndMonth(buildingId, now.getYear(), now.getMonthValue())
-                : BigDecimal.ZERO;
+                ? billRepo.sumCollectedByBuilding(buildingId)
+                : billRepo.sumAllCollected();
+
         BigDecimal outstandingDebt = billRepo.sumOutstandingDebt(buildingId);
+
         long totalDebtors = billRepo.countDebtors(buildingId);
 
         double collectionRate = billed.compareTo(BigDecimal.ZERO) == 0 ? 0
@@ -138,53 +150,6 @@ public class AdminReportService {
                         .build())
                 .revenueChart(chart)
                 .occupancyByBuilding(occupancyItems)
-                .build();
-    }
-
-    // ── REVENUE REPORT ─────────────────────────────────────────────────────────
-    @Transactional(readOnly = true)
-    public RevenueReportResponse getRevenueReport(Long buildingId, LocalDate from, LocalDate to) {
-        List<Object[]> rows = buildingId != null
-                ? billRepo.findMonthlyRevenue(buildingId, from != null ? from : LocalDate.now().minusYears(1))
-                : List.of();
-
-        BigDecimal totalBilled = BigDecimal.ZERO;
-        BigDecimal totalCollected = BigDecimal.ZERO;
-
-        var breakdown = rows.stream().map(row -> {
-            BigDecimal b = row[1] != null ? new BigDecimal(row[1].toString()) : BigDecimal.ZERO;
-            BigDecimal c = row[2] != null ? new BigDecimal(row[2].toString()) : BigDecimal.ZERO;
-            BigDecimal outstanding = b.subtract(c);
-            double rate = b.compareTo(BigDecimal.ZERO) == 0 ? 0
-                    : c.divide(b, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).doubleValue();
-
-            return RevenueReportResponse.Period.builder()
-                    .period((String) row[0])
-                    .totalBilled(b)
-                    .totalCollected(c)
-                    .outstanding(outstanding)
-                    .collectionRate(Math.round(rate * 100.0) / 100.0)
-                    .build();
-        }).collect(Collectors.toList());
-
-        for (var p : breakdown) {
-            totalBilled = totalBilled.add(p.getTotalBilled());
-            totalCollected = totalCollected.add(p.getTotalCollected());
-        }
-
-        BigDecimal totalOutstanding = totalBilled.subtract(totalCollected);
-        double overallRate = totalBilled.compareTo(BigDecimal.ZERO) == 0 ? 0
-                : totalCollected.divide(totalBilled, 4, RoundingMode.HALF_UP)
-                        .multiply(BigDecimal.valueOf(100)).doubleValue();
-
-        return RevenueReportResponse.builder()
-                .summary(RevenueReportResponse.Summary.builder()
-                        .totalBilled(totalBilled)
-                        .totalCollected(totalCollected)
-                        .totalOutstanding(totalOutstanding)
-                        .collectionRate(Math.round(overallRate * 100.0) / 100.0)
-                        .build())
-                .breakdown(breakdown)
                 .build();
     }
 

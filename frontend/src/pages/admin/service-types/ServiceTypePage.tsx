@@ -87,7 +87,7 @@ export function ServiceTypePage() {
     return (
         <div className="space-y-5">
             <div className="flex items-center justify-between">
-                <h1>🛎️ Danh mục Dịch vụ Tiện ích</h1>
+                <h1>Danh mục Dịch vụ Tiện ích</h1>
                 <button onClick={openCreate} className="btn-primary">
                     + Thêm dịch vụ
                 </button>
@@ -113,7 +113,7 @@ export function ServiceTypePage() {
                 </div>
             ) : services.length === 0 ? (
                 <EmptyState
-                    icon="🛎️"
+                    icon=""
                     title="Chưa có dịch vụ nào"
                     action={
                         <button onClick={openCreate} className="btn-primary">
@@ -127,7 +127,7 @@ export function ServiceTypePage() {
                         <div key={s.id} className="card flex flex-col gap-3">
                             <div className="flex items-start justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="text-3xl">{s.iconUrl || "🛎️"}</div>
+                                    <div className="text-3xl">{s.iconUrl || ""}</div>
                                     <div>
                                         <p className="font-semibold text-gray-800">{s.name}</p>
                                         <p className="text-xs text-gray-400">{s.totalRegistrations} đăng ký đang active</p>
@@ -169,7 +169,7 @@ export function ServiceTypePage() {
             <Modal
                 isOpen={modalOpen}
                 onClose={() => setModalOpen(false)}
-                title={editItem ? "✏️ Sửa dịch vụ" : "➕ Thêm dịch vụ mới"}
+                title={editItem ? "Sửa dịch vụ" : "Thêm dịch vụ mới"}
                 size="md"
             >
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -217,7 +217,7 @@ export function ServiceTypePage() {
                         </div>
                         <div>
                             <label className="label">Icon (emoji hoặc URL)</label>
-                            <input className="input-field" placeholder="🏊 hoặc https://..." {...register("iconUrl")} />
+                            <input className="input-field" placeholder="https://..." {...register("iconUrl")} />
                         </div>
                     </div>
 
@@ -226,7 +226,7 @@ export function ServiceTypePage() {
                             Huỷ
                         </button>
                         <button type="submit" disabled={saving} className="btn-primary flex-1">
-                            {saving ? "Đang lưu..." : editItem ? "💾 Lưu thay đổi" : "➕ Tạo dịch vụ"}
+                            {saving ? "Đang lưu..." : editItem ? "Lưu thay đổi" : "Tạo dịch vụ"}
                         </button>
                     </div>
                 </form>

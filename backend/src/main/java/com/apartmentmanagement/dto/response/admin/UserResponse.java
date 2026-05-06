@@ -25,6 +25,7 @@ public class UserResponse {
     private String fullName;
     private String email;
     private String phone;
+    private String avatarUrl;
     private LocalDate dateOfBirth;
     private String idCard;
     private Boolean isActive;
@@ -46,6 +47,7 @@ public class UserResponse {
                 .fullName(u.getFullName())
                 .email(u.getEmail())
                 .phone(u.getPhone())
+                .avatarUrl(u.getAvatarUrl())
                 .dateOfBirth(u.getDateOfBirth())
                 .idCard(u.getIdCard())
                 .isActive(u.getIsActive())

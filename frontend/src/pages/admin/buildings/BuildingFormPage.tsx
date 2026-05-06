@@ -73,7 +73,7 @@ export function BuildingFormPage() {
                     ←
                 </button>
                 <div>
-                    <h1>{isEdit ? "✏️ Chỉnh sửa tòa nhà" : "🏢 Thêm tòa nhà mới"}</h1>
+                    <h1>{isEdit ? "Chỉnh sửa tòa nhà" : "Thêm tòa nhà mới"}</h1>
                     <p className="text-sm text-gray-500 mt-0.5">
                         {isEdit ? "Cập nhật thông tin tòa nhà" : "Điền thông tin để tạo tòa nhà mới"}
                     </p>

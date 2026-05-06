@@ -3,6 +3,7 @@ package com.apartmentmanagement.controller.admin;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.apartmentmanagement.dto.request.admin.AssignRoleRequest;
 import com.apartmentmanagement.dto.request.admin.UserCreateRequest;
@@ -108,5 +110,14 @@ public class AdminUserController {
             @PathVariable Integer roleId) {
         return ResponseEntity.ok(ApiResponse.success("Thu hồi role thành công",
                 userService.removeRole(id, roleId)));
+    }
+
+    /** PATCH /api/v1/admin/users/{id}/avatar */
+    @PatchMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<UserResponse>> updateAvatar(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file) {
+        return ResponseEntity.ok(ApiResponse.success("Cập nhật avatar thành công",
+                userService.updateAvatar(id, file)));
     }
 }

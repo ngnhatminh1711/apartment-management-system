@@ -33,3 +33,31 @@ export interface PaymentCreateResponse {
     paymentUrl?: string;
     expiredAt?: string;
 }
+
+export interface PaymentQrData {
+    paymentId: number;
+    billId: number;
+    amount: number;
+    paymentRef: string;
+    qrImageUrl: string;
+    bankCode: string;
+    accountNumber: string;
+    accountName: string;
+    transferContent: string;
+    expiredAt: string; // ISO datetime
+    status: "PENDING" | "SUCCESS" | "EXPIRED";
+}
+
+export interface PaymentStatusData {
+    paymentId: number;
+    status: PaymentStatus;
+    amount: number | null;
+    paidAt: string | null;
+    transactionRef: string | null;
+    message: string;
+}
+
+export interface PaymentInitRequest {
+    billId: number;
+    amount?: number; // null = thanh toán toàn bộ remaining
+}
