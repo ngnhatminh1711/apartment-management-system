@@ -1,4 +1,4 @@
-import type { DashboardStats, DebtReport, OccupancyReport, RevenueReport } from "../../types/admin";
+import type { DashboardStats, DebtReport } from "../../types/admin";
 import type { ApiResponse } from "../../types/common";
 import axiosInstance from "../axiosInstance";
 
@@ -7,16 +7,6 @@ export const adminReportService = {
         const res = await axiosInstance.get<ApiResponse<DashboardStats>>("/admin/dashboard/stats", {
             params: { buildingId, year },
         });
-        return res.data.data;
-    },
-
-    getRevenue: async (params: { buildingId?: number; from?: string; to?: string; groupBy?: string }): Promise<RevenueReport> => {
-        const res = await axiosInstance.get<ApiResponse<RevenueReport>>("/admin/reports/revenue", { params });
-        return res.data.data;
-    },
-
-    getOccupancy: async (params: { buildingId?: number; month?: string }): Promise<OccupancyReport> => {
-        const res = await axiosInstance.get<ApiResponse<OccupancyReport>>("/admin/reports/occupancy", { params });
         return res.data.data;
     },
 

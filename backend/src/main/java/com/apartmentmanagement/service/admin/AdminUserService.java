@@ -9,12 +9,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.apartmentmanagement.dto.request.admin.AssignRoleRequest;
 import com.apartmentmanagement.dto.request.admin.UserCreateRequest;
 import com.apartmentmanagement.dto.request.admin.UserUpdateRequest;
 import com.apartmentmanagement.dto.response.PageResponse;
 import com.apartmentmanagement.dto.response.admin.UserResponse;
+import com.apartmentmanagement.dto.response.cloudinary.UploadResponse;
 import com.apartmentmanagement.entity.Role;
 import com.apartmentmanagement.entity.User;
 import com.apartmentmanagement.enums.RoleName;
@@ -24,6 +26,7 @@ import com.apartmentmanagement.repository.ApartmentResidentRepository;
 import com.apartmentmanagement.repository.RoleRepository;
 import com.apartmentmanagement.repository.UserRepository;
 import com.apartmentmanagement.security.SecurityUtils;
+import com.apartmentmanagement.service.CloudinaryService;
 import com.apartmentmanagement.service.MailService;
 
 import lombok.RequiredArgsConstructor;
@@ -39,6 +42,7 @@ public class AdminUserService {
     private final ApartmentResidentRepository residentRepo;
     private final PasswordEncoder encoder;
     private final MailService mailService;
+    private final CloudinaryService cloudinaryService;
 
     @Transactional(readOnly = true)
     public PageResponse<UserResponse> getAll(
@@ -185,6 +189,50 @@ public class AdminUserService {
 
         user.getRoles().remove(role);
         return UserResponse.from(userRepo.save(user), buildAptRef(userId));
+    }
+
+    @Transactional
+    public UserResponse updateAvatar(Long userId, MultipartFile file) {
+        User user = findOrThrow(userId);
+
+        // Xóa avatar cũ nếu có (lấy publicId từ URL)
+        if (user.getAvatarUrl() != null) {
+            // URL dạng: https://res.cloudinary.com/.../apartment-management/avatars/uuid
+            // PublicId = phần sau /upload/v.../
+            String oldPublicId = extractPublicId(user.getAvatarUrl());
+            if (oldPublicId != null) {
+                cloudinaryService.delete(oldPublicId);
+            }
+        }
+
+        // Upload avatar mới
+        UploadResponse uploaded = cloudinaryService.upload(file, "avatars");
+        user.setAvatarUrl(uploaded.getUrl());
+
+        return UserResponse.from(userRepo.save(user), buildAptRef(userId));
+    }
+
+    /**
+     * Trích xuất publicId từ Cloudinary URL.
+     * URL:
+     * https://res.cloudinary.com/cloud_name/image/upload/v123/apartment-management/avatars/uuid.jpg
+     * PublicId: apartment-management/avatars/uuid
+     */
+    private String extractPublicId(String url) {
+        if (url == null || !url.contains("/upload/"))
+            return null;
+        try {
+            String afterUpload = url.split("/upload/")[1];
+            // Bỏ version (v1234567890/) nếu có
+            if (afterUpload.matches("v\\d+/.*")) {
+                afterUpload = afterUpload.replaceFirst("v\\d+/", "");
+            }
+            // Bỏ phần mở rộng file (.jpg, .png, ...)
+            int dotIndex = afterUpload.lastIndexOf('.');
+            return dotIndex > 0 ? afterUpload.substring(0, dotIndex) : afterUpload;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     // ── Helpers ────────────────────────────────────────────────────────────────

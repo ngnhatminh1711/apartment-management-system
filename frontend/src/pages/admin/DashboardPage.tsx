@@ -37,7 +37,7 @@ export function AdminDashboardPage() {
         <div className="space-y-6">
             {/* Header + filter */}
             <div className="flex items-center justify-between">
-                <h1>📊 Dashboard Tổng Quan</h1>
+                <h1>Dashboard Tổng Quan</h1>
                 <select
                     className="input-field w-52"
                     value={buildingId ?? ""}
@@ -54,31 +54,36 @@ export function AdminDashboardPage() {
 
             {/* Overview KPIs */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <StatCard icon="🏢" label="Tòa nhà đang hoạt động" value={overview.totalBuildings} />
-                <StatCard icon="🏠" label="Tổng căn hộ" value={overview.totalApartments} />
-                <StatCard icon="👥" label="Cư dân đang sinh sống" value={overview.totalResidents} />
-                <StatCard icon="📈" label="Tỷ lệ lấp đầy" value={formatPercent(overview.occupancyRate)} color="text-success" />
+                <StatCard icon="domain" label="Tòa nhà đang hoạt động" value={overview.totalBuildings} />
+                <StatCard icon="apartment" label="Tổng căn hộ" value={overview.totalApartments} />
+                <StatCard icon="groups_2" label="Cư dân đang sinh sống" value={overview.totalResidents} />
+                <StatCard
+                    icon="bar_chart_4_bars"
+                    label="Tỷ lệ lấp đầy"
+                    value={formatPercent(overview.occupancyRate)}
+                    color="text-success"
+                />
             </div>
 
             {/* Financial KPIs */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <StatCard icon="🧾" label="Đã lập hợp đồng tháng này" value={formatCurrency(financials.currentMonthBilled)} />
+                <StatCard icon="description" label="Đã lập hợp đồng" value={formatCurrency(financials.currentMonthBilled)} />
                 <StatCard
-                    icon="💰"
-                    label="Đã thu tháng này"
+                    icon="payments"
+                    label="Đã thu"
                     value={formatCurrency(financials.currentMonthCollected)}
                     color="text-success"
                     sub={`Tỷ lệ ${formatPercent(financials.currentMonthCollectionRate)}`}
                 />
                 <StatCard
-                    icon="⚠️"
+                    icon="warning"
                     label="Tổng công nợ"
                     value={formatCurrency(financials.outstandingDebt)}
                     color="text-danger"
                     sub={`${financials.totalDebtors} căn hộ đang nợ`}
                 />
                 <StatCard
-                    icon="🔧"
+                    icon="support_agent"
                     label="Yêu cầu đang chờ"
                     value={operations.pendingServiceRequests + operations.inProgressServiceRequests}
                     sub={`${operations.pendingVehicleApprovals} xe · ${operations.pendingServiceRegistrations} dịch vụ chờ duyệt`}
@@ -95,7 +100,7 @@ export function AdminDashboardPage() {
 
                 {/* Occupancy chart */}
                 <div className="card">
-                    <h3 className="mb-4">🏠 Tỷ lệ lấp đầy theo tòa</h3>
+                    <h3 className="mb-4">Tỷ lệ lấp đầy theo tòa</h3>
                     <div className="space-y-3">
                         {occupancyByBuilding.map((b) => (
                             <div key={b.buildingId}>
@@ -122,7 +127,7 @@ export function AdminDashboardPage() {
             {/* Occupancy Pie (tổng hợp) */}
             {overview.totalApartments > 0 && (
                 <div className="card max-w-full">
-                    <h3 className="mb-4">🥧 Cơ cấu căn hộ</h3>
+                    <h3 className="mb-4">Cơ cấu căn hộ</h3>
                     <OccupancyPieChart
                         occupied={overview.occupiedApartments}
                         available={overview.availableApartments}

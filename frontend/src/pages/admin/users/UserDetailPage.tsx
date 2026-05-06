@@ -64,16 +64,16 @@ export function UserDetailPage() {
                 </div>
                 <div className="flex gap-2">
                     <button onClick={() => setConfirmReset(true)} className="btn-secondary text-sm">
-                        🔑 Reset MK
+                        Reset MK
                     </button>
                     <button
                         onClick={() => setConfirmToggle(true)}
                         className={`text-sm ${user.isActive ? "btn-danger" : "btn-secondary"}`}
                     >
-                        {user.isActive ? "🚫 Vô hiệu" : "✅ Kích hoạt"}
+                        {user.isActive ? "Vô hiệu" : " Kích hoạt"}
                     </button>
                     <Link to="edit" className="btn-primary text-sm">
-                        ✏️ Chỉnh sửa
+                        Chỉnh sửa
                     </Link>
                 </div>
             </div>
@@ -81,8 +81,12 @@ export function UserDetailPage() {
             {/* Profile card */}
             <div className="card">
                 <div className="flex items-start gap-5">
-                    <div className="h-20 w-20 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold text-3xl flex-shrink-0">
-                        {user.fullName[0]}
+                    <div className="h-20 w-20 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-bold text-3xl shrink-0 overflow-hidden">
+                        {user.avatarUrl ? (
+                            <img src={user.avatarUrl!} alt="avatar" className="w-full h-full object-cover" />
+                        ) : (
+                            user.fullName[0]
+                        )}
                     </div>
                     <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2 flex-wrap">

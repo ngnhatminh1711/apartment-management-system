@@ -195,7 +195,7 @@ export const ADMIN_NAV = [
     { label: "Người dùng", path: "/admin/users", icon: "groups" },
     { label: "Cấu hình phí", path: "/admin/fee-configs", icon: "payments" },
     { label: "Dịch vụ", path: "/admin/service-types", icon: "room_service" },
-    { label: "Báo cáo", path: "/admin/reports/revenue", icon: "bar_chart" },
+    { label: "Báo cáo", path: "/admin/reports/debt", icon: "bar_chart" },
 ];
 
 export const MANAGER_NAV = [

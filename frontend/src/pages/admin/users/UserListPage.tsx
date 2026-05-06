@@ -3,13 +3,16 @@ import { Link } from "react-router-dom";
 import { Badge } from "../../../components/common/Badge";
 import { ConfirmDialog } from "../../../components/common/ConfirmDialog";
 import { EmptyState } from "../../../components/common/EmptyState";
+import { ExportButton } from "../../../components/common/ExportButton";
 import { Pagination } from "../../../components/common/Pagination";
 import { SearchInput } from "../../../components/common/SearchInput";
 import { Spinner } from "../../../components/common/Spinner";
 import { ToastContainer } from "../../../components/common/ToastContainer";
+import { useExport } from "../../../hooks/useExport";
 import { usePagination } from "../../../hooks/usePagination";
 import { useToast } from "../../../hooks/useToast";
 import { adminUserService } from "../../../services/admin/userService";
+import { exportService } from "../../../services/exportService";
 import type { User } from "../../../types/admin";
 import type { UserRole } from "../../../types/common";
 import { ROLE_LABELS, ROLE_OPTIONS } from "../../../utils/constants";
@@ -23,6 +26,7 @@ export function UserListPage() {
     const [filterRole, setFilterRole] = useState<UserRole | "">("");
     const [filterActive, setFilterActive] = useState<boolean | undefined>(undefined);
     const [toggleId, setToggleId] = useState<number | null>(null);
+    const { exporting, error: exportError, handleExport } = useExport();
 
     const toast = useToast();
     const pag = usePagination();
@@ -80,15 +84,26 @@ export function UserListPage() {
     return (
         <div className="space-y-5">
             <div className="flex items-center justify-between">
-                <h1>👥 Quản lý Người dùng</h1>
-                <Link to="new" className="btn-primary">
-                    + Tạo tài khoản
-                </Link>
+                <h1>Quản lý Người dùng</h1>
+                <div className="flex gap-2">
+                    <ExportButton
+                        loading={exporting}
+                        label="Xuất danh sách"
+                        onExport={(fmt) => handleExport(() => exportService.exportUsers(fmt))}
+                    />
+                    <Link to="new" className="btn-primary">
+                        + Tạo tài khoản
+                    </Link>
+                </div>
             </div>
+
+            {exportError && (
+                <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3">{exportError}</div>
+            )}
 
             {/* Filters */}
             <div className="card py-3 flex gap-3 flex-wrap">
-                <div className="flex-1 min-w-[200px]">
+                <div className="flex-1 min-w-50">
                     <SearchInput placeholder="Tìm theo tên, email, SĐT, CCCD..." onSearch={pag.setSearch} />
                 </div>
                 <select
@@ -146,8 +161,16 @@ export function UserListPage() {
                                         <tr key={u.id} className="hover:bg-gray-50 transition-colors">
                                             <td className="table-cell">
                                                 <div className="flex items-center gap-2">
-                                                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm flex-shrink-0">
-                                                        {u.fullName[0]}
+                                                    <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0 overflow-hidden">
+                                                        {u.avatarUrl ? (
+                                                            <img
+                                                                src={u.avatarUrl!}
+                                                                alt="avatar"
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        ) : (
+                                                            u.fullName[0]
+                                                        )}
                                                     </div>
                                                     <Link
                                                         to={`${u.id}`}

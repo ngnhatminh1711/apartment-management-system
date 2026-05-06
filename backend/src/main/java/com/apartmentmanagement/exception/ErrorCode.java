@@ -2,7 +2,6 @@ package com.apartmentmanagement.exception;
 
 import org.springframework.http.HttpStatus;
 
-
 import lombok.Getter;
 
 @Getter
@@ -81,6 +80,12 @@ public enum ErrorCode {
 
     // --Notification--
     NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "Không tìm thấy thông báo"),
+
+    // --Upload errors--
+    UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "Upload ảnh thất bại, vui lòng thử lại"),
+    FILE_EMPTY(HttpStatus.CONFLICT, "File không được để trống"),
+    FILE_TOO_LARGE(HttpStatus.CONTENT_TOO_LARGE, "File không được vượt quá 5MB"),
+    FILE_TYPE_NOT_ALLOWED(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Chỉ chấp nhận file ảnh: JPG, PNG, GIF, WEBP"),
 
     // --General--
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "Dữ liệu không hợp lệ"),

@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import { ImageUpload } from "../../../components/common/ImageUpload";
 import { Spinner } from "../../../components/common/Spinner";
 import { ToastContainer } from "../../../components/common/ToastContainer";
 import { useToast } from "../../../hooks/useToast";
 import { adminUserService } from "../../../services/admin/userService";
 import type { UserCreateFormData, UserUpdateFormData } from "../../../types/admin";
 import { ALL_ROLES, ROLE_LABELS } from "../../../utils/constants";
+
+type UserFormData = UserCreateFormData & {
+    avatarUrl?: string;
+};
 
 export function UserFormPage() {
     const { id } = useParams<{ id?: string }>();
@@ -16,14 +21,16 @@ export function UserFormPage() {
 
     const [loading, setLoading] = useState(false);
     const [initLoad, setInitLoad] = useState(isEdit);
+    const [avatarUrl, setAvatarUrl] = useState<string>("");
 
     const {
         register,
         handleSubmit,
         reset,
         control,
+        setValue,
         formState: { errors },
-    } = useForm<UserCreateFormData>();
+    } = useForm<UserFormData>();
 
     useEffect(() => {
         if (!isEdit) return;
@@ -34,13 +41,15 @@ export function UserFormPage() {
                 phone: u.phone ?? "",
                 idCard: u.idCard ?? "",
                 dateOfBirth: u.dateOfBirth ?? "",
+                avatarUrl: u.avatarUrl ?? "",
                 roles: u.roles,
             });
+            setAvatarUrl(u.avatarUrl ?? "");
             setInitLoad(false);
         });
     }, [id, isEdit, reset]);
 
-    const onSubmit = async (data: UserCreateFormData) => {
+    const onSubmit = async (data: UserFormData) => {
         setLoading(true);
         try {
             if (isEdit) {
@@ -48,6 +57,7 @@ export function UserFormPage() {
                     fullName: data.fullName,
                     phone: data.phone,
                     dateOfBirth: data.dateOfBirth,
+                    avatarUrl: data.avatarUrl,
                 };
                 await adminUserService.update(Number(id), updateData);
                 toast.success("Cập nhật thông tin thành công!");
@@ -72,7 +82,7 @@ export function UserFormPage() {
                     ←
                 </button>
                 <div>
-                    <h1>{isEdit ? "✏️ Chỉnh sửa người dùng" : "👤 Tạo tài khoản mới"}</h1>
+                    <h1>{isEdit ? "Chỉnh sửa người dùng" : "Tạo tài khoản mới"}</h1>
                     {!isEdit && (
                         <p className="text-sm text-gray-500 mt-0.5">Mật khẩu ngẫu nhiên sẽ được gửi qua email sau khi tạo.</p>
                     )}
@@ -114,6 +124,23 @@ export function UserFormPage() {
                         {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
                     </div>
                 )}
+
+                <ImageUpload
+                    currentUrl={avatarUrl || undefined}
+                    folder="avatars"
+                    onUpload={(url) => {
+                        setAvatarUrl(url);
+                        setValue("avatarUrl", url);
+                    }}
+                    label="Ảnh đại diện"
+                    shape="square"
+                    size={150}
+                    allowRemove
+                    onRemove={() => {
+                        setAvatarUrl("");
+                        setValue("avatarUrl", "");
+                    }}
+                />
 
                 <div className="grid grid-cols-2 gap-4">
                     {/* Số điện thoại */}
@@ -209,7 +236,7 @@ export function UserFormPage() {
                         Huỷ
                     </button>
                     <button type="submit" disabled={loading} className="btn-primary flex-1">
-                        {loading ? "Đang lưu..." : isEdit ? "💾 Lưu thay đổi" : "👤 Tạo tài khoản"}
+                        {loading ? "Đang lưu..." : isEdit ? "Lưu thay đổi" : "Tạo tài khoản"}
                     </button>
                 </div>
             </form>

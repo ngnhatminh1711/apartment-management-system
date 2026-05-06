@@ -1,41 +1,61 @@
 server:
-  port: 8080
+    port: 8080
 
 spring:
-  config:
-    import: optional:file:.env[.properties]
-  application:
-    name: apartment-management
-  datasource:
-    url: jdbc:postgresql://localhost:5432/apartment_db
-    username: postgres
-    password: Abc111@
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
-    properties:
-        mail.smtp.auth: true
-        mail.smtp.starttls.enable: true
+    servlet:
+        multipart:
+            enabled: true
+            max-file-size: 5MB
+            max-request-size: 25MB
+    config:
+        import: optional:file:.env[.properties]
+    application:
+        name: apartment-management
+    datasource:
+        url: jdbc:postgresql://localhost:5432/apartment_db
+        username: postgres
+        password: Abc111@
+        driver-class-name: org.postgresql.Driver
+    jpa:
+        hibernate:
+            ddl-auto: update
+        show-sql: true
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+                format_sql: true
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: ${MAIL_USERNAME}
+        password: ${MAIL_PASSWORD}
+        properties:
+            mail.smtp.auth: true
+            mail.smtp.starttls.enable: true
 
 scheduling:
-  async:
-    enabled: true
+    async:
+        enabled: true
 
 jwt:
-  secret: 51CKGfW8L3Gsk7USAqpiQWlWOe33XDjzYfJrCHACb8N
-  access-token-expiration: 86400000
-  refresh-token-expiration: 604800000
+    secret: 51CKGfW8L3Gsk7USAqpiQWlWOe33XDjzYfJrCHACb8N
+    access-token-expiration: 86400000
+    refresh-token-expiration: 604800000
 
 cors:
-  allowed-origins: http://localhost:3000,http://localhost:5173
+    allowed-origins: http://localhost:3000,http://localhost:5173
+
+sepay:
+    webhook-api-key: ${SEPAY_WEBHOOK_API_KEY}
+    bank-account-number: ${SEPAY_BANK_ACCOUNT}
+    bank-code: ${SEPAY_BANK_CODE}
+    account-name: ${SEPAY_ACCOUNT_NAME}
+    payment-prefix: APT
+    qr-template: "https://img.vietqr.io/image/{bankCode}-{accountNumber}-compact2.png?amount={amount}&addInfo={content}&accountName={accountName}"
+    payment-timeout-minutes: 15
+
+cloudinary:
+    cloud-name: ${CLOUDINARY_CLOUD_NAME}
+    api-key: ${CLOUDINARY_API_KEY}
+    api-secret: ${CLOUDINARY_API_SECRET}
+    folder: apartment-management

@@ -73,7 +73,7 @@ export function ApartmentFormPage() {
                 <button onClick={() => navigate(-1)} className="text-gray-400 hover:text-gray-700 text-2xl leading-none">
                     ←
                 </button>
-                <h1>{isEdit ? "✏️ Sửa căn hộ" : "🏠 Thêm căn hộ mới"}</h1>
+                <h1>{isEdit ? "Sửa căn hộ" : "Thêm căn hộ mới"}</h1>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="card space-y-5">

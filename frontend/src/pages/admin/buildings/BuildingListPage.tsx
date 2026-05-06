@@ -3,13 +3,16 @@ import { Link } from "react-router-dom";
 import { Badge } from "../../../components/common/Badge";
 import { ConfirmDialog } from "../../../components/common/ConfirmDialog";
 import { EmptyState } from "../../../components/common/EmptyState";
+import { ExportButton } from "../../../components/common/ExportButton";
 import { Pagination } from "../../../components/common/Pagination";
 import { SearchInput } from "../../../components/common/SearchInput";
 import { Spinner } from "../../../components/common/Spinner";
 import { ToastContainer } from "../../../components/common/ToastContainer";
+import { useExport } from "../../../hooks/useExport";
 import { usePagination } from "../../../hooks/usePagination";
 import { useToast } from "../../../hooks/useToast";
 import { adminBuildingService } from "../../../services/admin/buildingService";
+import { exportService } from "../../../services/exportService";
 import type { Building } from "../../../types/admin";
 
 export function BuildingListPage() {
@@ -19,6 +22,7 @@ export function BuildingListPage() {
     const [loading, setLoading] = useState(true);
     const [filterActive, setFilterActive] = useState<boolean | undefined>(undefined);
     const [deleteId, setDeleteId] = useState<number | null>(null);
+    const { exporting, error: exportError, handleExport } = useExport();
 
     const toast = useToast();
     const pag = usePagination();
@@ -64,11 +68,22 @@ export function BuildingListPage() {
         <div className="space-y-5">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <h1>🏢 Quản lý Tòa nhà</h1>
-                <Link to="new" className="btn-primary">
-                    + Thêm tòa nhà
-                </Link>
+                <h1>Quản lý Tòa nhà</h1>
+                <div className="flex gap-2">
+                    <ExportButton
+                        loading={exporting}
+                        label="Xuất danh sách"
+                        onExport={(fmt) => handleExport(() => exportService.exportBuildings(fmt))}
+                    />
+                    <Link to="new" className="btn-primary">
+                        + Thêm tòa nhà
+                    </Link>
+                </div>
             </div>
+
+            {exportError && (
+                <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3">{exportError}</div>
+            )}
 
             {/* Toolbar */}
             <div className="card py-3 flex gap-3 flex-wrap">
